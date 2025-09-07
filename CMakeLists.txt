@@ -1,0 +1,137 @@
+cmake_minimum_required(VERSION 3.14)
+project(CXLSSDEval VERSION 1.0.0 LANGUAGES CXX)
+
+# Set C++ standard
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Set default build type
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+endif()
+
+# Compiler flags
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0 -DDEBUG")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -march=native")
+
+# Check for required CPU features
+include(CheckCXXCompilerFlag)
+check_cxx_compiler_flag("-mwaitpkg" COMPILER_SUPPORTS_WAITPKG)
+if(COMPILER_SUPPORTS_WAITPKG)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mwaitpkg")
+endif()
+
+# Find required packages
+find_package(Threads REQUIRED)
+
+# Include directories
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+# Source files
+set(LIB_SOURCES
+    src/cxl_mwait.cpp
+    src/cxl_ssd_common.cpp
+)
+
+# Create static library
+add_library(cxlssd_static STATIC ${LIB_SOURCES})
+target_link_libraries(cxlssd_static 
+    PRIVATE 
+        Threads::Threads
+)
+
+# Create shared library
+add_library(cxlssd SHARED ${LIB_SOURCES})
+target_link_libraries(cxlssd 
+    PRIVATE 
+        Threads::Threads
+)
+set_target_properties(cxlssd PROPERTIES
+    VERSION ${PROJECT_VERSION}
+    SOVERSION 1
+)
+
+# Test executable
+add_executable(test_mwait tests/test_mwait.cpp)
+target_link_libraries(test_mwait 
+    PRIVATE 
+        cxlssd_static
+        Threads::Threads
+)
+
+# Example executables
+add_executable(example_basic tests/example_basic.cpp)
+target_link_libraries(example_basic 
+    PRIVATE 
+        cxlssd_static
+        Threads::Threads
+)
+
+add_executable(example_pmr_cache tests/example_pmr_cache.cpp)
+target_link_libraries(example_pmr_cache 
+    PRIVATE 
+        cxlssd_static
+        Threads::Threads
+)
+
+add_executable(benchmark tests/benchmark.cpp)
+target_link_libraries(benchmark 
+    PRIVATE 
+        cxlssd_static
+        Threads::Threads
+)
+
+# Installation
+install(TARGETS cxlssd cxlssd_static
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+)
+
+install(DIRECTORY include/
+    DESTINATION include/cxlssd
+)
+
+# Package configuration
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/CXLSSDEvalConfigVersion.cmake"
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY AnyNewerVersion
+)
+
+# Enable testing
+enable_testing()
+add_test(NAME basic_test COMMAND test_mwait --test basic)
+add_test(NAME pmr_test COMMAND test_mwait --test pmr_latency)
+add_test(NAME benchmark_test COMMAND benchmark --quick)
+
+# Documentation
+option(BUILD_DOCS "Build documentation" OFF)
+if(BUILD_DOCS)
+    find_package(Doxygen)
+    if(DOXYGEN_FOUND)
+        set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in)
+        set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+        
+        configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+        
+        add_custom_target(docs ALL
+            COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+            COMMENT "Generating API documentation with Doxygen"
+            VERBATIM
+        )
+    endif()
+endif()
+
+# Print configuration summary
+message(STATUS "")
+message(STATUS "CXLSSDEval Configuration Summary:")
+message(STATUS "  Build Type:        ${CMAKE_BUILD_TYPE}")
+message(STATUS "  C++ Standard:      ${CMAKE_CXX_STANDARD}")
+message(STATUS "  Install Prefix:    ${CMAKE_INSTALL_PREFIX}")
+message(STATUS "  WAITPKG Support:   ${COMPILER_SUPPORTS_WAITPKG}")
+message(STATUS "  Build Docs:        ${BUILD_DOCS}")
+message(STATUS "")
