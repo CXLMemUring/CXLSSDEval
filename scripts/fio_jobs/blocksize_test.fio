@@ -1,0 +1,142 @@
+; Block Size Test Job File
+; This job file tests various block sizes for both read and write operations
+; Usage: fio --output-format=json blocksize_test.fio
+
+[global]
+; Device configuration - will be overridden by command line
+filename=${DEVICE:-/dev/nvme0n1}
+direct=1
+ioengine=libaio
+group_reporting=1
+time_based=1
+runtime=${DURATION:-300}
+ramp_time=${WARMUP:-60}
+
+; Standard parameters
+iodepth=32
+numjobs=1
+size=100%
+
+; Latency percentiles
+lat_percentiles=1
+percentile_list=90:95:99:99.9:99.99
+
+; Test 1: 512B Block Size - Read
+[bs_512_read]
+rw=read
+bs=512
+stonewall
+
+; Test 2: 512B Block Size - Write
+[bs_512_write]
+rw=write
+bs=512
+stonewall
+
+; Test 3: 1KB Block Size - Read
+[bs_1k_read]
+rw=read
+bs=1k
+stonewall
+
+; Test 4: 1KB Block Size - Write
+[bs_1k_write]
+rw=write
+bs=1k
+stonewall
+
+; Test 5: 4KB Block Size - Read
+[bs_4k_read]
+rw=read
+bs=4k
+stonewall
+
+; Test 6: 4KB Block Size - Write
+[bs_4k_write]
+rw=write
+bs=4k
+stonewall
+
+; Test 7: 16KB Block Size - Read
+[bs_16k_read]
+rw=read
+bs=16k
+stonewall
+
+; Test 8: 16KB Block Size - Write
+[bs_16k_write]
+rw=write
+bs=16k
+stonewall
+
+; Test 9: 64KB Block Size - Read
+[bs_64k_read]
+rw=read
+bs=64k
+stonewall
+
+; Test 10: 64KB Block Size - Write
+[bs_64k_write]
+rw=write
+bs=64k
+stonewall
+
+; Test 11: 256KB Block Size - Read
+[bs_256k_read]
+rw=read
+bs=256k
+stonewall
+
+; Test 12: 256KB Block Size - Write
+[bs_256k_write]
+rw=write
+bs=256k
+stonewall
+
+; Test 13: 1MB Block Size - Read
+[bs_1m_read]
+rw=read
+bs=1m
+stonewall
+
+; Test 14: 1MB Block Size - Write
+[bs_1m_write]
+rw=write
+bs=1m
+stonewall
+
+; Test 15: 4MB Block Size - Read
+[bs_4m_read]
+rw=read
+bs=4m
+stonewall
+
+; Test 16: 4MB Block Size - Write
+[bs_4m_write]
+rw=write
+bs=4m
+stonewall
+
+; Test 17: 16MB Block Size - Read
+[bs_16m_read]
+rw=read
+bs=16m
+stonewall
+
+; Test 18: 16MB Block Size - Write
+[bs_16m_write]
+rw=write
+bs=16m
+stonewall
+
+; Test 19: 64MB Block Size - Read
+[bs_64m_read]
+rw=read
+bs=64m
+stonewall
+
+; Test 20: 64MB Block Size - Write
+[bs_64m_write]
+rw=write
+bs=64m
+stonewall

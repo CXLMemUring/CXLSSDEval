@@ -1,0 +1,66 @@
+; Read/Write Mix Test Job File
+; This job file tests various read/write mix ratios
+; Usage: fio --output-format=json rwmix_test.fio
+
+[global]
+; Device configuration - will be overridden by command line
+filename=${DEVICE:-/dev/nvme0n1}
+direct=1
+ioengine=libaio
+group_reporting=1
+time_based=1
+runtime=${DURATION:-300}
+ramp_time=${WARMUP:-60}
+
+; Standard parameters
+bs=4k
+iodepth=32
+numjobs=4
+size=100%
+
+; Latency percentiles
+lat_percentiles=1
+percentile_list=90:95:99:99.9:99.99
+
+; Test 1: 100% Read (0% Write)
+[rwmix_read100]
+rw=randrw
+rwmixread=100
+stonewall
+
+; Test 2: 75% Read (25% Write)
+[rwmix_read75]
+rw=randrw
+rwmixread=75
+stonewall
+
+; Test 3: 50% Read (50% Write)
+[rwmix_read50]
+rw=randrw
+rwmixread=50
+stonewall
+
+; Test 4: 25% Read (75% Write)
+[rwmix_read25]
+rw=randrw
+rwmixread=25
+stonewall
+
+; Test 5: 0% Read (100% Write)
+[rwmix_read0]
+rw=randrw
+rwmixread=0
+stonewall
+
+; Additional mixed patterns with sequential access
+; Test 6: Sequential 70/30 Read/Write Mix
+[seq_rwmix_read70]
+rw=rw
+rwmixread=70
+stonewall
+
+; Test 7: Sequential 30/70 Read/Write Mix
+[seq_rwmix_read30]
+rw=rw
+rwmixread=30
+stonewall

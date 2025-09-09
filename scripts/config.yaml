@@ -1,0 +1,37 @@
+# CXL SSD Benchmark Configuration
+
+# Device Configuration
+device:
+  raw_device: "/dev/nvme0n1"      # Raw device path for CXL SSD
+  filesystem_mount: "/nv1"         # Mount point for filesystem tests
+  filesystem_type: "ext4"          # Filesystem type
+
+# Test Duration Configuration
+test_duration:
+  standard: 300                    # Standard test duration in seconds (5 min)
+  endurance: 1200                  # Endurance test duration in seconds (20 min)
+  warmup: 0                       # Warmup time in seconds
+
+# Test Parameters
+test_params:
+  queue_depths: [1, 2, 4, 8, 16, 32, 64, 128]
+  num_jobs: [1, 2, 4, 8, 16, 32]
+  default_iodepth: 1               # Default IO depth for non-QD tests
+  default_numjobs: 1                # Default number of jobs for non-thread tests
+  block_sizes: ["512", "1k", "4k", "16k", "64k", "256k", "1m", "4m", "16m", "64m"]
+  rw_patterns: ["read", "write", "randread", "randwrite"]
+  rw_mix_ratios: [100, 75, 50, 25, 0]  # Read percentages
+  distributions: ["random", "zipf:1.2", "normal:50", "pareto:0.9"]
+
+# Output Configuration
+output:
+  results_dir: "./results"
+  log_level: "normal"              # normal, verbose, debug
+  formats: ["json", "normal"]      # Output formats for fio
+
+# RocksDB Configuration
+rocksdb:
+  db_path: "/nv1/rocksdb_test"
+  num_keys: 10000000
+  value_size: 1024
+  benchmarks: ["fillseq", "fillrandom", "readrandom", "readseq", "readmissing"]

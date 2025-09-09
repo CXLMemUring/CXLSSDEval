@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(chmod:*)",
+      "Bash(./test_yaml_parser.sh:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

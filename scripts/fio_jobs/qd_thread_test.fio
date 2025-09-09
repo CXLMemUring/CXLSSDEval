@@ -1,0 +1,162 @@
+; Queue Depth and Thread Test Job File
+; This job file tests various queue depths and thread combinations
+; Usage: fio --output-format=json qd_thread_test.fio
+
+[global]
+; Device configuration - will be overridden by command line
+filename=${DEVICE:-/dev/nvme0n1}
+direct=1
+ioengine=libaio
+group_reporting=1
+time_based=1
+runtime=${DURATION:-300}
+ramp_time=${WARMUP:-60}
+
+; Latency percentiles
+lat_percentiles=1
+percentile_list=90:95:99:99.9:99.99
+
+; Size and pattern
+bs=4k
+size=100%
+
+; Test 1: QD=1, Single Thread - Read
+[qd1_thread1_read]
+rw=randread
+iodepth=1
+numjobs=1
+stonewall
+
+; Test 2: QD=1, Single Thread - Write
+[qd1_thread1_write]
+rw=randwrite
+iodepth=1
+numjobs=1
+stonewall
+
+; Test 3: QD=4, Single Thread - Read
+[qd4_thread1_read]
+rw=randread
+iodepth=4
+numjobs=1
+stonewall
+
+; Test 4: QD=4, Single Thread - Write
+[qd4_thread1_write]
+rw=randwrite
+iodepth=4
+numjobs=1
+stonewall
+
+; Test 5: QD=16, Single Thread - Read
+[qd16_thread1_read]
+rw=randread
+iodepth=16
+numjobs=1
+stonewall
+
+; Test 6: QD=16, Single Thread - Write
+[qd16_thread1_write]
+rw=randwrite
+iodepth=16
+numjobs=1
+stonewall
+
+; Test 7: QD=32, Single Thread - Read
+[qd32_thread1_read]
+rw=randread
+iodepth=32
+numjobs=1
+stonewall
+
+; Test 8: QD=32, Single Thread - Write
+[qd32_thread1_write]
+rw=randwrite
+iodepth=32
+numjobs=1
+stonewall
+
+; Test 9: QD=64, Single Thread - Read
+[qd64_thread1_read]
+rw=randread
+iodepth=64
+numjobs=1
+stonewall
+
+; Test 10: QD=64, Single Thread - Write
+[qd64_thread1_write]
+rw=randwrite
+iodepth=64
+numjobs=1
+stonewall
+
+; Test 11: QD=128, Single Thread - Read
+[qd128_thread1_read]
+rw=randread
+iodepth=128
+numjobs=1
+stonewall
+
+; Test 12: QD=128, Single Thread - Write
+[qd128_thread1_write]
+rw=randwrite
+iodepth=128
+numjobs=1
+stonewall
+
+; Multi-threaded tests with QD=32
+; Test 13: QD=32, 2 Threads - Read
+[qd32_thread2_read]
+rw=randread
+iodepth=32
+numjobs=2
+stonewall
+
+; Test 14: QD=32, 2 Threads - Write
+[qd32_thread2_write]
+rw=randwrite
+iodepth=32
+numjobs=2
+stonewall
+
+; Test 15: QD=32, 4 Threads - Read
+[qd32_thread4_read]
+rw=randread
+iodepth=32
+numjobs=4
+stonewall
+
+; Test 16: QD=32, 4 Threads - Write
+[qd32_thread4_write]
+rw=randwrite
+iodepth=32
+numjobs=4
+stonewall
+
+; Test 17: QD=32, 8 Threads - Read
+[qd32_thread8_read]
+rw=randread
+iodepth=32
+numjobs=8
+stonewall
+
+; Test 18: QD=32, 8 Threads - Write
+[qd32_thread8_write]
+rw=randwrite
+iodepth=32
+numjobs=8
+stonewall
+
+; Test 19: QD=32, 16 Threads - Read
+[qd32_thread16_read]
+rw=randread
+iodepth=32
+numjobs=16
+stonewall
+
+; Test 20: QD=32, 16 Threads - Write
+[qd32_thread16_write]
+rw=randwrite
+iodepth=32
+numjobs=16
+stonewall

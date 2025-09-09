@@ -1,0 +1,66 @@
+; Endurance Test Job File
+; This job file runs long-duration tests to evaluate device endurance
+; Usage: fio --output-format=json endurance_test.fio
+
+[global]
+; Device configuration - will be overridden by command line
+filename=${DEVICE:-/dev/nvme0n1}
+direct=1
+ioengine=libaio
+group_reporting=1
+time_based=1
+runtime=${ENDURANCE_DURATION:-1200}
+ramp_time=${WARMUP:-60}
+
+; Standard parameters
+bs=4k
+size=100%
+
+; Latency percentiles
+lat_percentiles=1
+percentile_list=90:95:99:99.9:99.99
+
+; Logging configuration for time-series analysis
+log_avg_msec=1000
+
+; Test 1: Sustained Random Read/Write Mix (70/30)
+[endurance_randrw_70_30]
+rw=randrw
+rwmixread=70
+iodepth=32
+numjobs=8
+write_bw_log=endurance_bw
+write_iops_log=endurance_iops
+write_lat_log=endurance_lat
+stonewall
+
+; Test 2: Sustained Sequential Write
+[endurance_seq_write]
+rw=write
+bs=128k
+iodepth=32
+numjobs=4
+write_bw_log=endurance_seq_write_bw
+write_iops_log=endurance_seq_write_iops
+write_lat_log=endurance_seq_write_lat
+stonewall
+
+; Test 3: Sustained Random Write
+[endurance_rand_write]
+rw=randwrite
+iodepth=64
+numjobs=4
+write_bw_log=endurance_rand_write_bw
+write_iops_log=endurance_rand_write_iops
+write_lat_log=endurance_rand_write_lat
+stonewall
+
+; Test 4: Sustained Random Read
+[endurance_rand_read]
+rw=randread
+iodepth=64
+numjobs=4
+write_bw_log=endurance_rand_read_bw
+write_iops_log=endurance_rand_read_iops
+write_lat_log=endurance_rand_read_lat
+stonewall
