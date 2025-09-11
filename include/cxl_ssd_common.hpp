@@ -1,6 +1,7 @@
 #ifndef CXL_SSD_COMMON_HPP
 #define CXL_SSD_COMMON_HPP
 
+#include <chrono>
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -93,35 +94,6 @@ enum class ErrorCode {
 
 // Convert error code to string
 std::string error_to_string(ErrorCode error);
-
-// Logging levels
-enum class LogLevel {
-    TRACE,
-    DEBUG,
-    INFO,
-    WARNING,
-    ERROR,
-    FATAL
-};
-
-// Simple logger interface
-class Logger {
-public:
-    static void log(LogLevel level, const std::string& message);
-    static void set_level(LogLevel level);
-    static LogLevel get_level();
-    
-private:
-    static LogLevel current_level;
-};
-
-// Utility macros for logging
-#define CXL_LOG_TRACE(msg) cxl_ssd::Logger::log(cxl_ssd::LogLevel::TRACE, msg)
-#define CXL_LOG_DEBUG(msg) cxl_ssd::Logger::log(cxl_ssd::LogLevel::DEBUG, msg)
-#define CXL_LOG_INFO(msg) cxl_ssd::Logger::log(cxl_ssd::LogLevel::INFO, msg)
-#define CXL_LOG_WARN(msg) cxl_ssd::Logger::log(cxl_ssd::LogLevel::WARNING, msg)
-#define CXL_LOG_ERROR(msg) cxl_ssd::Logger::log(cxl_ssd::LogLevel::ERROR, msg)
-#define CXL_LOG_FATAL(msg) cxl_ssd::Logger::log(cxl_ssd::LogLevel::FATAL, msg)
 
 } // namespace cxl_ssd
 

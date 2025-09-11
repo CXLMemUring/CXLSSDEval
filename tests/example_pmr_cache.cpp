@@ -1,6 +1,6 @@
 #include "../include/cxl_mwait.hpp"
 #include "../include/cxl_ssd_common.hpp"
-#include <iostream>
+#include "../include/cxl_logger.hpp"
 #include <vector>
 #include <thread>
 #include <chrono>
@@ -11,13 +11,14 @@ using namespace cxl_ssd;
 
 // Simple PMR cache implementation using MWAIT
 class PMRCache {
-private:
+public:
     struct CacheLine {
         uint64_t tag;
         uint64_t data[7];  // 64 bytes total
         volatile uint64_t status;  // 0=invalid, 1=valid, 2=dirty
     };
     
+private:
     CacheLine* cache_lines;
     size_t num_lines;
     CXLMWait* mwait;
@@ -79,25 +80,24 @@ public:
             if (cache_lines[i].status == 2) dirty_lines++;
         }
         
-        std::cout << "Cache Statistics:\n";
-        std::cout << "  Total lines:  " << num_lines << "\n";
-        std::cout << "  Valid lines:  " << valid_lines << "\n";
-        std::cout << "  Dirty lines:  " << dirty_lines << "\n";
-        std::cout << "  Utilization:  " << (100.0 * valid_lines / num_lines) << "%\n";
+        CXL_LOG_INFO("Cache Statistics:");
+        CXL_LOG_INFO_FMT("  Total lines:  {}", num_lines);
+        CXL_LOG_INFO_FMT("  Valid lines:  {}", valid_lines);
+        CXL_LOG_INFO_FMT("  Dirty lines:  {}", dirty_lines);
+        CXL_LOG_INFO_FMT("  Utilization:  {}%", (100.0 * valid_lines / num_lines));
     }
 };
 
 int main() {
-    std::cout << "CXL SSD PMR Cache Example\n";
-    std::cout << "========================\n\n";
+    CXL_LOG_INFO("CXL SSD PMR Cache Example");
+    CXL_LOG_INFO("========================\n");
     
     // Initialize CXL MWAIT
     CXLMWait mwait;
     std::string device_path = "/sys/bus/cxl/devices/mem0";
     
     if (!mwait.initialize(device_path)) {
-        std::cerr << "Error: Failed to initialize CXL device: " 
-                  << mwait.get_last_error() << "\n";
+        CXL_LOG_ERROR_FMT("Error: Failed to initialize CXL device: {}", mwait.get_last_error());
         return 1;
     }
     
@@ -105,18 +105,18 @@ int main() {
     size_t cache_size = 16 * 1024 * 1024;  // 16MB
     void* pmr_addr = utils::map_cxl_pmr(device_path, 0, cache_size);
     if (!pmr_addr) {
-        std::cerr << "Error: Failed to map PMR\n";
+        CXL_LOG_ERROR("Error: Failed to map PMR");
         return 1;
     }
     
-    std::cout << "✓ Mapped " << (cache_size / 1024 / 1024) << "MB PMR cache\n\n";
+    CXL_LOG_INFO_FMT("✓ Mapped {}MB PMR cache\n", (cache_size / 1024 / 1024));
     
     // Create PMR cache
     PMRCache cache(16, &mwait, pmr_addr);
     
     // Example 1: Producer-Consumer pattern
-    std::cout << "Example 1: Producer-Consumer Cache Pattern\n";
-    std::cout << "-------------------------------------------\n";
+    CXL_LOG_INFO("Example 1: Producer-Consumer Cache Pattern");
+    CXL_LOG_INFO("-------------------------------------------");
     
     const int num_entries = 10;
     std::vector<std::thread> consumers;
@@ -125,15 +125,15 @@ int main() {
     // Start consumers
     for (int i = 0; i < 3; i++) {
         consumers.emplace_back([&cache, i, num_entries]() {
-            std::cout << "Consumer " << i << " started\n";
+            CXL_LOG_INFO_FMT("Consumer {} started", i);
             
             for (int j = 0; j < num_entries; j++) {
                 size_t index = (i * num_entries + j) % 256;
                 
                 if (cache.wait_for_line(index, 5000000)) {
-                    std::cout << "  Consumer " << i << " got line " << index << "\n";
+                    CXL_LOG_INFO_FMT("  Consumer {} got line {}", i, index);
                 } else {
-                    std::cout << "  Consumer " << i << " timeout on line " << index << "\n";
+                    CXL_LOG_INFO_FMT("  Consumer {} timeout on line {}", i, index);
                 }
                 
                 std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -146,17 +146,17 @@ int main() {
     
     for (int i = 0; i < 2; i++) {
         producers.emplace_back([&cache, i, num_entries]() {
-            std::cout << "Producer " << i << " started\n";
+            CXL_LOG_INFO_FMT("Producer {} started", i);
             std::random_device rd;
             std::mt19937 gen(rd());
             std::uniform_int_distribution<> dis(0, 255);
             
             for (int j = 0; j < num_entries * 2; j++) {
                 size_t index = dis(gen);
-                uint64_t tag = (i << 32) | j;
+                uint64_t tag = (static_cast<uint64_t>(i) << 32) | j;
                 
                 cache.populate_line(index, tag);
-                std::cout << "  Producer " << i << " populated line " << index << "\n";
+                CXL_LOG_INFO_FMT("  Producer {} populated line {}", i, index);
                 
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
             }
@@ -167,12 +167,12 @@ int main() {
     for (auto& t : consumers) t.join();
     for (auto& t : producers) t.join();
     
-    std::cout << "\n";
+    CXL_LOG_INFO("");
     cache.print_stats();
     
     // Example 2: Monitoring multiple cache lines
-    std::cout << "\nExample 2: Batch Cache Line Monitoring\n";
-    std::cout << "--------------------------------------\n";
+    CXL_LOG_INFO("\nExample 2: Batch Cache Line Monitoring");
+    CXL_LOG_INFO("--------------------------------------");
     
     // Reset some cache lines
     for (int i = 0; i < 5; i++) {
@@ -183,7 +183,7 @@ int main() {
     std::vector<MWaitConfig> configs;
     for (int i = 0; i < 5; i++) {
         MWaitConfig config;
-        config.monitor_address = &static_cast<PMRCache::CacheLine*>(pmr_addr)[i].status;
+        config.monitor_address = const_cast<uint64_t*>(&static_cast<PMRCache::CacheLine*>(pmr_addr)[i].status);
         config.timeout_us = 3000000;
         config.hint = MWaitHint::C1;
         configs.push_back(config);
@@ -195,35 +195,35 @@ int main() {
         
         for (int i = 0; i < 5; i++) {
             cache.populate_line(i, 0x1000 + i);
-            std::cout << "  Updated cache line " << i << "\n";
+            CXL_LOG_INFO_FMT("  Updated cache line {}", i);
             std::this_thread::sleep_for(std::chrono::milliseconds(200));
         }
     });
     
     // Monitor batch
-    std::cout << "Monitoring 5 cache lines...\n";
+    CXL_LOG_INFO("Monitoring 5 cache lines...");
     MWaitStatus status = mwait.monitor_wait_batch(configs);
     
     if (status == MWaitStatus::SUCCESS) {
-        std::cout << "✓ Batch monitor detected update\n";
+        CXL_LOG_INFO("✓ Batch monitor detected update");
     } else {
-        std::cout << "✗ Batch monitor timed out\n";
+        CXL_LOG_INFO("✗ Batch monitor timed out");
     }
     
     updater.join();
     
     // Final statistics
-    std::cout << "\nFinal Statistics:\n";
+    CXL_LOG_INFO("\nFinal Statistics:");
     auto stats = mwait.get_stats();
-    std::cout << "  Total MWAIT operations:  " << stats.total_waits << "\n";
-    std::cout << "  Successful wakeups:      " << stats.successful_wakes << "\n";
-    std::cout << "  Timeouts:                " << stats.timeouts << "\n";
-    std::cout << "  Average wait time:       " << stats.avg_wait_time.count() << " ns\n";
+    CXL_LOG_INFO_FMT("  Total MWAIT operations:  {}", stats.total_waits);
+    CXL_LOG_INFO_FMT("  Successful wakeups:      {}", stats.successful_wakes);
+    CXL_LOG_INFO_FMT("  Timeouts:                {}", stats.timeouts);
+    CXL_LOG_INFO_FMT("  Average wait time:       {} ns", stats.avg_wait_time.count());
     
     // Cleanup
     utils::unmap_cxl_pmr(pmr_addr, cache_size);
     
-    std::cout << "\n✓ PMR Cache example completed\n";
+    CXL_LOG_INFO("\n✓ PMR Cache example completed");
     
     return 0;
 }

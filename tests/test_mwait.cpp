@@ -1,6 +1,6 @@
 #include "../include/cxl_mwait.hpp"
 #include "../include/cxl_ssd_common.hpp"
-#include <iostream>
+#include "../include/cxl_logger.hpp"
 #include <thread>
 #include <chrono>
 #include <cstring>
@@ -39,14 +39,14 @@ TestConfig parse_args(int argc, char* argv[]) {
         } else if (arg == "--verbose") {
             config.verbose = true;
         } else if (arg == "--help") {
-            std::cout << "Usage: " << argv[0] << " [options]\n"
-                     << "Options:\n"
-                     << "  --test <name>       Test to run (basic, pmr_latency, cstate, batch, benchmark)\n"
-                     << "  --device <path>     CXL device path\n"
-                     << "  --cstate <state>    C-state to test (C0, C1, C2, C3, C6)\n"
-                     << "  --addresses <n>     Number of addresses for batch test\n"
-                     << "  --iterations <n>    Number of iterations for benchmark\n"
-                     << "  --verbose           Enable verbose output\n";
+            CXL_LOG_INFO("Usage: {} [options]\n"
+                     "Options:\n"
+                     "  --test <name>       Test to run (basic, pmr_latency, cstate, batch, benchmark)\n"
+                     "  --device <path>     CXL device path\n"
+                     "  --cstate <state>    C-state to test (C0, C1, C2, C3, C6)\n"
+                     "  --addresses <n>     Number of addresses for batch test\n"
+                     "  --iterations <n>    Number of iterations for benchmark\n"
+                     "  --verbose           Enable verbose output", argv[0]);
             exit(0);
         }
     }
@@ -56,34 +56,34 @@ TestConfig parse_args(int argc, char* argv[]) {
 
 // Test basic MWAIT functionality
 bool test_basic(const TestConfig& config) {
-    std::cout << "Testing basic MWAIT functionality...\n";
+    CXL_LOG_INFO("Testing basic MWAIT functionality...");
     
     // Check CPU support
     if (!primitives::check_mwait_support()) {
-        std::cerr << "MONITOR/MWAIT not supported on this CPU\n";
+        CXL_LOG_ERROR("MONITOR/MWAIT not supported on this CPU");
         return false;
     }
-    std::cout << "✓ MONITOR/MWAIT supported\n";
+    CXL_LOG_INFO("✓ MONITOR/MWAIT supported");
     
     // Get max C-state
     uint32_t max_cstate = primitives::get_max_cstate();
-    std::cout << "✓ Maximum C-state: C" << max_cstate << "\n";
+    CXL_LOG_INFO_FMT("✓ Maximum C-state: C{}", max_cstate);
     
     // Create MWAIT object
     CXLMWait mwait;
     if (!mwait.initialize(config.device_path)) {
-        std::cerr << "Failed to initialize: " << mwait.get_last_error() << "\n";
+        CXL_LOG_ERROR_FMT("Failed to initialize: {}", mwait.get_last_error());
         return false;
     }
-    std::cout << "✓ CXL device initialized\n";
+    CXL_LOG_INFO("✓ CXL device initialized");
     
     // Allocate test memory
     void* test_addr = utils::map_cxl_pmr(config.device_path, 0, 4096);
     if (!test_addr) {
-        std::cerr << "Failed to map PMR\n";
+        CXL_LOG_ERROR("Failed to map PMR");
         return false;
     }
-    std::cout << "✓ PMR mapped at " << test_addr << "\n";
+    CXL_LOG_INFO_FMT("✓ PMR mapped at {}", static_cast<void*>(test_addr));
     
     // Set up monitoring
     MWaitConfig mconfig;
@@ -109,15 +109,15 @@ bool test_basic(const TestConfig& config) {
     
     // Check result
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-    std::cout << "Wait duration: " << duration.count() << " µs\n";
+    CXL_LOG_INFO_FMT("Wait duration: {} µs", duration.count());
     
     if (status == MWaitStatus::SUCCESS && written) {
-        std::cout << "✓ MWAIT woken by write\n";
+        CXL_LOG_INFO("✓ MWAIT woken by write");
     } else if (status == MWaitStatus::TIMEOUT) {
-        std::cerr << "✗ MWAIT timed out\n";
+        CXL_LOG_ERROR("✗ MWAIT timed out");
         return false;
     } else {
-        std::cerr << "✗ MWAIT failed: " << static_cast<int>(status) << "\n";
+        CXL_LOG_ERROR_FMT("✗ MWAIT failed: {}", static_cast<int>(status));
         return false;
     }
     
@@ -129,17 +129,17 @@ bool test_basic(const TestConfig& config) {
 
 // Test PMR access latency
 bool test_pmr_latency(const TestConfig& config) {
-    std::cout << "Testing PMR access latency...\n";
+    CXL_LOG_INFO("Testing PMR access latency...");
     
     CXLMWait mwait;
     if (!mwait.initialize(config.device_path)) {
-        std::cerr << "Failed to initialize: " << mwait.get_last_error() << "\n";
+        CXL_LOG_ERROR_FMT("Failed to initialize: {}", mwait.get_last_error());
         return false;
     }
     
     void* pmr_addr = utils::map_cxl_pmr(config.device_path, 0, 1024 * 1024);  // 1MB
     if (!pmr_addr) {
-        std::cerr << "Failed to map PMR\n";
+        CXL_LOG_ERROR("Failed to map PMR");
         return false;
     }
     
@@ -180,11 +180,11 @@ bool test_pmr_latency(const TestConfig& config) {
     avg_write /= write_latencies.size();
     avg_read /= read_latencies.size();
     
-    std::cout << "Average write latency: " << avg_write << " ns\n";
-    std::cout << "Average read latency:  " << avg_read << " ns\n";
+    CXL_LOG_INFO_FMT("Average write latency: {} ns", avg_write);
+    CXL_LOG_INFO_FMT("Average read latency:  {} ns", avg_read);
     
     // Prevent optimization
-    if (dummy == 0) std::cout << "";
+    if (dummy == 0) CXL_LOG_TRACE("");
     
     utils::unmap_cxl_pmr(pmr_addr, 1024 * 1024);
     
@@ -193,17 +193,17 @@ bool test_pmr_latency(const TestConfig& config) {
 
 // Test different C-states
 bool test_cstate(const TestConfig& config) {
-    std::cout << "Testing C-state: " << config.cstate << "\n";
+    CXL_LOG_INFO_FMT("Testing C-state: {}", config.cstate);
     
     CXLMWait mwait;
     if (!mwait.initialize(config.device_path)) {
-        std::cerr << "Failed to initialize: " << mwait.get_last_error() << "\n";
+        CXL_LOG_ERROR_FMT("Failed to initialize: {}", mwait.get_last_error());
         return false;
     }
     
     void* test_addr = utils::map_cxl_pmr(config.device_path, 0, 4096);
     if (!test_addr) {
-        std::cerr << "Failed to map PMR\n";
+        CXL_LOG_ERROR("Failed to map PMR");
         return false;
     }
     
@@ -226,7 +226,7 @@ bool test_cstate(const TestConfig& config) {
     for (int i = 0; i < 10; i++) {
         std::atomic<bool> ready(false);
         
-        std::thread writer([test_addr, &ready]() {
+        std::thread writer([test_addr, &ready, i]() {
             ready = true;
             std::this_thread::sleep_for(std::chrono::microseconds(50));
             *static_cast<volatile uint64_t*>(test_addr) = i;
@@ -251,8 +251,7 @@ bool test_cstate(const TestConfig& config) {
     for (auto lat : wake_latencies) avg_latency += lat;
     avg_latency /= wake_latencies.size();
     
-    std::cout << "Average wake latency for " << config.cstate << ": " 
-              << avg_latency << " µs\n";
+    CXL_LOG_INFO_FMT("Average wake latency for {}: {} µs", config.cstate, avg_latency);
     
     utils::unmap_cxl_pmr(test_addr, 4096);
     
@@ -261,11 +260,11 @@ bool test_cstate(const TestConfig& config) {
 
 // Test batch monitoring
 bool test_batch(const TestConfig& config) {
-    std::cout << "Testing batch monitoring with " << config.addresses << " addresses...\n";
+    CXL_LOG_INFO_FMT("Testing batch monitoring with {} addresses...", config.addresses);
     
     CXLMWait mwait;
     if (!mwait.initialize(config.device_path)) {
-        std::cerr << "Failed to initialize: " << mwait.get_last_error() << "\n";
+        CXL_LOG_ERROR_FMT("Failed to initialize: {}", mwait.get_last_error());
         return false;
     }
     
@@ -273,7 +272,7 @@ bool test_batch(const TestConfig& config) {
     size_t total_size = page_size * config.addresses;
     void* base_addr = utils::map_cxl_pmr(config.device_path, 0, total_size);
     if (!base_addr) {
-        std::cerr << "Failed to map PMR\n";
+        CXL_LOG_ERROR("Failed to map PMR");
         return false;
     }
     
@@ -303,8 +302,8 @@ bool test_batch(const TestConfig& config) {
     writer.join();
     
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-    std::cout << "Batch monitor completed in " << duration.count() << " µs\n";
-    std::cout << "Target address index: " << target_index << "\n";
+    CXL_LOG_INFO_FMT("Batch monitor completed in {} µs", duration.count());
+    CXL_LOG_INFO_FMT("Target address index: {}", target_index);
     
     utils::unmap_cxl_pmr(base_addr, total_size);
     
@@ -313,17 +312,17 @@ bool test_batch(const TestConfig& config) {
 
 // Performance benchmark
 bool test_benchmark(const TestConfig& config) {
-    std::cout << "Running performance benchmark (" << config.iterations << " iterations)...\n";
+    CXL_LOG_INFO_FMT("Running performance benchmark ({} iterations)...", config.iterations);
     
     CXLMWait mwait;
     if (!mwait.initialize(config.device_path)) {
-        std::cerr << "Failed to initialize: " << mwait.get_last_error() << "\n";
+        CXL_LOG_ERROR_FMT("Failed to initialize: {}", mwait.get_last_error());
         return false;
     }
     
     void* test_addr = utils::map_cxl_pmr(config.device_path, 0, 4096);
     if (!test_addr) {
-        std::cerr << "Failed to map PMR\n";
+        CXL_LOG_ERROR("Failed to map PMR");
         return false;
     }
     
@@ -364,13 +363,13 @@ bool test_benchmark(const TestConfig& config) {
     // Get statistics
     auto stats = mwait.get_stats();
     
-    std::cout << "\nBenchmark Results:\n";
-    std::cout << "  Total time:        " << total_duration.count() << " ms\n";
-    std::cout << "  Total waits:       " << stats.total_waits << "\n";
-    std::cout << "  Successful wakes:  " << stats.successful_wakes << "\n";
-    std::cout << "  Timeouts:          " << stats.timeouts << "\n";
-    std::cout << "  Average wait time: " << stats.avg_wait_time.count() << " ns\n";
-    std::cout << "  Throughput:        " << (stats.total_waits * 1000.0 / total_duration.count()) << " ops/sec\n";
+    CXL_LOG_INFO("\nBenchmark Results:");
+    CXL_LOG_INFO_FMT("  Total time:        {} ms", total_duration.count());
+    CXL_LOG_INFO_FMT("  Total waits:       {}", stats.total_waits);
+    CXL_LOG_INFO_FMT("  Successful wakes:  {}", stats.successful_wakes);
+    CXL_LOG_INFO_FMT("  Timeouts:          {}", stats.timeouts);
+    CXL_LOG_INFO_FMT("  Average wait time: {} ns", stats.avg_wait_time.count());
+    CXL_LOG_INFO_FMT("  Throughput:        {} ops/sec", (stats.total_waits * 1000.0 / total_duration.count()));
     
     utils::unmap_cxl_pmr(test_addr, 4096);
     
@@ -382,7 +381,7 @@ int main(int argc, char* argv[]) {
     
     // Set logging level
     if (config.verbose) {
-        Logger::set_level(LogLevel::DEBUG);
+        Logger::set_level(LogLevel::DEBUG_);
     } else {
         Logger::set_level(LogLevel::INFO);
     }
@@ -401,7 +400,7 @@ int main(int argc, char* argv[]) {
     } else if (config.test_name == "benchmark") {
         success = test_benchmark(config);
     } else {
-        std::cerr << "Unknown test: " << config.test_name << "\n";
+    CXL_LOG_ERROR_FMT("Unknown test: {}", config.test_name);
         return 1;
     }
     
