@@ -311,9 +311,9 @@ main() {
     
     # Parse command line arguments
     RUN_RAW=true
-    RUN_FS=true
-    RUN_ROCKSDB=true
-    SKIP_CLEANUP=false
+    RUN_FS=false
+    RUN_ROCKSDB=false
+    SKIP_CLEANUP=true
     
     for arg in "$@"; do
         case $arg in

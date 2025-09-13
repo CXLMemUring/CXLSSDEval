@@ -1,0 +1,465 @@
+nohup: ignoring input
+[0;34m============================================[0m
+[0;34mCXL SSD Test Suite[0m
+[0;34m============================================[0m
+Configuration: /home/huyp/CXLSSDEval/scripts/config.yaml
+Device: /dev/nvme00n1
+Results Directory: ./results
+Start Time: 2025-09-11 23:27:03
+
+[0;34m============================================[0m
+[0;34mChecking Prerequisites[0m
+[0;34m============================================[0m
+[0;32m✓ Configuration file found: /home/huyp/CXLSSDEval/scripts/config.yaml[0m
+[0;32m✓ Device found: /dev/nvme00n1[0m
+[0;32m✓ FIO is installed (fio-3.16)[0m
+[0;32m✓ Python3 is installed (Python 3.8.10)[0m
+[1;33m⚠ RocksDB db_bench not found - RocksDB tests will be skipped[0m
+
+[0;34m============================================[0m
+[0;34mRunning Raw Device Tests[0m
+[0;34m============================================[0m
+[2025-09-11 23:27:04] =========================================
+[2025-09-11 23:27:04] Starting Raw Device Test Suite
+[2025-09-11 23:27:04] Device: /dev/nvme00n1
+[2025-09-11 23:27:04] Results Directory: ./results/raw
+[2025-09-11 23:27:04] =========================================
+[2025-09-11 23:27:04] Starting all raw device tests on /dev/nvme00n1
+[2025-09-11 23:27:04] Executing: test_qd_thread.sh
+[2025-09-11 23:27:04] ===== Starting Thread Variation =====
+[2025-09-11 23:27:04] Starting Thread Variation tests for read
+[2025-09-11 23:27:04]   Testing Jobs=1, Type=read
+[2025-09-11 23:27:04] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-11 23:27:04] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-11 23:27:04] Waiting 3 seconds for device to stabilize...
+[2025-09-11 23:27:07] Running test: jobs1_read
+[2025-09-11 23:30:07] Test completed: jobs1_read
+[2025-09-11 23:30:07]   Testing Jobs=2, Type=read
+[2025-09-11 23:30:07] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-11 23:30:07] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-11 23:30:07] Waiting 3 seconds for device to stabilize...
+[2025-09-11 23:30:10] Running test: jobs2_read
+[2025-09-11 23:33:11] Test completed: jobs2_read
+[2025-09-11 23:33:11]   Testing Jobs=4, Type=read
+[2025-09-11 23:33:11] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-11 23:33:11] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-11 23:33:11] Waiting 3 seconds for device to stabilize...
+[2025-09-11 23:33:14] Running test: jobs4_read
+[2025-09-11 23:36:15] Test completed: jobs4_read
+[2025-09-11 23:36:15]   Testing Jobs=8, Type=read
+[2025-09-11 23:36:15] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-11 23:36:15] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-11 23:36:15] Waiting 3 seconds for device to stabilize...
+[2025-09-11 23:36:18] Running test: jobs8_read
+[2025-09-11 23:39:19] Test completed: jobs8_read
+[2025-09-11 23:39:19]   Testing Jobs=16, Type=read
+[2025-09-11 23:39:19] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-11 23:39:19] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-11 23:39:19] Waiting 3 seconds for device to stabilize...
+[2025-09-11 23:39:22] Running test: jobs16_read
+[2025-09-11 23:42:22] Test completed: jobs16_read
+[2025-09-11 23:42:22]   Testing Jobs=32, Type=read
+[2025-09-11 23:42:22] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-11 23:42:22] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-11 23:42:22] Waiting 3 seconds for device to stabilize...
+[2025-09-11 23:42:25] Running test: jobs32_read
+[2025-09-11 23:45:26] Test completed: jobs32_read
+[2025-09-11 23:45:26] Starting Thread Variation tests for write
+[2025-09-11 23:45:26]   Testing Jobs=1, Type=write
+[2025-09-11 23:45:26] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-11 23:45:26] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-11 23:45:26] Waiting 3 seconds for device to stabilize...
+[2025-09-11 23:45:29] Running test: jobs1_write
+[2025-09-11 23:48:30] Test completed: jobs1_write
+[2025-09-11 23:48:30]   Testing Jobs=2, Type=write
+[2025-09-11 23:48:30] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-11 23:48:30] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-11 23:48:30] Waiting 3 seconds for device to stabilize...
+[2025-09-11 23:48:33] Running test: jobs2_write
+[2025-09-11 23:51:34] Test completed: jobs2_write
+[2025-09-11 23:51:34]   Testing Jobs=4, Type=write
+[2025-09-11 23:51:34] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-11 23:51:34] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-11 23:51:34] Waiting 3 seconds for device to stabilize...
+[2025-09-11 23:51:37] Running test: jobs4_write
+[2025-09-11 23:54:37] Test completed: jobs4_write
+[2025-09-11 23:54:37]   Testing Jobs=8, Type=write
+[2025-09-11 23:54:37] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-11 23:54:37] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-11 23:54:37] Waiting 3 seconds for device to stabilize...
+[2025-09-11 23:54:40] Running test: jobs8_write
+[2025-09-11 23:57:41] Test completed: jobs8_write
+[2025-09-11 23:57:41]   Testing Jobs=16, Type=write
+[2025-09-11 23:57:41] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-11 23:57:41] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-11 23:57:41] Waiting 3 seconds for device to stabilize...
+[2025-09-11 23:57:44] Running test: jobs16_write
+[2025-09-12 00:00:45] Test completed: jobs16_write
+[2025-09-12 00:00:45]   Testing Jobs=32, Type=write
+[2025-09-12 00:00:45] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 00:00:45] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 00:00:45] Waiting 3 seconds for device to stabilize...
+[2025-09-12 00:00:48] Running test: jobs32_write
+[2025-09-12 00:03:49] Test completed: jobs32_write
+[2025-09-12 00:03:49] ===== Completed Thread Variation =====
+[2025-09-12 00:03:49] Executing: test_blocksize.sh
+[2025-09-12 00:03:49] ===== Starting Block Size Variation =====
+[2025-09-12 00:03:49] Starting Block Size Variation tests for read
+[2025-09-12 00:03:49]   Testing Block Size=512, Type=read
+[2025-09-12 00:03:49] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 00:03:49] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 00:03:49] Waiting 3 seconds for device to stabilize...
+[2025-09-12 00:03:52] Running test: bs_512_read
+[2025-09-12 00:06:52] Test completed: bs_512_read
+[2025-09-12 00:06:52]   Testing Block Size=1k, Type=read
+[2025-09-12 00:06:52] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 00:06:52] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 00:06:52] Waiting 3 seconds for device to stabilize...
+[2025-09-12 00:06:55] Running test: bs_1k_read
+[2025-09-12 00:09:56] Test completed: bs_1k_read
+[2025-09-12 00:09:56]   Testing Block Size=4k, Type=read
+[2025-09-12 00:09:56] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 00:09:56] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 00:09:56] Waiting 3 seconds for device to stabilize...
+[2025-09-12 00:09:59] Running test: bs_4k_read
+[2025-09-12 00:13:00] Test completed: bs_4k_read
+[2025-09-12 00:13:00]   Testing Block Size=16k, Type=read
+[2025-09-12 00:13:00] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 00:13:00] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 00:13:00] Waiting 3 seconds for device to stabilize...
+[2025-09-12 00:13:03] Running test: bs_16k_read
+[2025-09-12 00:16:04] Test completed: bs_16k_read
+[2025-09-12 00:16:04]   Testing Block Size=64k, Type=read
+[2025-09-12 00:16:04] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 00:16:04] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 00:16:04] Waiting 3 seconds for device to stabilize...
+[2025-09-12 00:16:07] Running test: bs_64k_read
+[2025-09-12 00:19:07] Test completed: bs_64k_read
+[2025-09-12 00:19:07]   Testing Block Size=256k, Type=read
+[2025-09-12 00:19:07] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 00:19:07] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 00:19:07] Waiting 3 seconds for device to stabilize...
+[2025-09-12 00:19:10] Running test: bs_256k_read
+[2025-09-12 00:22:11] Test completed: bs_256k_read
+[2025-09-12 00:22:11]   Testing Block Size=1m, Type=read
+[2025-09-12 00:22:11] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 00:22:11] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 00:22:11] Waiting 3 seconds for device to stabilize...
+[2025-09-12 00:22:14] Running test: bs_1m_read
+[2025-09-12 00:25:15] Test completed: bs_1m_read
+[2025-09-12 00:25:15]   Testing Block Size=4m, Type=read
+[2025-09-12 00:25:15] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 00:25:15] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 00:25:15] Waiting 3 seconds for device to stabilize...
+[2025-09-12 00:25:18] Running test: bs_4m_read
+[2025-09-12 00:28:18] Test completed: bs_4m_read
+[2025-09-12 00:28:18]   Testing Block Size=16m, Type=read
+[2025-09-12 00:28:18] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 00:28:18] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 00:28:18] Waiting 3 seconds for device to stabilize...
+[2025-09-12 00:28:21] Running test: bs_16m_read
+[2025-09-12 00:31:22] Test completed: bs_16m_read
+[2025-09-12 00:31:22]   Testing Block Size=64m, Type=read
+[2025-09-12 00:31:22] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 00:31:22] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 00:31:22] Waiting 3 seconds for device to stabilize...
+[2025-09-12 00:31:25] Running test: bs_64m_read
+[2025-09-12 00:34:26] Test completed: bs_64m_read
+[2025-09-12 00:34:26] Starting Block Size Variation tests for write
+[2025-09-12 00:34:26]   Testing Block Size=512, Type=write
+[2025-09-12 00:34:26] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 00:34:26] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 00:34:26] Waiting 3 seconds for device to stabilize...
+[2025-09-12 00:34:29] Running test: bs_512_write
+[2025-09-12 00:37:30] Test completed: bs_512_write
+[2025-09-12 00:37:30]   Testing Block Size=1k, Type=write
+[2025-09-12 00:37:30] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 00:37:30] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 00:37:30] Waiting 3 seconds for device to stabilize...
+[2025-09-12 00:37:33] Running test: bs_1k_write
+[2025-09-12 00:40:33] Test completed: bs_1k_write
+[2025-09-12 00:40:33]   Testing Block Size=4k, Type=write
+[2025-09-12 00:40:33] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 00:40:33] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 00:40:33] Waiting 3 seconds for device to stabilize...
+[2025-09-12 00:40:36] Running test: bs_4k_write
+[2025-09-12 00:43:37] Test completed: bs_4k_write
+[2025-09-12 00:43:37]   Testing Block Size=16k, Type=write
+[2025-09-12 00:43:37] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 00:43:37] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 00:43:37] Waiting 3 seconds for device to stabilize...
+[2025-09-12 00:43:40] Running test: bs_16k_write
+[2025-09-12 00:46:41] Test completed: bs_16k_write
+[2025-09-12 00:46:41]   Testing Block Size=64k, Type=write
+[2025-09-12 00:46:41] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 00:46:41] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 00:46:41] Waiting 3 seconds for device to stabilize...
+[2025-09-12 00:46:44] Running test: bs_64k_write
+[2025-09-12 00:49:45] Test completed: bs_64k_write
+[2025-09-12 00:49:45]   Testing Block Size=256k, Type=write
+[2025-09-12 00:49:45] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 00:49:45] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 00:49:45] Waiting 3 seconds for device to stabilize...
+[2025-09-12 00:49:48] Running test: bs_256k_write
+[2025-09-12 00:52:48] Test completed: bs_256k_write
+[2025-09-12 00:52:48]   Testing Block Size=1m, Type=write
+[2025-09-12 00:52:48] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 00:52:48] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 00:52:48] Waiting 3 seconds for device to stabilize...
+[2025-09-12 00:52:51] Running test: bs_1m_write
+[2025-09-12 00:55:52] Test completed: bs_1m_write
+[2025-09-12 00:55:52]   Testing Block Size=4m, Type=write
+[2025-09-12 00:55:52] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 00:55:52] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 00:55:52] Waiting 3 seconds for device to stabilize...
+[2025-09-12 00:55:55] Running test: bs_4m_write
+[2025-09-12 00:58:56] Test completed: bs_4m_write
+[2025-09-12 00:58:56]   Testing Block Size=16m, Type=write
+[2025-09-12 00:58:56] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 00:58:56] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 00:58:56] Waiting 3 seconds for device to stabilize...
+[2025-09-12 00:58:59] Running test: bs_16m_write
+[2025-09-12 01:02:00] Test completed: bs_16m_write
+[2025-09-12 01:02:00]   Testing Block Size=64m, Type=write
+[2025-09-12 01:02:00] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 01:02:00] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 01:02:00] Waiting 3 seconds for device to stabilize...
+[2025-09-12 01:02:03] Running test: bs_64m_write
+[2025-09-12 01:05:03] Test completed: bs_64m_write
+[2025-09-12 01:05:03] ===== Completed Block Size Variation =====
+[2025-09-12 01:05:03] Executing: test_access_pattern.sh
+[2025-09-12 01:05:03] ===== Starting Access Pattern =====
+[2025-09-12 01:05:03] Starting Access Pattern tests
+[2025-09-12 01:05:03]   Testing Pattern=read
+[2025-09-12 01:05:03] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 01:05:03] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 01:05:03] Waiting 3 seconds for device to stabilize...
+[2025-09-12 01:05:06] Running test: pattern_read
+[2025-09-12 01:08:07] Test completed: pattern_read
+[2025-09-12 01:08:07]   Testing Pattern=write
+[2025-09-12 01:08:07] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 01:08:07] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 01:08:07] Waiting 3 seconds for device to stabilize...
+[2025-09-12 01:08:10] Running test: pattern_write
+[2025-09-12 01:11:11] Test completed: pattern_write
+[2025-09-12 01:11:11]   Testing Pattern=randread
+[2025-09-12 01:11:11] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 01:11:11] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 01:11:11] Waiting 3 seconds for device to stabilize...
+[2025-09-12 01:11:14] Running test: pattern_randread
+[2025-09-12 01:14:15] Test completed: pattern_randread
+[2025-09-12 01:14:15]   Testing Pattern=randwrite
+[2025-09-12 01:14:15] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 01:14:15] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 01:14:15] Waiting 3 seconds for device to stabilize...
+[2025-09-12 01:14:18] Running test: pattern_randwrite
+[2025-09-12 01:17:18] Test completed: pattern_randwrite
+[2025-09-12 01:17:18] ===== Completed Access Pattern =====
+[2025-09-12 01:17:18] Executing: test_rwmix.sh
+[2025-09-12 01:17:18] ===== Starting Read/Write Mix =====
+[2025-09-12 01:17:18] Starting Read/Write Mix tests
+[2025-09-12 01:17:18]   Testing Read:Write = 100:0
+[2025-09-12 01:17:18] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 01:17:18] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 01:17:18] Waiting 3 seconds for device to stabilize...
+[2025-09-12 01:17:21] Running test: rwmix_r100_w0
+[2025-09-12 01:20:22] Test completed: rwmix_r100_w0
+[2025-09-12 01:20:22]   Testing Read:Write = 75:25
+[2025-09-12 01:20:22] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 01:20:22] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 01:20:22] Waiting 3 seconds for device to stabilize...
+[2025-09-12 01:20:25] Running test: rwmix_r75_w25
+[2025-09-12 01:23:26] Test completed: rwmix_r75_w25
+[2025-09-12 01:23:26]   Testing Read:Write = 50:50
+[2025-09-12 01:23:26] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 01:23:26] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 01:23:26] Waiting 3 seconds for device to stabilize...
+[2025-09-12 01:23:29] Running test: rwmix_r50_w50
+[2025-09-12 01:26:30] Test completed: rwmix_r50_w50
+[2025-09-12 01:26:30]   Testing Read:Write = 25:75
+[2025-09-12 01:26:30] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 01:26:30] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 01:26:30] Waiting 3 seconds for device to stabilize...
+[2025-09-12 01:26:33] Running test: rwmix_r25_w75
+[2025-09-12 01:29:33] Test completed: rwmix_r25_w75
+[2025-09-12 01:29:33]   Testing Read:Write = 0:100
+[2025-09-12 01:29:33] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 01:29:33] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 01:29:33] Waiting 3 seconds for device to stabilize...
+[2025-09-12 01:29:36] Running test: rwmix_r0_w100
+[2025-09-12 01:32:37] Test completed: rwmix_r0_w100
+[2025-09-12 01:32:37] ===== Completed Read/Write Mix =====
+[2025-09-12 01:32:37] Executing: test_distribution.sh
+[2025-09-12 01:32:37] ===== Starting Access Distribution =====
+[2025-09-12 01:32:37] Starting Access Distribution tests for read
+[2025-09-12 01:32:37]   Testing Distribution=uniform, Type=read
+[2025-09-12 01:32:37] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 01:32:37] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 01:32:37] Waiting 3 seconds for device to stabilize...
+[2025-09-12 01:32:40] Running test: dist_uniform_read
+[2025-09-12 01:35:41] Test completed: dist_uniform_read
+[2025-09-12 01:35:41]   Testing Distribution=zipf:1.2, Type=read
+[2025-09-12 01:35:41] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 01:35:41] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 01:35:41] Waiting 3 seconds for device to stabilize...
+[2025-09-12 01:35:44] Running test: dist_zipf_read
+[2025-09-12 01:38:45] Test completed: dist_zipf_read
+[2025-09-12 01:38:45]   Testing Distribution=normal:50, Type=read
+[2025-09-12 01:38:45] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 01:38:45] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 01:38:45] Waiting 3 seconds for device to stabilize...
+[2025-09-12 01:38:48] Running test: dist_normal_read
+[2025-09-12 01:41:49] Test completed: dist_normal_read
+[2025-09-12 01:41:49]   Testing Distribution=pareto:0.9, Type=read
+[2025-09-12 01:41:49] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 01:41:49] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 01:41:49] Waiting 3 seconds for device to stabilize...
+[2025-09-12 01:41:52] Running test: dist_pareto_read
+[2025-09-12 01:44:52] Test completed: dist_pareto_read
+[2025-09-12 01:44:52] Starting Access Distribution tests for write
+[2025-09-12 01:44:52]   Testing Distribution=uniform, Type=write
+[2025-09-12 01:44:52] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 01:44:52] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 01:44:52] Waiting 3 seconds for device to stabilize...
+[2025-09-12 01:44:55] Running test: dist_uniform_write
+[2025-09-12 01:47:56] Test completed: dist_uniform_write
+[2025-09-12 01:47:56]   Testing Distribution=zipf:1.2, Type=write
+[2025-09-12 01:47:56] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 01:47:56] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 01:47:56] Waiting 3 seconds for device to stabilize...
+[2025-09-12 01:47:59] Running test: dist_zipf_write
+[2025-09-12 01:51:00] Test completed: dist_zipf_write
+[2025-09-12 01:51:00]   Testing Distribution=normal:50, Type=write
+[2025-09-12 01:51:00] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 01:51:00] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 01:51:00] Waiting 3 seconds for device to stabilize...
+[2025-09-12 01:51:03] Running test: dist_normal_write
+[2025-09-12 01:54:04] Test completed: dist_normal_write
+[2025-09-12 01:54:04]   Testing Distribution=pareto:0.9, Type=write
+[2025-09-12 01:54:04] Warning: TRIM not supported or disabled for /dev/nvme00n1
+[2025-09-12 01:54:04] TRIM not supported, skipping blkdiscard for /dev/nvme00n1
+[2025-09-12 01:54:04] Waiting 3 seconds for device to stabilize...
+[2025-09-12 01:54:07] Running test: dist_pareto_write
+[2025-09-12 01:57:08] Test completed: dist_pareto_write
+[2025-09-12 01:57:08] ===== Completed Access Distribution =====
+[2025-09-12 01:57:08] Executing: test_endurance.sh
+[2025-09-12 01:57:08] ===== Starting Endurance Test =====
+[2025-09-12 01:57:08] Starting Endurance Test (Duration: 1200s)
+[2025-09-12 01:57:08]   Running endurance test with 70:30 read:write ratio
+[2025-09-12 02:17:08] Endurance test completed successfully
+[2025-09-12 02:17:08] ===== Completed Endurance Test =====
+[2025-09-12 02:17:08] All raw device tests completed
+[2025-09-12 02:17:08] =========================================
+[2025-09-12 02:17:08] Raw Device Test Suite Completed
+[2025-09-12 02:17:08] =========================================
+[0;32m✓ Raw device tests completed successfully[0m
+
+[0;34m============================================[0m
+[0;34mParsing Test Results[0m
+[0;34m============================================[0m
+No JSON files found for raw
+Created human-readable report: ./results/summary/raw_report.txt
+No JSON files found for filesystem
+Created human-readable report: ./results/summary/filesystem_report.txt
+
+All results parsed successfully!
+[0;32m✓ Results parsed successfully[0m
+
+[0;34m============================================[0m
+[0;34mValidating Test Results[0m
+[0;34m============================================[0m
+Starting validation...
+============================================================
+TEST RESULT VALIDATION REPORT
+Generated: 2025-09-12 02:17:09
+Results Directory: results
+============================================================
+
+SUMMARY
+------------------------------
+Errors:   60
+Warnings: 3
+Info:     6
+
+ERRORS (Must Fix)
+------------------------------
+  ✗ Failed to parse results/raw/endurance/endurance_rw.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/access_pattern/pattern_randwrite.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/access_pattern/pattern_randread.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/access_pattern/pattern_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/access_pattern/pattern_write.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/distribution/dist_pareto_write.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/distribution/dist_pareto_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/distribution/dist_uniform_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/distribution/dist_zipf_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/distribution/dist_normal_write.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/distribution/dist_zipf_write.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/distribution/dist_uniform_write.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/distribution/dist_normal_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/rwmix/rwmix_r25_w75.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/rwmix/rwmix_r50_w50.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/rwmix/rwmix_r75_w25.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/rwmix/rwmix_r100_w0.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/rwmix/rwmix_r0_w100.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/qd_thread/jobs4_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/qd_thread/jobs2_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/qd_thread/jobs1_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/qd_thread/jobs1_write.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/qd_thread/jobs16_write.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/qd_thread/jobs32_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/qd_thread/jobs32_write.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/qd_thread/jobs2_write.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/qd_thread/jobs8_write.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/qd_thread/jobs16_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/qd_thread/jobs4_write.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/qd_thread/jobs8_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_512_write.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_64m_write.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_16k_write.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_512_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_64k_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_1m_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_1k_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_16m_write.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_256k_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_64k_write.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_1m_write.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_64m_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_256k_write.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_4k_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_1k_write.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_4k_write.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_16k_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_4m_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_16m_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_4m_write.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_512_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_64k_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_1m_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_1k_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_256k_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_64m_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_4k_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_16k_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_4m_read.json: Expecting value: line 1 column 1 (char 0)
+  ✗ Failed to parse results/raw/blocksize/bs_16m_read.json: Expecting value: line 1 column 1 (char 0)
+
+WARNINGS (Should Review)
+------------------------------
+  ⚠ No results found for raw/qd_thread/qd*.json
+  ⚠ No results found for filesystem/fs_*.json
+  ⚠ No results found for rocksdb/*.log
+
+INFORMATION
+------------------------------
+  ℹ Found 20 results for raw/blocksize/bs_*.json
+  ℹ Found 4 results for raw/access_pattern/pattern_*.json
+  ℹ Found 5 results for raw/rwmix/rwmix_*.json
+  ℹ Found 8 results for raw/distribution/dist_*.json
+  ℹ Found 1 results for raw/endurance/endurance_*.json
+  ℹ No log directory found
+
+OVERALL STATUS
+------------------------------
+❌ VALIDATION FAILED - Errors detected
+============================================================

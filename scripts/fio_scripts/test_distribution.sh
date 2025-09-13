@@ -20,9 +20,9 @@ run_distribution_tests() {
     log_message "Starting $TEST_NAME tests for $test_type"
     
     if [[ "$test_type" == "read" ]]; then
-        rw_pattern="randread"
+        rw_pattern="read"
     else
-        rw_pattern="randwrite"
+        rw_pattern="write"
     fi
     
     # Test uniform distribution

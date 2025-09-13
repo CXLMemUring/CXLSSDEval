@@ -17,7 +17,7 @@ mkdir -p "$RESULTS_DIR"
 run_endurance_test() {
     log_message "Starting $TEST_NAME (Duration: ${ENDURANCE_DURATION}s)"
     
-    local test_label="endurance_randrw"
+    local test_label="endurance_rw"
     local output_file="${RESULTS_DIR}/${test_label}.json"
     
     log_message "  Running endurance test with 70:30 read:write ratio"
@@ -25,13 +25,14 @@ run_endurance_test() {
     fio --name="${test_label}" \
         --filename="${DEVICE}" \
         --direct=1 \
-        --rw=randrw \
+        --rw=rw \
         --rwmixread=70 \
         --bs=4k \
         --iodepth="${DEFAULT_IODEPTH}" \
         --numjobs="${DEFAULT_NUMJOBS}" \
         --runtime="${ENDURANCE_DURATION}" \
         --time_based \
+        --allow_mounted_write=1 \
         --lat_percentiles=1 \
         --percentile_list=90:95:99:99.9:99.99 \
         --output-format=json,normal \

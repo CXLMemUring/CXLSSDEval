@@ -30,6 +30,7 @@ run_fio_job() {
     
     # Run FIO with job file
     fio "$job_file" \
+        --allow_mounted_write=1 \
         --output-format=json,normal \
         --output="$output_file"
     

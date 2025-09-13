@@ -70,15 +70,61 @@ check_device() {
     return 0
 }
 
+# Function to check TRIM support
+check_trim_support() {
+    local device=$1
+    local device_name=$(basename "$device")
+    
+    # Check if device supports discard (TRIM)
+    if [[ -f "/sys/block/${device_name}/queue/discard_max_bytes" ]]; then
+        local discard_max=$(cat "/sys/block/${device_name}/queue/discard_max_bytes")
+        if [[ "$discard_max" != "0" ]]; then
+            log_message "TRIM support detected for $device (max_bytes: $discard_max)"
+            return 0
+        fi
+    fi
+    
+    log_message "Warning: TRIM not supported or disabled for $device"
+    return 1
+}
+
+# Function to clear device using blkdiscard
+clear_device() {
+    local device=$1
+    
+    # Try blkdiscard if TRIM is supported
+    if check_trim_support "$device"; then
+        log_message "Clearing device $device using blkdiscard..."
+        if blkdiscard "$device" 2>/dev/null; then
+            log_message "Device cleared successfully with blkdiscard"
+            return 0
+        else
+            log_message "Warning: blkdiscard failed, device may not be fully cleared"
+        fi
+    else
+        log_message "TRIM not supported, skipping blkdiscard for $device"
+    fi
+    
+    return 1
+}
+
 # Function to run fio test with standard parameters
 run_fio_test() {
     local test_name=$1
     local output_file=$2
     shift 2
     
+    # Clear device before each test
+    clear_device "$DEVICE"
+    
+    # Wait 3 seconds for device to stabilize after discard
+    log_message "Waiting 3 seconds for device to stabilize..."
+    sleep 3
+    
     log_message "Running test: $test_name"
     
     fio "$@" \
+        --allow_mounted_write=1 \
         --lat_percentiles=1 \
         --percentile_list=90:95:99:99.9:99.99 \
         --output-format=json,normal \

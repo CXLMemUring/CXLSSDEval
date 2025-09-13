@@ -31,7 +31,7 @@ run_rwmix_tests() {
             --name="${test_label}" \
             --filename="${DEVICE}" \
             --direct=1 \
-            --rw=randrw \
+            --rw=rw \
             --rwmixread="${read_pct}" \
             --bs=4k \
             --iodepth="${DEFAULT_IODEPTH}" \

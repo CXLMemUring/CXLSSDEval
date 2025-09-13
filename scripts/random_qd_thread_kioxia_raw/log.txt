@@ -1,0 +1,315 @@
+nohup: ignoring input
+[0;34m============================================[0m
+[0;34mCXL SSD Test Suite[0m
+[0;34m============================================[0m
+Configuration: /home/huyp/CXLSSDEval/scripts/config.yaml
+Device: /dev/nvme0n1p2
+Results Directory: ./results
+Start Time: 2025-09-11 11:59:24
+
+[0;34m============================================[0m
+[0;34mChecking Prerequisites[0m
+[0;34m============================================[0m
+[0;32m✓ Configuration file found: /home/huyp/CXLSSDEval/scripts/config.yaml[0m
+[0;32m✓ Device found: /dev/nvme0n1p2[0m
+[0;32m✓ FIO is installed (fio-3.16)[0m
+[0;32m✓ Python3 is installed (Python 3.8.10)[0m
+[1;33m⚠ RocksDB db_bench not found - RocksDB tests will be skipped[0m
+
+[0;34m============================================[0m
+[0;34mRunning Raw Device Tests[0m
+[0;34m============================================[0m
+[2025-09-11 11:59:25] =========================================
+[2025-09-11 11:59:25] Starting Raw Device Test Suite
+[2025-09-11 11:59:25] Device: /dev/nvme0n1p2
+[2025-09-11 11:59:25] Results Directory: ./results/raw
+[2025-09-11 11:59:25] =========================================
+[2025-09-11 11:59:25] Starting all raw device tests on /dev/nvme0n1p2
+[2025-09-11 11:59:25] Executing: test_qd_thread.sh
+[2025-09-11 11:59:25] ===== Starting Queue Depth and Thread Variation =====
+[2025-09-11 11:59:25] Starting Queue Depth and Thread Variation tests for read
+[2025-09-11 11:59:25]   Testing QD=1, Jobs=1, Type=read
+[2025-09-11 11:59:25] Running test: qd1_jobs1_read
+[2025-09-11 12:04:25] Test completed: qd1_jobs1_read
+[2025-09-11 12:04:25]   Testing QD=1, Jobs=2, Type=read
+[2025-09-11 12:04:25] Running test: qd1_jobs2_read
+[2025-09-11 12:09:26] Test completed: qd1_jobs2_read
+[2025-09-11 12:09:26]   Testing QD=1, Jobs=4, Type=read
+[2025-09-11 12:09:26] Running test: qd1_jobs4_read
+[2025-09-11 12:14:27] Test completed: qd1_jobs4_read
+[2025-09-11 12:14:27]   Testing QD=1, Jobs=8, Type=read
+[2025-09-11 12:14:27] Running test: qd1_jobs8_read
+[2025-09-11 12:19:28] Test completed: qd1_jobs8_read
+[2025-09-11 12:19:28]   Testing QD=1, Jobs=16, Type=read
+[2025-09-11 12:19:28] Running test: qd1_jobs16_read
+[2025-09-11 12:24:29] Test completed: qd1_jobs16_read
+[2025-09-11 12:24:29]   Testing QD=1, Jobs=32, Type=read
+[2025-09-11 12:24:29] Running test: qd1_jobs32_read
+[2025-09-11 12:29:30] Test completed: qd1_jobs32_read
+[2025-09-11 12:29:30]   Testing QD=2, Jobs=1, Type=read
+[2025-09-11 12:29:30] Running test: qd2_jobs1_read
+[2025-09-11 12:34:30] Test completed: qd2_jobs1_read
+[2025-09-11 12:34:30]   Testing QD=2, Jobs=2, Type=read
+[2025-09-11 12:34:30] Running test: qd2_jobs2_read
+[2025-09-11 12:39:31] Test completed: qd2_jobs2_read
+[2025-09-11 12:39:31]   Testing QD=2, Jobs=4, Type=read
+[2025-09-11 12:39:31] Running test: qd2_jobs4_read
+[2025-09-11 12:44:32] Test completed: qd2_jobs4_read
+[2025-09-11 12:44:32]   Testing QD=2, Jobs=8, Type=read
+[2025-09-11 12:44:32] Running test: qd2_jobs8_read
+[2025-09-11 12:49:33] Test completed: qd2_jobs8_read
+[2025-09-11 12:49:33]   Testing QD=2, Jobs=16, Type=read
+[2025-09-11 12:49:33] Running test: qd2_jobs16_read
+[2025-09-11 12:54:34] Test completed: qd2_jobs16_read
+[2025-09-11 12:54:34]   Testing QD=2, Jobs=32, Type=read
+[2025-09-11 12:54:34] Running test: qd2_jobs32_read
+[2025-09-11 12:59:34] Test completed: qd2_jobs32_read
+[2025-09-11 12:59:34]   Testing QD=4, Jobs=1, Type=read
+[2025-09-11 12:59:34] Running test: qd4_jobs1_read
+[2025-09-11 13:04:35] Test completed: qd4_jobs1_read
+[2025-09-11 13:04:35]   Testing QD=4, Jobs=2, Type=read
+[2025-09-11 13:04:35] Running test: qd4_jobs2_read
+[2025-09-11 13:09:36] Test completed: qd4_jobs2_read
+[2025-09-11 13:09:36]   Testing QD=4, Jobs=4, Type=read
+[2025-09-11 13:09:36] Running test: qd4_jobs4_read
+[2025-09-11 13:14:37] Test completed: qd4_jobs4_read
+[2025-09-11 13:14:37]   Testing QD=4, Jobs=8, Type=read
+[2025-09-11 13:14:37] Running test: qd4_jobs8_read
+[2025-09-11 13:19:37] Test completed: qd4_jobs8_read
+[2025-09-11 13:19:37]   Testing QD=4, Jobs=16, Type=read
+[2025-09-11 13:19:37] Running test: qd4_jobs16_read
+[2025-09-11 13:24:38] Test completed: qd4_jobs16_read
+[2025-09-11 13:24:38]   Testing QD=4, Jobs=32, Type=read
+[2025-09-11 13:24:38] Running test: qd4_jobs32_read
+[2025-09-11 13:29:39] Test completed: qd4_jobs32_read
+[2025-09-11 13:29:39]   Testing QD=8, Jobs=1, Type=read
+[2025-09-11 13:29:39] Running test: qd8_jobs1_read
+[2025-09-11 13:34:40] Test completed: qd8_jobs1_read
+[2025-09-11 13:34:40]   Testing QD=8, Jobs=2, Type=read
+[2025-09-11 13:34:40] Running test: qd8_jobs2_read
+[2025-09-11 13:39:41] Test completed: qd8_jobs2_read
+[2025-09-11 13:39:41]   Testing QD=8, Jobs=4, Type=read
+[2025-09-11 13:39:41] Running test: qd8_jobs4_read
+[2025-09-11 13:44:41] Test completed: qd8_jobs4_read
+[2025-09-11 13:44:41]   Testing QD=8, Jobs=8, Type=read
+[2025-09-11 13:44:41] Running test: qd8_jobs8_read
+[2025-09-11 13:49:42] Test completed: qd8_jobs8_read
+[2025-09-11 13:49:42]   Testing QD=8, Jobs=16, Type=read
+[2025-09-11 13:49:42] Running test: qd8_jobs16_read
+[2025-09-11 13:54:43] Test completed: qd8_jobs16_read
+[2025-09-11 13:54:43]   Testing QD=8, Jobs=32, Type=read
+[2025-09-11 13:54:43] Running test: qd8_jobs32_read
+[2025-09-11 13:59:44] Test completed: qd8_jobs32_read
+[2025-09-11 13:59:44]   Testing QD=16, Jobs=1, Type=read
+[2025-09-11 13:59:44] Running test: qd16_jobs1_read
+[2025-09-11 14:04:44] Test completed: qd16_jobs1_read
+[2025-09-11 14:04:44]   Testing QD=16, Jobs=2, Type=read
+[2025-09-11 14:04:44] Running test: qd16_jobs2_read
+[2025-09-11 14:09:45] Test completed: qd16_jobs2_read
+[2025-09-11 14:09:45]   Testing QD=16, Jobs=4, Type=read
+[2025-09-11 14:09:45] Running test: qd16_jobs4_read
+[2025-09-11 14:14:46] Test completed: qd16_jobs4_read
+[2025-09-11 14:14:46]   Testing QD=16, Jobs=8, Type=read
+[2025-09-11 14:14:46] Running test: qd16_jobs8_read
+[2025-09-11 14:19:47] Test completed: qd16_jobs8_read
+[2025-09-11 14:19:47]   Testing QD=16, Jobs=16, Type=read
+[2025-09-11 14:19:47] Running test: qd16_jobs16_read
+[2025-09-11 14:24:48] Test completed: qd16_jobs16_read
+[2025-09-11 14:24:48]   Testing QD=16, Jobs=32, Type=read
+[2025-09-11 14:24:48] Running test: qd16_jobs32_read
+[2025-09-11 14:29:48] Test completed: qd16_jobs32_read
+[2025-09-11 14:29:48]   Testing QD=32, Jobs=1, Type=read
+[2025-09-11 14:29:48] Running test: qd32_jobs1_read
+[2025-09-11 14:34:49] Test completed: qd32_jobs1_read
+[2025-09-11 14:34:49]   Testing QD=32, Jobs=2, Type=read
+[2025-09-11 14:34:49] Running test: qd32_jobs2_read
+[2025-09-11 14:39:50] Test completed: qd32_jobs2_read
+[2025-09-11 14:39:50]   Testing QD=32, Jobs=4, Type=read
+[2025-09-11 14:39:50] Running test: qd32_jobs4_read
+[2025-09-11 14:44:51] Test completed: qd32_jobs4_read
+[2025-09-11 14:44:51]   Testing QD=32, Jobs=8, Type=read
+[2025-09-11 14:44:51] Running test: qd32_jobs8_read
+[2025-09-11 14:49:52] Test completed: qd32_jobs8_read
+[2025-09-11 14:49:52]   Testing QD=32, Jobs=16, Type=read
+[2025-09-11 14:49:52] Running test: qd32_jobs16_read
+[2025-09-11 14:54:53] Test completed: qd32_jobs16_read
+[2025-09-11 14:54:53]   Testing QD=32, Jobs=32, Type=read
+[2025-09-11 14:54:53] Running test: qd32_jobs32_read
+[2025-09-11 14:59:53] Test completed: qd32_jobs32_read
+[2025-09-11 14:59:53]   Testing QD=64, Jobs=1, Type=read
+[2025-09-11 14:59:53] Running test: qd64_jobs1_read
+[2025-09-11 15:04:54] Test completed: qd64_jobs1_read
+[2025-09-11 15:04:54]   Testing QD=64, Jobs=2, Type=read
+[2025-09-11 15:04:54] Running test: qd64_jobs2_read
+[2025-09-11 15:09:55] Test completed: qd64_jobs2_read
+[2025-09-11 15:09:55]   Testing QD=64, Jobs=4, Type=read
+[2025-09-11 15:09:55] Running test: qd64_jobs4_read
+[2025-09-11 15:14:56] Test completed: qd64_jobs4_read
+[2025-09-11 15:14:56]   Testing QD=64, Jobs=8, Type=read
+[2025-09-11 15:14:56] Running test: qd64_jobs8_read
+[2025-09-11 15:19:56] Test completed: qd64_jobs8_read
+[2025-09-11 15:19:56]   Testing QD=64, Jobs=16, Type=read
+[2025-09-11 15:19:56] Running test: qd64_jobs16_read
+[2025-09-11 15:24:57] Test completed: qd64_jobs16_read
+[2025-09-11 15:24:57]   Testing QD=64, Jobs=32, Type=read
+[2025-09-11 15:24:57] Running test: qd64_jobs32_read
+[2025-09-11 15:29:58] Test completed: qd64_jobs32_read
+[2025-09-11 15:29:58]   Testing QD=128, Jobs=1, Type=read
+[2025-09-11 15:29:58] Running test: qd128_jobs1_read
+[2025-09-11 15:34:59] Test completed: qd128_jobs1_read
+[2025-09-11 15:34:59]   Testing QD=128, Jobs=2, Type=read
+[2025-09-11 15:34:59] Running test: qd128_jobs2_read
+[2025-09-11 15:40:00] Test completed: qd128_jobs2_read
+[2025-09-11 15:40:00]   Testing QD=128, Jobs=4, Type=read
+[2025-09-11 15:40:00] Running test: qd128_jobs4_read
+[2025-09-11 15:45:00] Test completed: qd128_jobs4_read
+[2025-09-11 15:45:00]   Testing QD=128, Jobs=8, Type=read
+[2025-09-11 15:45:00] Running test: qd128_jobs8_read
+[2025-09-11 15:50:01] Test completed: qd128_jobs8_read
+[2025-09-11 15:50:01]   Testing QD=128, Jobs=16, Type=read
+[2025-09-11 15:50:01] Running test: qd128_jobs16_read
+[2025-09-11 15:55:02] Test completed: qd128_jobs16_read
+[2025-09-11 15:55:02]   Testing QD=128, Jobs=32, Type=read
+[2025-09-11 15:55:02] Running test: qd128_jobs32_read
+[2025-09-11 16:00:03] Test completed: qd128_jobs32_read
+[2025-09-11 16:00:03] Starting Queue Depth and Thread Variation tests for write
+[2025-09-11 16:00:03]   Testing QD=1, Jobs=1, Type=write
+[2025-09-11 16:00:03] Running test: qd1_jobs1_write
+[2025-09-11 16:05:04] Test completed: qd1_jobs1_write
+[2025-09-11 16:05:04]   Testing QD=1, Jobs=2, Type=write
+[2025-09-11 16:05:04] Running test: qd1_jobs2_write
+[2025-09-11 16:10:04] Test completed: qd1_jobs2_write
+[2025-09-11 16:10:04]   Testing QD=1, Jobs=4, Type=write
+[2025-09-11 16:10:04] Running test: qd1_jobs4_write
+[2025-09-11 16:15:05] Test completed: qd1_jobs4_write
+[2025-09-11 16:15:05]   Testing QD=1, Jobs=8, Type=write
+[2025-09-11 16:15:05] Running test: qd1_jobs8_write
+[2025-09-11 16:20:06] Test completed: qd1_jobs8_write
+[2025-09-11 16:20:06]   Testing QD=1, Jobs=16, Type=write
+[2025-09-11 16:20:06] Running test: qd1_jobs16_write
+[2025-09-11 16:25:07] Test completed: qd1_jobs16_write
+[2025-09-11 16:25:07]   Testing QD=1, Jobs=32, Type=write
+[2025-09-11 16:25:07] Running test: qd1_jobs32_write
+[2025-09-11 16:30:08] Test completed: qd1_jobs32_write
+[2025-09-11 16:30:08]   Testing QD=2, Jobs=1, Type=write
+[2025-09-11 16:30:08] Running test: qd2_jobs1_write
+[2025-09-11 16:35:09] Test completed: qd2_jobs1_write
+[2025-09-11 16:35:09]   Testing QD=2, Jobs=2, Type=write
+[2025-09-11 16:35:09] Running test: qd2_jobs2_write
+[2025-09-11 16:40:09] Test completed: qd2_jobs2_write
+[2025-09-11 16:40:09]   Testing QD=2, Jobs=4, Type=write
+[2025-09-11 16:40:09] Running test: qd2_jobs4_write
+[2025-09-11 16:45:10] Test completed: qd2_jobs4_write
+[2025-09-11 16:45:10]   Testing QD=2, Jobs=8, Type=write
+[2025-09-11 16:45:10] Running test: qd2_jobs8_write
+[2025-09-11 16:50:11] Test completed: qd2_jobs8_write
+[2025-09-11 16:50:11]   Testing QD=2, Jobs=16, Type=write
+[2025-09-11 16:50:11] Running test: qd2_jobs16_write
+[2025-09-11 16:55:12] Test completed: qd2_jobs16_write
+[2025-09-11 16:55:12]   Testing QD=2, Jobs=32, Type=write
+[2025-09-11 16:55:12] Running test: qd2_jobs32_write
+[2025-09-11 17:00:13] Test completed: qd2_jobs32_write
+[2025-09-11 17:00:13]   Testing QD=4, Jobs=1, Type=write
+[2025-09-11 17:00:13] Running test: qd4_jobs1_write
+[2025-09-11 17:05:13] Test completed: qd4_jobs1_write
+[2025-09-11 17:05:13]   Testing QD=4, Jobs=2, Type=write
+[2025-09-11 17:05:13] Running test: qd4_jobs2_write
+[2025-09-11 17:10:14] Test completed: qd4_jobs2_write
+[2025-09-11 17:10:14]   Testing QD=4, Jobs=4, Type=write
+[2025-09-11 17:10:14] Running test: qd4_jobs4_write
+[2025-09-11 17:15:15] Test completed: qd4_jobs4_write
+[2025-09-11 17:15:15]   Testing QD=4, Jobs=8, Type=write
+[2025-09-11 17:15:15] Running test: qd4_jobs8_write
+[2025-09-11 17:20:16] Test completed: qd4_jobs8_write
+[2025-09-11 17:20:16]   Testing QD=4, Jobs=16, Type=write
+[2025-09-11 17:20:16] Running test: qd4_jobs16_write
+[2025-09-11 17:25:17] Test completed: qd4_jobs16_write
+[2025-09-11 17:25:17]   Testing QD=4, Jobs=32, Type=write
+[2025-09-11 17:25:17] Running test: qd4_jobs32_write
+[2025-09-11 17:30:18] Test completed: qd4_jobs32_write
+[2025-09-11 17:30:18]   Testing QD=8, Jobs=1, Type=write
+[2025-09-11 17:30:18] Running test: qd8_jobs1_write
+[2025-09-11 17:35:18] Test completed: qd8_jobs1_write
+[2025-09-11 17:35:18]   Testing QD=8, Jobs=2, Type=write
+[2025-09-11 17:35:18] Running test: qd8_jobs2_write
+[2025-09-11 17:40:19] Test completed: qd8_jobs2_write
+[2025-09-11 17:40:19]   Testing QD=8, Jobs=4, Type=write
+[2025-09-11 17:40:19] Running test: qd8_jobs4_write
+[2025-09-11 17:45:20] Test completed: qd8_jobs4_write
+[2025-09-11 17:45:20]   Testing QD=8, Jobs=8, Type=write
+[2025-09-11 17:45:20] Running test: qd8_jobs8_write
+[2025-09-11 17:50:21] Test completed: qd8_jobs8_write
+[2025-09-11 17:50:21]   Testing QD=8, Jobs=16, Type=write
+[2025-09-11 17:50:21] Running test: qd8_jobs16_write
+[2025-09-11 17:55:22] Test completed: qd8_jobs16_write
+[2025-09-11 17:55:22]   Testing QD=8, Jobs=32, Type=write
+[2025-09-11 17:55:22] Running test: qd8_jobs32_write
+[2025-09-11 18:00:22] Test completed: qd8_jobs32_write
+[2025-09-11 18:00:22]   Testing QD=16, Jobs=1, Type=write
+[2025-09-11 18:00:22] Running test: qd16_jobs1_write
+[2025-09-11 18:05:23] Test completed: qd16_jobs1_write
+[2025-09-11 18:05:23]   Testing QD=16, Jobs=2, Type=write
+[2025-09-11 18:05:23] Running test: qd16_jobs2_write
+[2025-09-11 18:10:24] Test completed: qd16_jobs2_write
+[2025-09-11 18:10:24]   Testing QD=16, Jobs=4, Type=write
+[2025-09-11 18:10:24] Running test: qd16_jobs4_write
+[2025-09-11 18:15:25] Test completed: qd16_jobs4_write
+[2025-09-11 18:15:25]   Testing QD=16, Jobs=8, Type=write
+[2025-09-11 18:15:25] Running test: qd16_jobs8_write
+[2025-09-11 18:20:26] Test completed: qd16_jobs8_write
+[2025-09-11 18:20:26]   Testing QD=16, Jobs=16, Type=write
+[2025-09-11 18:20:26] Running test: qd16_jobs16_write
+[2025-09-11 18:25:27] Test completed: qd16_jobs16_write
+[2025-09-11 18:25:27]   Testing QD=16, Jobs=32, Type=write
+[2025-09-11 18:25:27] Running test: qd16_jobs32_write
+[2025-09-11 18:30:27] Test completed: qd16_jobs32_write
+[2025-09-11 18:30:27]   Testing QD=32, Jobs=1, Type=write
+[2025-09-11 18:30:27] Running test: qd32_jobs1_write
+[2025-09-11 18:35:28] Test completed: qd32_jobs1_write
+[2025-09-11 18:35:28]   Testing QD=32, Jobs=2, Type=write
+[2025-09-11 18:35:28] Running test: qd32_jobs2_write
+[2025-09-11 18:40:29] Test completed: qd32_jobs2_write
+[2025-09-11 18:40:29]   Testing QD=32, Jobs=4, Type=write
+[2025-09-11 18:40:29] Running test: qd32_jobs4_write
+[2025-09-11 18:45:30] Test completed: qd32_jobs4_write
+[2025-09-11 18:45:30]   Testing QD=32, Jobs=8, Type=write
+[2025-09-11 18:45:30] Running test: qd32_jobs8_write
+[2025-09-11 18:50:30] Test completed: qd32_jobs8_write
+[2025-09-11 18:50:30]   Testing QD=32, Jobs=16, Type=write
+[2025-09-11 18:50:30] Running test: qd32_jobs16_write
+[2025-09-11 18:55:31] Test completed: qd32_jobs16_write
+[2025-09-11 18:55:31]   Testing QD=32, Jobs=32, Type=write
+[2025-09-11 18:55:31] Running test: qd32_jobs32_write
+[2025-09-11 19:00:32] Test completed: qd32_jobs32_write
+[2025-09-11 19:00:32]   Testing QD=64, Jobs=1, Type=write
+[2025-09-11 19:00:32] Running test: qd64_jobs1_write
+[2025-09-11 19:05:33] Test completed: qd64_jobs1_write
+[2025-09-11 19:05:33]   Testing QD=64, Jobs=2, Type=write
+[2025-09-11 19:05:33] Running test: qd64_jobs2_write
+[2025-09-11 19:10:33] Test completed: qd64_jobs2_write
+[2025-09-11 19:10:33]   Testing QD=64, Jobs=4, Type=write
+[2025-09-11 19:10:33] Running test: qd64_jobs4_write
+[2025-09-11 19:15:34] Test completed: qd64_jobs4_write
+[2025-09-11 19:15:34]   Testing QD=64, Jobs=8, Type=write
+[2025-09-11 19:15:34] Running test: qd64_jobs8_write
+[2025-09-11 19:20:35] Test completed: qd64_jobs8_write
+[2025-09-11 19:20:35]   Testing QD=64, Jobs=16, Type=write
+[2025-09-11 19:20:35] Running test: qd64_jobs16_write
+[2025-09-11 19:25:36] Test completed: qd64_jobs16_write
+[2025-09-11 19:25:36]   Testing QD=64, Jobs=32, Type=write
+[2025-09-11 19:25:36] Running test: qd64_jobs32_write
+[2025-09-11 19:30:37] Test completed: qd64_jobs32_write
+[2025-09-11 19:30:37]   Testing QD=128, Jobs=1, Type=write
+[2025-09-11 19:30:37] Running test: qd128_jobs1_write
+[2025-09-11 19:35:38] Test completed: qd128_jobs1_write
+[2025-09-11 19:35:38]   Testing QD=128, Jobs=2, Type=write
+[2025-09-11 19:35:38] Running test: qd128_jobs2_write
+[2025-09-11 19:40:38] Test completed: qd128_jobs2_write
+[2025-09-11 19:40:38]   Testing QD=128, Jobs=4, Type=write
+[2025-09-11 19:40:38] Running test: qd128_jobs4_write
+[2025-09-11 19:45:39] Test completed: qd128_jobs4_write
+[2025-09-11 19:45:39]   Testing QD=128, Jobs=8, Type=write
+[2025-09-11 19:45:39] Running test: qd128_jobs8_write
+[2025-09-11 19:50:40] Test completed: qd128_jobs8_write
+[2025-09-11 19:50:40]   Testing QD=128, Jobs=16, Type=write
+[2025-09-11 19:50:40] Running test: qd128_jobs16_write

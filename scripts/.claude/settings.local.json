@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(chmod:*)",
-      "Bash(./test_yaml_parser.sh:*)"
+      "Bash(./test_yaml_parser.sh:*)",
+      "Bash(./quick_test.sh:*)"
     ],
     "deny": [],
     "ask": []

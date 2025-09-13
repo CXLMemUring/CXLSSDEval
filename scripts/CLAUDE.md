@@ -85,6 +85,9 @@ Script Descriptions
    - Device validation functions
    - Result directory management
    - Exports configuration variables
+   - TRIM support detection (`check_trim_support`)
+   - Automatic device clearing before each test (`clear_device`)
+   - Enhanced `run_fio_test` with automatic blkdiscard
 
 7. **fio_scripts/raw_device_test.sh** - Raw device orchestrator
    - Runs all raw device test dimensions
@@ -175,7 +178,7 @@ Script Descriptions
 
 ### 快速验证
 ```bash
-./quick_test.sh  # 运行5秒快速测试验证框架
+./quick_test.sh  # 运行5秒快速测试验证设备和框架
 ```
 
 ### 完整测试
@@ -190,4 +193,16 @@ Script Descriptions
 - 可通过修改config.yaml调整所有测试参数
 
 
-Bug: 
+### 设备清除功能说明:
+- **自动TRIM检测**: 通过检查`/sys/block/*/queue/discard_max_bytes`自动检测设备是否支持TRIM
+- **每次测试前清除**: `run_fio_test`函数会在每个FIO测试前自动调用`clear_device`
+- **3秒稳定时间**: 清除设备后等待3秒，让SSD完成内部垃圾回收和重组操作
+- **智能处理**: 如果设备不支持TRIM，会跳过blkdiscard并记录警告日志
+- **新增函数**:
+  - `check_trim_support()`: 检测设备TRIM支持
+  - `clear_device()`: 使用blkdiscard清除设备
+
+### 问题:
+我发现/dev/nvme00n1不支持blkdiscard, 我该如何清理之前写过的数据? 请添加新的清理逻辑对这种不支持的, 然后在quick test中, 测试blocksize=64m的blocksize的写实验, 观察效果
+
+

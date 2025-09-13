@@ -2,13 +2,13 @@
 
 # Device Configuration
 device:
-  raw_device: "/dev/nvme0n1"      # Raw device path for CXL SSD
-  filesystem_mount: "/nv1"         # Mount point for filesystem tests
+  raw_device: "/dev/nvme00n1"      # Raw device path for CXL SSD
+  filesystem_mount: "/samsung"         # Mount point for filesystem tests
   filesystem_type: "ext4"          # Filesystem type
 
 # Test Duration Configuration
 test_duration:
-  standard: 300                    # Standard test duration in seconds (5 min)
+  standard: 180                    # Standard test duration in seconds (5 min)
   endurance: 1200                  # Endurance test duration in seconds (20 min)
   warmup: 0                       # Warmup time in seconds
 

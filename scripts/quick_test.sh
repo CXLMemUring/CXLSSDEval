@@ -28,7 +28,7 @@ cat > "$TEMP_CONFIG" << EOF
 
 # Device Configuration
 device:
-  raw_device: "/dev/nvme1n2"      # Raw device path for CXL SSD
+  raw_device: "/dev/nvme0n1p2"      # Raw device path for CXL SSD
   filesystem_mount: "/nv1"         # Mount point for filesystem tests
   filesystem_type: "ext4"          # Filesystem type
 
