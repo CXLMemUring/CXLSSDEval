@@ -4,25 +4,25 @@ fio-3.16
 Starting 4 processes
 {
   "fio version" : "fio-3.16",
-  "timestamp" : 1757634877,
-  "timestamp_ms" : 1757634877730,
-  "time" : "Thu Sep 11 23:54:37 2025",
+  "timestamp" : 1757815577,
+  "timestamp_ms" : 1757815577778,
+  "time" : "Sun Sep 14 02:06:17 2025",
   "jobs" : [
     {
       "jobname" : "jobs4_write",
       "groupid" : 0,
       "error" : 0,
       "eta" : 0,
-      "elapsed" : 181,
+      "elapsed" : 61,
       "job options" : {
         "name" : "jobs4_write",
-        "filename" : "/dev/nvme00n1",
+        "filename" : "/dev/sfd0n1",
         "direct" : "1",
         "rw" : "write",
         "bs" : "4k",
         "iodepth" : "1",
         "numjobs" : "4",
-        "runtime" : "180",
+        "runtime" : "60",
         "allow_mounted_write" : "1",
         "lat_percentiles" : "1",
         "percentile_list" : "90:95:99:99.9:99.99"
@@ -75,13 +75,13 @@ Starting 4 processes
         "iops_samples" : 0
       },
       "write" : {
-        "io_bytes" : 29648064512,
-        "io_kbytes" : 28953188,
-        "bw_bytes" : 164710554,
-        "bw" : 160850,
-        "iops" : 40212.537708,
-        "runtime" : 180001,
-        "total_ios" : 7238297,
+        "io_bytes" : 9906880512,
+        "io_kbytes" : 9674688,
+        "bw_bytes" : 165111923,
+        "bw" : 161242,
+        "iops" : 40310.528158,
+        "runtime" : 60001,
+        "total_ios" : 2418672,
         "short_ios" : 0,
         "drop_ios" : 0,
         "slat_ns" : {
@@ -91,35 +91,35 @@ Starting 4 processes
           "stddev" : 0.000000
         },
         "clat_ns" : {
-          "min" : 12216,
-          "max" : 12249462,
-          "mean" : 97663.172017,
-          "stddev" : 95911.915597
+          "min" : 12131,
+          "max" : 12316839,
+          "mean" : 97032.206278,
+          "stddev" : 114341.301616
         },
         "lat_ns" : {
-          "min" : 12270,
-          "max" : 12249566,
-          "mean" : 97923.923229,
-          "stddev" : 96110.639477,
+          "min" : 12184,
+          "max" : 12316945,
+          "mean" : 97334.820232,
+          "stddev" : 114572.908821,
           "percentile" : {
-            "90.000000" : 248832,
-            "95.000000" : 261120,
-            "99.000000" : 288768,
-            "99.900000" : 329728,
-            "99.990000" : 528384
+            "90.000000" : 261120,
+            "95.000000" : 272384,
+            "99.000000" : 301056,
+            "99.900000" : 342016,
+            "99.990000" : 585728
           }
         },
-        "bw_min" : 67520,
-        "bw_max" : 477863,
-        "bw_agg" : 99.868721,
-        "bw_mean" : 160638.838440,
-        "bw_dev" : 20100.184148,
-        "bw_samples" : 1436,
-        "iops_min" : 16880,
-        "iops_max" : 119465,
-        "iops_mean" : 40159.601671,
-        "iops_stddev" : 5025.047154,
-        "iops_samples" : 1436
+        "bw_min" : 66280,
+        "bw_max" : 532024,
+        "bw_agg" : 99.703911,
+        "bw_mean" : 160764.579832,
+        "bw_dev" : 23567.360521,
+        "bw_samples" : 476,
+        "iops_min" : 16570,
+        "iops_max" : 133006,
+        "iops_mean" : 40191.050420,
+        "iops_stddev" : 5891.852069,
+        "iops_samples" : 476
       },
       "trim" : {
         "io_bytes" : 0,
@@ -177,12 +177,12 @@ Starting 4 processes
         },
         "total_ios" : 0
       },
-      "job_runtime" : 720000,
-      "usr_cpu" : 3.533194,
-      "sys_cpu" : 31.715139,
-      "ctx" : 7402173,
+      "job_runtime" : 240000,
+      "usr_cpu" : 6.211250,
+      "sys_cpu" : 39.144167,
+      "ctx" : 2514295,
       "majf" : 0,
-      "minf" : 469,
+      "minf" : 136,
       "iodepth_level" : {
         "1" : 100.000000,
         "2" : 0.000000,
@@ -226,11 +226,11 @@ Starting 4 processes
         "2" : 0.000000,
         "4" : 0.000000,
         "10" : 0.000000,
-        "20" : 1.433321,
-        "50" : 59.110796,
-        "100" : 7.318489,
-        "250" : 24.796288,
-        "500" : 7.329376,
+        "20" : 9.978079,
+        "50" : 53.612354,
+        "100" : 4.433755,
+        "250" : 19.418549,
+        "500" : 12.543454,
         "750" : 0.010000,
         "1000" : 0.010000
       },
@@ -253,27 +253,43 @@ Starting 4 processes
       "latency_percentile" : 100.000000,
       "latency_window" : 0
     }
+  ],
+  "disk_util" : [
+    {
+      "name" : "sfd0n1",
+      "read_ios" : 0,
+      "write_ios" : 2413394,
+      "read_merges" : 0,
+      "write_merges" : 0,
+      "read_ticks" : 0,
+      "write_ticks" : 153651,
+      "in_queue" : 736,
+      "util" : 99.908258
+    }
   ]
 }
 
-jobs4_write: (groupid=0, jobs=4): err= 0: pid=116623: Thu Sep 11 23:54:37 2025
-  write: IOPS=40.2k, BW=157MiB/s (165MB/s)(27.6GiB/180001msec); 0 zone resets
-    clat (usec): min=12, max=12249, avg=97.66, stdev=95.91
-     lat (usec): min=12, max=12249, avg=97.92, stdev=96.11
+jobs4_write: (groupid=0, jobs=4): err= 0: pid=46804: Sun Sep 14 02:06:17 2025
+  write: IOPS=40.3k, BW=157MiB/s (165MB/s)(9448MiB/60001msec); 0 zone resets
+    clat (usec): min=12, max=12316, avg=97.03, stdev=114.34
+     lat (usec): min=12, max=12316, avg=97.33, stdev=114.57
      lat percentiles (usec):
-     | 90.00th=[  249], 95.00th=[  262], 99.00th=[  289], 99.90th=[  330],
-     | 99.99th=[  529]
-   bw (  KiB/s): min=67520, max=477863, per=99.87%, avg=160638.84, stdev=20100.18, samples=1436
-   iops        : min=16880, max=119465, avg=40159.60, stdev=5025.05, samples=1436
-  lat (usec)   : 20=1.43%, 50=59.11%, 100=7.32%, 250=24.80%, 500=7.33%
+     | 90.00th=[  262], 95.00th=[  273], 99.00th=[  302], 99.90th=[  343],
+     | 99.99th=[  586]
+   bw (  KiB/s): min=66280, max=532024, per=99.70%, avg=160764.58, stdev=23567.36, samples=476
+   iops        : min=16570, max=133006, avg=40191.05, stdev=5891.85, samples=476
+  lat (usec)   : 20=9.98%, 50=53.61%, 100=4.43%, 250=19.42%, 500=12.54%
   lat (usec)   : 750=0.01%, 1000=0.01%
   lat (msec)   : 2=0.01%, 4=0.01%, 10=0.01%, 20=0.01%
-  cpu          : usr=3.53%, sys=31.72%, ctx=7402173, majf=0, minf=469
+  cpu          : usr=6.21%, sys=39.14%, ctx=2514295, majf=0, minf=136
   IO depths    : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, >=64=0.0%
      submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
      complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
-     issued rwts: total=0,7238297,0,0 short=0,0,0,0 dropped=0,0,0,0
+     issued rwts: total=0,2418672,0,0 short=0,0,0,0 dropped=0,0,0,0
      latency   : target=0, window=0, percentile=100.00%, depth=1
 
 Run status group 0 (all jobs):
-  WRITE: bw=157MiB/s (165MB/s), 157MiB/s-157MiB/s (165MB/s-165MB/s), io=27.6GiB (29.6GB), run=180001-180001msec
+  WRITE: bw=157MiB/s (165MB/s), 157MiB/s-157MiB/s (165MB/s-165MB/s), io=9448MiB (9907MB), run=60001-60001msec
+
+Disk stats (read/write):
+  sfd0n1: ios=0/2413394, merge=0/0, ticks=0/153651, in_queue=736, util=99.91%

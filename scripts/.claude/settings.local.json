@@ -3,7 +3,11 @@
     "allow": [
       "Bash(chmod:*)",
       "Bash(./test_yaml_parser.sh:*)",
-      "Bash(./quick_test.sh:*)"
+      "Bash(./quick_test.sh:*)",
+      "Bash(python3:*)",
+      "Bash(pip3 install:*)",
+      "Bash(apt-get:*)",
+      "Bash(apt-get install:*)"
     ],
     "deny": [],
     "ask": []
