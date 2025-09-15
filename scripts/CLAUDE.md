@@ -203,14 +203,12 @@ Script Descriptions
   - `clear_device()`: 使用blkdiscard清除设备
 
 ### 论文任务:
- - 目前我正在做着实验, 让我们不打扰正在运行的fio实验, 来完成计算机学术论文的写作部分. 
- - 你首先要阅读/home/huyp/CXLSSDEval/scripts/example_paper.md, 这是一篇关于pmem测试的论文的主要介绍. 而我们是cxlssd的测试, 因此写作风格, outline, guideline, 实验设计请参考它
- - 然后要要阅读Paper目录, 这是我们即将要完成的论文latex代码. 你先理解每个文件在讲什么, 并列出这篇打算论文做了什么, 放在paper_outline.md上
- - 然后你需要阅读现在的实验结果. 结果放在samsung_raw的 目录下, scalaflux结果(什么是scalaflux请阅读前面的论文outlne)放在results的raw目录下. 我们需要比较cxl ssd, samsung smartssd, scalaflux ssd结果. cxl ssd的结果仍然在运行中, 请先按照现有数据1.2x想象. 在paper中, 提及具体cxl ssd数据比较, 请用加粗的\todo%来标识.  
- - 修改, 添加上面的paper_outline.md, 你需要在micro benchmark evaluation部分对比现有的实验结果. 也就是说, 你需要在micro benchmark上添加这些对比实验. 对于原来有论文描述但是在现有micro中没有的实验, 先不要删除, 只添加. 对于microbenchmark和paper里重叠的部分, 修改原有paper的描述. 
- - 根据你新的paper_outline, 绘制论文图片, 你需要给出python脚本对比3个ssd, 字体至少16号, cxl ssd数据处理请参考前面我给你的指示. 
- - 请根据你的图片和paper_outline.md, 修改原有的latex版本论文, 对于latex修改, 保留下你的diff文件
+ - 论文目录改到了上一级目录的paper目录作为整个git目录的子模块, 请更改你之前的记忆
+ - 请增添一个脚本测试, 该脚本主要是测试io size小于512B的. 因为cxl ssd 支持byte addressable, 而不同ssd是不支持的, 因此我需要fio支持这一个实验. 除了单纯改block size,还有其他方法方便做到这一点吗
  - 对于论文部分, 新添一个热节流(hot throttling)subsection 实验说明.  因为csd散热, 乃至部分高端商用nvme,一直是都有问题的. 例如, 在运行samsung盘时候, 我拿这个命令看了一下samsung在跑的时候, 发现盘给我了严重警告. cxl ssd能不能在遇到热节流时, 把部分计算能力offload到host上, 这样我们argue说这反而是我们的优势. 我们做一个横坐标是时间, 双纵坐标是throughput和温度的图来argue这一点. 
+ - 此外, 你需要寻找以及PMR和CMB相关介绍的引用, 放入到eval相关部分的介绍和引用中
+ - 热节流对于高端nvme是个非常严重的相关引用, 写一个单独的文档, 不要合并到论文中
+
 
 
 

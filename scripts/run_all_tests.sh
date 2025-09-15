@@ -313,8 +313,9 @@ main() {
     RUN_RAW=true
     RUN_FS=false
     RUN_ROCKSDB=false
+    RUN_BYTE_ONLY=false
     SKIP_CLEANUP=true
-    
+
     for arg in "$@"; do
         case $arg in
             --raw-only)
@@ -329,17 +330,24 @@ main() {
                 RUN_RAW=false
                 RUN_FS=false
                 ;;
+            --byte-addressable-only)
+                RUN_RAW=false
+                RUN_FS=false
+                RUN_ROCKSDB=false
+                RUN_BYTE_ONLY=true
+                ;;
             --skip-cleanup)
                 SKIP_CLEANUP=true
                 ;;
             --help|-h)
                 echo "Usage: $0 [OPTIONS]"
                 echo "Options:"
-                echo "  --raw-only      Run only raw device tests"
-                echo "  --fs-only       Run only filesystem tests"
-                echo "  --rocksdb-only  Run only RocksDB tests"
-                echo "  --skip-cleanup  Skip cleanup after tests"
-                echo "  --help, -h      Show this help message"
+                echo "  --raw-only              Run only raw device tests"
+                echo "  --fs-only               Run only filesystem tests"
+                echo "  --rocksdb-only          Run only RocksDB tests"
+                echo "  --byte-addressable-only Run only byte-addressable IO tests"
+                echo "  --skip-cleanup          Skip cleanup after tests"
+                echo "  --help, -h              Show this help message"
                 exit 0
                 ;;
         esac
@@ -350,18 +358,34 @@ main() {
     
     # Create results directory structure
     mkdir -p "${RESULTS_BASE_DIR}"/{raw,filesystem,rocksdb,summary,plots}
-    
+
     # Run tests based on selection
-    if [[ "$RUN_RAW" == "true" ]]; then
-        run_raw_device_tests || print_warning "Raw device tests had issues"
-    fi
-    
-    if [[ "$RUN_FS" == "true" ]]; then
-        run_filesystem_tests || print_warning "Filesystem tests had issues"
-    fi
-    
-    if [[ "$RUN_ROCKSDB" == "true" ]]; then
-        run_rocksdb_tests || print_warning "RocksDB tests had issues"
+    if [[ "$RUN_BYTE_ONLY" == "true" ]]; then
+        # Run only byte-addressable test
+        print_header "Running Byte-Addressable IO Test"
+        if [[ -f "${SCRIPT_DIR}/fio_scripts/test_byte_addressable.sh" ]]; then
+            bash "${SCRIPT_DIR}/fio_scripts/test_byte_addressable.sh"
+            if [[ $? -eq 0 ]]; then
+                print_success "Byte-addressable IO test completed successfully"
+            else
+                print_error "Byte-addressable IO test failed"
+            fi
+        else
+            print_error "Byte-addressable test script not found"
+        fi
+    else
+        # Run normal test selection
+        if [[ "$RUN_RAW" == "true" ]]; then
+            run_raw_device_tests || print_warning "Raw device tests had issues"
+        fi
+
+        if [[ "$RUN_FS" == "true" ]]; then
+            run_filesystem_tests || print_warning "Filesystem tests had issues"
+        fi
+
+        if [[ "$RUN_ROCKSDB" == "true" ]]; then
+            run_rocksdb_tests || print_warning "RocksDB tests had issues"
+        fi
     fi
     
     # Process results

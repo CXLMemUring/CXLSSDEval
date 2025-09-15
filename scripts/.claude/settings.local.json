@@ -7,7 +7,8 @@
       "Bash(python3:*)",
       "Bash(pip3 install:*)",
       "Bash(apt-get:*)",
-      "Bash(apt-get install:*)"
+      "Bash(apt-get install:*)",
+      "Read(//home/huyp/CXLSSDEval/paper/**)"
     ],
     "deny": [],
     "ask": []
