@@ -219,17 +219,17 @@ int main(int argc, char* argv[]) {
         std::cout << "\nUsage:" << std::endl;
         std::cout << "  " << argv[0] << " [options]" << std::endl;
         std::cout << "\nOptions:" << std::endl;
-        std::cout << "  --devdax, -d <device>  Test devdax device (e.g., /dev/dax0.0)" << std::endl;
+        std::cout << "  --devdax, -d <device>  Test devdax device (e.g., /dev/mem)" << std::endl;
         std::cout << "  --nvme, -n <device>    Test NVMe device (e.g., /dev/nvme0n1)" << std::endl;
         std::cout << "\nExamples:" << std::endl;
-        std::cout << "  " << argv[0] << " --devdax /dev/dax0.0" << std::endl;
+        std::cout << "  " << argv[0] << " --devdax /dev/mem" << std::endl;
         std::cout << "  " << argv[0] << " --nvme /dev/nvme0n1" << std::endl;
-        std::cout << "  " << argv[0] << " -d /dev/dax0.0 -n /dev/nvme0n1" << std::endl;
+        std::cout << "  " << argv[0] << " -d /dev/mem -n /dev/nvme0n1" << std::endl;
         
         // Run demo with mock paths
         std::cout << "\n=== Running Demo with Mock Paths ===" << std::endl;
         std::cout << "(These will fail unless the devices actually exist)" << std::endl;
-        test_devdax_device("/dev/dax0.0");
+        test_devdax_device("/dev/mem");
         test_nvme_device("/dev/nvme0n1");
     }
     
