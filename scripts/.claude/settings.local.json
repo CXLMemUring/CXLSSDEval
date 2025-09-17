@@ -8,7 +8,11 @@
       "Bash(pip3 install:*)",
       "Bash(apt-get:*)",
       "Bash(apt-get install:*)",
-      "Read(//home/huyp/CXLSSDEval/paper/**)"
+      "Read(//home/huyp/CXLSSDEval/paper/**)",
+      "Bash(touch:*)",
+      "Bash(sudo apt-get:*)",
+      "Bash(sudo apt-get install:*)",
+      "Bash(jq:*)"
     ],
     "deny": [],
     "ask": []

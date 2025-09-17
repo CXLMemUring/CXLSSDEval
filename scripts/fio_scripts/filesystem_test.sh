@@ -249,7 +249,15 @@ main() {
     test_fs_access_pattern
     test_fs_rwmix
     test_fs_file_operations
-    
+
+    # Run byte-addressable test
+    log_message "Running Byte-Addressable I/O Test"
+    if [[ -f "${SCRIPT_DIR}/test_byte_addressable.sh" ]]; then
+        bash "${SCRIPT_DIR}/test_byte_addressable.sh"
+    else
+        log_message "Warning: Byte-addressable test script not found"
+    fi
+
     # Cleanup
     cleanup_filesystem
     

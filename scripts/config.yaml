@@ -3,7 +3,7 @@
 # Device Configuration
 device:
   raw_device: "/dev/sfd0n1"      # Raw device path for CXL SSD
-  filesystem_mount: "/samsung"         # Mount point for filesystem tests
+  filesystem_mount: "/csd1000"         # Mount point for filesystem tests
   filesystem_type: "ext4"          # Filesystem type
 
 # Test Duration Configuration

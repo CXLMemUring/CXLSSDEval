@@ -203,12 +203,9 @@ Script Descriptions
   - `clear_device()`: 使用blkdiscard清除设备
 
 ### 论文任务:
- - 论文目录改到了上一级目录的paper目录作为整个git目录的子模块, 请更改你之前的记忆
  - 请增添一个脚本测试, 该脚本主要是测试io size小于512B的. 因为cxl ssd 支持byte addressable, 而不同ssd是不支持的, 因此我需要fio支持这一个实验. 除了单纯改block size,还有其他方法方便做到这一点吗
- - 对于论文部分, 新添一个热节流(hot throttling)subsection 实验说明.  因为csd散热, 乃至部分高端商用nvme,一直是都有问题的. 例如, 在运行samsung盘时候, 我拿这个命令看了一下samsung在跑的时候, 发现盘给我了严重警告. cxl ssd能不能在遇到热节流时, 把部分计算能力offload到host上, 这样我们argue说这反而是我们的优势. 我们做一个横坐标是时间, 双纵坐标是throughput和温度的图来argue这一点. 
- - 此外, 你需要寻找以及PMR和CMB相关介绍的引用, 放入到eval相关部分的介绍和引用中
- - 热节流对于高端nvme是个非常严重的相关引用, 写一个单独的文档, 不要合并到论文中
-
+ - 上述脚本已经完成但有问题, 对于该脚本使用文件系统测试, 先在page cache写(例如8B, 16B, 不要direct io), 然后每次写完后立刻fdatasync,来模拟着一实验
+ - 上述实验完成后, 修改paper相关的eval的subsection, 完成对该实验的描述, 你说明传统nvme不支持byte addressable, 在传统数据库等领域这不是问题, 但在ai llm workload下是小于512B是需求. 而cxl ssd对byte addressable支持. 我们做实验了对比他们在小写的性能比较. 其中为了让nvme支持小于512B的写入, 我们采用了fs+buffer i/o, 而cxl ssd是直接访问的. 然后完成相关实验的描述
 
 
 
