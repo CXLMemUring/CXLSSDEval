@@ -3,15 +3,15 @@ nohup: ignoring input
 [0;34mCXL SSD Test Suite[0m
 [0;34m============================================[0m
 Configuration: /home/huyp/CXLSSDEval/scripts/config.yaml
-Device: /dev/nvme1n1
+Device: /dev/sfd0n1
 Results Directory: ./results
-Start Time: 2025-09-13 23:44:31
+Start Time: 2025-09-16 23:11:20
 
 [0;34m============================================[0m
 [0;34mChecking Prerequisites[0m
 [0;34m============================================[0m
 [0;32m✓ Configuration file found: /home/huyp/CXLSSDEval/scripts/config.yaml[0m
-[0;32m✓ Device found: /dev/nvme1n1[0m
+[0;32m✓ Device found: /dev/sfd0n1[0m
 [0;32m✓ FIO is installed (fio-3.16)[0m
 [0;32m✓ Python3 is installed (Python 3.8.10)[0m
 [1;33m⚠ RocksDB db_bench not found - RocksDB tests will be skipped[0m
@@ -19,496 +19,149 @@ Start Time: 2025-09-13 23:44:31
 [0;34m============================================[0m
 [0;34mRunning Raw Device Tests[0m
 [0;34m============================================[0m
-[2025-09-13 23:44:31] =========================================
-[2025-09-13 23:44:31] Starting Raw Device Test Suite
-[2025-09-13 23:44:31] Device: /dev/nvme1n1
-[2025-09-13 23:44:31] Results Directory: ./results/raw
-[2025-09-13 23:44:31] =========================================
-[2025-09-13 23:44:31] Starting all raw device tests on /dev/nvme1n1
-[2025-09-13 23:44:31] Executing: test_qd_thread.sh
-[2025-09-13 23:44:32] ===== Starting Thread Variation =====
-[2025-09-13 23:44:32] Starting Thread Variation tests for read
-[2025-09-13 23:44:32]   Testing Jobs=1, Type=read
-[2025-09-13 23:44:32] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-13 23:44:32] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-13 23:44:40] Device cleared successfully with blkdiscard
-[2025-09-13 23:44:40] Waiting 3 seconds for device to stabilize...
-[2025-09-13 23:44:43] Running test: jobs1_read
-[2025-09-13 23:45:43] Test completed: jobs1_read
-[2025-09-13 23:45:43]   Testing Jobs=2, Type=read
-[2025-09-13 23:45:43] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-13 23:45:43] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-13 23:45:50] Device cleared successfully with blkdiscard
-[2025-09-13 23:45:50] Waiting 3 seconds for device to stabilize...
-[2025-09-13 23:45:53] Running test: jobs2_read
-[2025-09-13 23:46:54] Test completed: jobs2_read
-[2025-09-13 23:46:54]   Testing Jobs=4, Type=read
-[2025-09-13 23:46:54] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-13 23:46:54] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-13 23:47:00] Device cleared successfully with blkdiscard
-[2025-09-13 23:47:00] Waiting 3 seconds for device to stabilize...
-[2025-09-13 23:47:03] Running test: jobs4_read
-[2025-09-13 23:48:04] Test completed: jobs4_read
-[2025-09-13 23:48:04]   Testing Jobs=8, Type=read
-[2025-09-13 23:48:04] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-13 23:48:04] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-13 23:48:10] Device cleared successfully with blkdiscard
-[2025-09-13 23:48:10] Waiting 3 seconds for device to stabilize...
-[2025-09-13 23:48:13] Running test: jobs8_read
-[2025-09-13 23:49:13] Test completed: jobs8_read
-[2025-09-13 23:49:13]   Testing Jobs=16, Type=read
-[2025-09-13 23:49:13] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-13 23:49:13] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-13 23:49:20] Device cleared successfully with blkdiscard
-[2025-09-13 23:49:20] Waiting 3 seconds for device to stabilize...
-[2025-09-13 23:49:23] Running test: jobs16_read
-[2025-09-13 23:50:24] Test completed: jobs16_read
-[2025-09-13 23:50:24]   Testing Jobs=32, Type=read
-[2025-09-13 23:50:24] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-13 23:50:24] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-13 23:50:30] Device cleared successfully with blkdiscard
-[2025-09-13 23:50:30] Waiting 3 seconds for device to stabilize...
-[2025-09-13 23:50:33] Running test: jobs32_read
-[2025-09-13 23:51:34] Test completed: jobs32_read
-[2025-09-13 23:51:34] Starting Thread Variation tests for write
-[2025-09-13 23:51:34]   Testing Jobs=1, Type=write
-[2025-09-13 23:51:34] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-13 23:51:34] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-13 23:51:40] Device cleared successfully with blkdiscard
-[2025-09-13 23:51:40] Waiting 3 seconds for device to stabilize...
-[2025-09-13 23:51:43] Running test: jobs1_write
-[2025-09-13 23:52:44] Test completed: jobs1_write
-[2025-09-13 23:52:44]   Testing Jobs=2, Type=write
-[2025-09-13 23:52:44] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-13 23:52:44] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-13 23:52:51] Device cleared successfully with blkdiscard
-[2025-09-13 23:52:51] Waiting 3 seconds for device to stabilize...
-[2025-09-13 23:52:54] Running test: jobs2_write
-[2025-09-13 23:53:55] Test completed: jobs2_write
-[2025-09-13 23:53:55]   Testing Jobs=4, Type=write
-[2025-09-13 23:53:55] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-13 23:53:55] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-13 23:54:02] Device cleared successfully with blkdiscard
-[2025-09-13 23:54:02] Waiting 3 seconds for device to stabilize...
-[2025-09-13 23:54:05] Running test: jobs4_write
-[2025-09-13 23:55:06] Test completed: jobs4_write
-[2025-09-13 23:55:06]   Testing Jobs=8, Type=write
-[2025-09-13 23:55:06] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-13 23:55:06] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-13 23:55:13] Device cleared successfully with blkdiscard
-[2025-09-13 23:55:13] Waiting 3 seconds for device to stabilize...
-[2025-09-13 23:55:16] Running test: jobs8_write
-[2025-09-13 23:56:17] Test completed: jobs8_write
-[2025-09-13 23:56:17]   Testing Jobs=16, Type=write
-[2025-09-13 23:56:17] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-13 23:56:17] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-13 23:56:24] Device cleared successfully with blkdiscard
-[2025-09-13 23:56:24] Waiting 3 seconds for device to stabilize...
-[2025-09-13 23:56:27] Running test: jobs16_write
-[2025-09-13 23:57:28] Test completed: jobs16_write
-[2025-09-13 23:57:28]   Testing Jobs=32, Type=write
-[2025-09-13 23:57:28] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-13 23:57:28] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-13 23:57:35] Device cleared successfully with blkdiscard
-[2025-09-13 23:57:35] Waiting 3 seconds for device to stabilize...
-[2025-09-13 23:57:38] Running test: jobs32_write
-[2025-09-13 23:58:38] Test completed: jobs32_write
-[2025-09-13 23:58:38] ===== Completed Thread Variation =====
-[2025-09-13 23:58:38] Executing: test_blocksize.sh
-[2025-09-13 23:58:38] ===== Starting Block Size Variation =====
-[2025-09-13 23:58:38] Starting Block Size Variation tests for read
-[2025-09-13 23:58:38]   Testing Block Size=512, Type=read
-[2025-09-13 23:58:38] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-13 23:58:38] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-13 23:58:45] Device cleared successfully with blkdiscard
-[2025-09-13 23:58:45] Waiting 3 seconds for device to stabilize...
-[2025-09-13 23:58:48] Running test: bs_512_read
-[2025-09-13 23:59:49] Test completed: bs_512_read
-[2025-09-13 23:59:49]   Testing Block Size=1k, Type=read
-[2025-09-13 23:59:49] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-13 23:59:49] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-13 23:59:55] Device cleared successfully with blkdiscard
-[2025-09-13 23:59:55] Waiting 3 seconds for device to stabilize...
-[2025-09-13 23:59:58] Running test: bs_1k_read
-[2025-09-14 00:00:59] Test completed: bs_1k_read
-[2025-09-14 00:00:59]   Testing Block Size=4k, Type=read
-[2025-09-14 00:00:59] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:00:59] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:01:06] Device cleared successfully with blkdiscard
-[2025-09-14 00:01:06] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:01:09] Running test: bs_4k_read
-[2025-09-14 00:02:09] Test completed: bs_4k_read
-[2025-09-14 00:02:09]   Testing Block Size=16k, Type=read
-[2025-09-14 00:02:09] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:02:09] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:02:16] Device cleared successfully with blkdiscard
-[2025-09-14 00:02:16] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:02:19] Running test: bs_16k_read
-[2025-09-14 00:03:20] Test completed: bs_16k_read
-[2025-09-14 00:03:20]   Testing Block Size=64k, Type=read
-[2025-09-14 00:03:20] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:03:20] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:03:26] Device cleared successfully with blkdiscard
-[2025-09-14 00:03:26] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:03:29] Running test: bs_64k_read
-[2025-09-14 00:04:30] Test completed: bs_64k_read
-[2025-09-14 00:04:30]   Testing Block Size=256k, Type=read
-[2025-09-14 00:04:30] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:04:30] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:04:36] Device cleared successfully with blkdiscard
-[2025-09-14 00:04:36] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:04:39] Running test: bs_256k_read
-[2025-09-14 00:05:40] Test completed: bs_256k_read
-[2025-09-14 00:05:40]   Testing Block Size=1m, Type=read
-[2025-09-14 00:05:40] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:05:40] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:05:47] Device cleared successfully with blkdiscard
-[2025-09-14 00:05:47] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:05:50] Running test: bs_1m_read
-[2025-09-14 00:06:50] Test completed: bs_1m_read
-[2025-09-14 00:06:50]   Testing Block Size=4m, Type=read
-[2025-09-14 00:06:50] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:06:50] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:06:57] Device cleared successfully with blkdiscard
-[2025-09-14 00:06:57] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:07:00] Running test: bs_4m_read
-[2025-09-14 00:08:01] Test completed: bs_4m_read
-[2025-09-14 00:08:01]   Testing Block Size=16m, Type=read
-[2025-09-14 00:08:01] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:08:01] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:08:07] Device cleared successfully with blkdiscard
-[2025-09-14 00:08:07] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:08:10] Running test: bs_16m_read
-[2025-09-14 00:09:11] Test completed: bs_16m_read
-[2025-09-14 00:09:11]   Testing Block Size=64m, Type=read
-[2025-09-14 00:09:11] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:09:11] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:09:17] Device cleared successfully with blkdiscard
-[2025-09-14 00:09:17] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:09:20] Running test: bs_64m_read
-[2025-09-14 00:10:20] Test completed: bs_64m_read
-[2025-09-14 00:10:20] Starting Block Size Variation tests for write
-[2025-09-14 00:10:20]   Testing Block Size=512, Type=write
-[2025-09-14 00:10:20] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:10:20] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:10:26] Device cleared successfully with blkdiscard
-[2025-09-14 00:10:26] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:10:29] Running test: bs_512_write
-[2025-09-14 00:11:30] Test completed: bs_512_write
-[2025-09-14 00:11:30]   Testing Block Size=1k, Type=write
-[2025-09-14 00:11:30] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:11:30] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:11:36] Device cleared successfully with blkdiscard
-[2025-09-14 00:11:36] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:11:39] Running test: bs_1k_write
-[2025-09-14 00:12:40] Test completed: bs_1k_write
-[2025-09-14 00:12:40]   Testing Block Size=4k, Type=write
-[2025-09-14 00:12:40] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:12:40] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:12:46] Device cleared successfully with blkdiscard
-[2025-09-14 00:12:46] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:12:49] Running test: bs_4k_write
-[2025-09-14 00:13:50] Test completed: bs_4k_write
-[2025-09-14 00:13:50]   Testing Block Size=16k, Type=write
-[2025-09-14 00:13:50] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:13:50] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:13:56] Device cleared successfully with blkdiscard
-[2025-09-14 00:13:56] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:13:59] Running test: bs_16k_write
-[2025-09-14 00:14:59] Test completed: bs_16k_write
-[2025-09-14 00:14:59]   Testing Block Size=64k, Type=write
-[2025-09-14 00:14:59] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:14:59] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:15:08] Device cleared successfully with blkdiscard
-[2025-09-14 00:15:08] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:15:11] Running test: bs_64k_write
-[2025-09-14 00:16:12] Test completed: bs_64k_write
-[2025-09-14 00:16:12]   Testing Block Size=256k, Type=write
-[2025-09-14 00:16:12] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:16:12] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:16:20] Device cleared successfully with blkdiscard
-[2025-09-14 00:16:20] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:16:23] Running test: bs_256k_write
-[2025-09-14 00:17:23] Test completed: bs_256k_write
-[2025-09-14 00:17:23]   Testing Block Size=1m, Type=write
-[2025-09-14 00:17:23] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:17:23] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:17:31] Device cleared successfully with blkdiscard
-[2025-09-14 00:17:31] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:17:34] Running test: bs_1m_write
-[2025-09-14 00:18:35] Test completed: bs_1m_write
-[2025-09-14 00:18:35]   Testing Block Size=4m, Type=write
-[2025-09-14 00:18:35] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:18:35] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:18:43] Device cleared successfully with blkdiscard
-[2025-09-14 00:18:43] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:18:46] Running test: bs_4m_write
-[2025-09-14 00:19:47] Test completed: bs_4m_write
-[2025-09-14 00:19:47]   Testing Block Size=16m, Type=write
-[2025-09-14 00:19:47] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:19:47] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:19:55] Device cleared successfully with blkdiscard
-[2025-09-14 00:19:55] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:19:58] Running test: bs_16m_write
-[2025-09-14 00:20:59] Test completed: bs_16m_write
-[2025-09-14 00:20:59]   Testing Block Size=64m, Type=write
-[2025-09-14 00:20:59] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:20:59] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:21:07] Device cleared successfully with blkdiscard
-[2025-09-14 00:21:07] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:21:10] Running test: bs_64m_write
-[2025-09-14 00:22:11] Test completed: bs_64m_write
-[2025-09-14 00:22:11] ===== Completed Block Size Variation =====
-[2025-09-14 00:22:11] Executing: test_access_pattern.sh
-[2025-09-14 00:22:11] ===== Starting Access Pattern =====
-[2025-09-14 00:22:11] Starting Access Pattern tests
-[2025-09-14 00:22:11]   Testing Pattern=read
-[2025-09-14 00:22:11] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:22:11] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:22:19] Device cleared successfully with blkdiscard
-[2025-09-14 00:22:19] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:22:22] Running test: pattern_read
-[2025-09-14 00:23:23] Test completed: pattern_read
-[2025-09-14 00:23:23]   Testing Pattern=write
-[2025-09-14 00:23:23] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:23:23] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:23:29] Device cleared successfully with blkdiscard
-[2025-09-14 00:23:29] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:23:32] Running test: pattern_write
-[2025-09-14 00:24:33] Test completed: pattern_write
-[2025-09-14 00:24:33]   Testing Pattern=randread
-[2025-09-14 00:24:33] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:24:33] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:24:40] Device cleared successfully with blkdiscard
-[2025-09-14 00:24:40] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:24:43] Running test: pattern_randread
-[2025-09-14 00:25:44] Test completed: pattern_randread
-[2025-09-14 00:25:44]   Testing Pattern=randwrite
-[2025-09-14 00:25:44] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:25:44] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:25:50] Device cleared successfully with blkdiscard
-[2025-09-14 00:25:50] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:25:53] Running test: pattern_randwrite
-[2025-09-14 00:26:54] Test completed: pattern_randwrite
-[2025-09-14 00:26:54] ===== Completed Access Pattern =====
-[2025-09-14 00:26:54] Executing: test_rwmix.sh
-[2025-09-14 00:26:54] ===== Starting Read/Write Mix =====
-[2025-09-14 00:26:54] Starting Read/Write Mix tests
-[2025-09-14 00:26:54]   Testing Read:Write = 100:0
-[2025-09-14 00:26:54] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:26:54] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:27:01] Device cleared successfully with blkdiscard
-[2025-09-14 00:27:01] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:27:04] Running test: rwmix_r100_w0
-[2025-09-14 00:28:05] Test completed: rwmix_r100_w0
-[2025-09-14 00:28:05]   Testing Read:Write = 75:25
-[2025-09-14 00:28:05] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:28:05] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:28:11] Device cleared successfully with blkdiscard
-[2025-09-14 00:28:11] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:28:14] Running test: rwmix_r75_w25
-[2025-09-14 00:29:15] Test completed: rwmix_r75_w25
-[2025-09-14 00:29:15]   Testing Read:Write = 50:50
-[2025-09-14 00:29:15] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:29:15] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:29:21] Device cleared successfully with blkdiscard
-[2025-09-14 00:29:21] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:29:24] Running test: rwmix_r50_w50
-[2025-09-14 00:30:25] Test completed: rwmix_r50_w50
-[2025-09-14 00:30:25]   Testing Read:Write = 25:75
-[2025-09-14 00:30:25] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:30:25] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:30:32] Device cleared successfully with blkdiscard
-[2025-09-14 00:30:32] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:30:35] Running test: rwmix_r25_w75
-[2025-09-14 00:31:36] Test completed: rwmix_r25_w75
-[2025-09-14 00:31:36]   Testing Read:Write = 0:100
-[2025-09-14 00:31:36] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:31:36] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:31:43] Device cleared successfully with blkdiscard
-[2025-09-14 00:31:43] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:31:46] Running test: rwmix_r0_w100
-[2025-09-14 00:32:46] Test completed: rwmix_r0_w100
-[2025-09-14 00:32:46] ===== Completed Read/Write Mix =====
-[2025-09-14 00:32:46] Executing: test_distribution.sh
-[2025-09-14 00:32:46] ===== Starting Access Distribution =====
-[2025-09-14 00:32:46] Starting Access Distribution tests for read
-[2025-09-14 00:32:46]   Testing Distribution=uniform, Type=read
-[2025-09-14 00:32:46] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:32:46] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:32:54] Device cleared successfully with blkdiscard
-[2025-09-14 00:32:54] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:32:57] Running test: dist_uniform_read
-[2025-09-14 00:33:57] Test completed: dist_uniform_read
-[2025-09-14 00:33:57]   Testing Distribution=zipf:1.2, Type=read
-[2025-09-14 00:33:57] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:33:57] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:34:04] Device cleared successfully with blkdiscard
-[2025-09-14 00:34:04] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:34:07] Running test: dist_zipf_read
-[2025-09-14 00:35:08] Test completed: dist_zipf_read
-[2025-09-14 00:35:08]   Testing Distribution=normal:50, Type=read
-[2025-09-14 00:35:08] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:35:08] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:35:14] Device cleared successfully with blkdiscard
-[2025-09-14 00:35:14] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:35:17] Running test: dist_normal_read
-[2025-09-14 00:36:18] Test completed: dist_normal_read
-[2025-09-14 00:36:18]   Testing Distribution=pareto:0.9, Type=read
-[2025-09-14 00:36:18] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:36:18] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:36:25] Device cleared successfully with blkdiscard
-[2025-09-14 00:36:25] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:36:28] Running test: dist_pareto_read
-[2025-09-14 00:37:28] Test completed: dist_pareto_read
-[2025-09-14 00:37:28] Starting Access Distribution tests for write
-[2025-09-14 00:37:28]   Testing Distribution=uniform, Type=write
-[2025-09-14 00:37:28] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:37:28] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:37:35] Device cleared successfully with blkdiscard
-[2025-09-14 00:37:35] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:37:38] Running test: dist_uniform_write
-[2025-09-14 00:38:39] Test completed: dist_uniform_write
-[2025-09-14 00:38:39]   Testing Distribution=zipf:1.2, Type=write
-[2025-09-14 00:38:39] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:38:39] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:38:46] Device cleared successfully with blkdiscard
-[2025-09-14 00:38:46] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:38:49] Running test: dist_zipf_write
-[2025-09-14 00:39:50] Test completed: dist_zipf_write
-[2025-09-14 00:39:50]   Testing Distribution=normal:50, Type=write
-[2025-09-14 00:39:50] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:39:50] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:39:57] Device cleared successfully with blkdiscard
-[2025-09-14 00:39:57] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:40:00] Running test: dist_normal_write
-[2025-09-14 00:41:01] Test completed: dist_normal_write
-[2025-09-14 00:41:01]   Testing Distribution=pareto:0.9, Type=write
-[2025-09-14 00:41:01] TRIM support detected for /dev/nvme1n1 (max_bytes: 2199023255040)
-[2025-09-14 00:41:01] Clearing device /dev/nvme1n1 using blkdiscard...
-[2025-09-14 00:41:08] Device cleared successfully with blkdiscard
-[2025-09-14 00:41:08] Waiting 3 seconds for device to stabilize...
-[2025-09-14 00:41:11] Running test: dist_pareto_write
-[2025-09-14 00:42:12] Test completed: dist_pareto_write
-[2025-09-14 00:42:12] ===== Completed Access Distribution =====
-[2025-09-14 00:42:12] Executing: test_endurance.sh
-[2025-09-14 00:42:12] ===== Starting Endurance Test =====
-[2025-09-14 00:42:12] Starting Endurance Test (Duration: 1200s)
-[2025-09-14 00:42:12]   Running endurance test with 70:30 read:write ratio
-[2025-09-14 01:02:13] Endurance test completed successfully
-[2025-09-14 01:02:13] ===== Completed Endurance Test =====
-[2025-09-14 01:02:13] All raw device tests completed
-[2025-09-14 01:02:13] =========================================
-[2025-09-14 01:02:13] Raw Device Test Suite Completed
-[2025-09-14 01:02:13] =========================================
-[0;32m✓ Raw device tests completed successfully[0m
+[2025-09-16 23:11:20] =========================================
+[2025-09-16 23:11:20] Starting Raw Device Test Suite
+[2025-09-16 23:11:20] Device: /dev/sfd0n1
+[2025-09-16 23:11:20] Results Directory: ./results/raw
+[2025-09-16 23:11:20] =========================================
+[2025-09-16 23:11:20] Starting all raw device tests on /dev/sfd0n1
+[2025-09-16 23:11:20] Executing: test_byte_addressable.sh
+=== Byte-Addressable I/O Test (FIO) ===
+Testing sub-512B writes with filesystem buffer I/O + fdatasync
+Device: /dev/sfd0n1
+Filesystem: ext4
+Mount point: /csd1000
+File size: 1G
+Runtime per test: 60s
 
-[0;34m============================================[0m
-[0;34mParsing Test Results[0m
-[0;34m============================================[0m
-No JSON files found for raw
-Created human-readable report: ./results/summary/raw_report.txt
-No JSON files found for filesystem
-Created human-readable report: ./results/summary/filesystem_report.txt
 
-All results parsed successfully!
-[0;32m✓ Results parsed successfully[0m
+----------------------------------------
+Testing block size: 8
+----------------------------------------
+Running byte-addressable test for block size: 8
+8         : IOPS=12135    BW=94       KB/s Lat=4.38     us (95%=15.30    us, 99%=19.07    us)
 
-[0;34m============================================[0m
-[0;34mValidating Test Results[0m
-[0;34m============================================[0m
-Starting validation...
-============================================================
-TEST RESULT VALIDATION REPORT
-Generated: 2025-09-14 01:02:13
-Results Directory: results
-============================================================
+----------------------------------------
+Testing block size: 16
+----------------------------------------
+Running byte-addressable test for block size: 16
+16        : IOPS=11764    BW=183      KB/s Lat=4.58     us (95%=15.42    us, 99%=19.84    us)
 
-SUMMARY
-------------------------------
-Errors:   60
-Warnings: 3
-Info:     6
+----------------------------------------
+Testing block size: 32
+----------------------------------------
+Running byte-addressable test for block size: 32
+32        : IOPS=11550    BW=360      KB/s Lat=4.55     us (95%=15.94    us, 99%=20.10    us)
 
-ERRORS (Must Fix)
-------------------------------
-  ✗ Failed to parse results/raw/endurance/endurance_rw.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/access_pattern/pattern_randwrite.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/access_pattern/pattern_randread.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/access_pattern/pattern_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/access_pattern/pattern_write.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/distribution/dist_pareto_write.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/distribution/dist_pareto_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/distribution/dist_uniform_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/distribution/dist_zipf_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/distribution/dist_normal_write.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/distribution/dist_zipf_write.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/distribution/dist_uniform_write.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/distribution/dist_normal_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/rwmix/rwmix_r25_w75.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/rwmix/rwmix_r50_w50.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/rwmix/rwmix_r75_w25.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/rwmix/rwmix_r100_w0.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/rwmix/rwmix_r0_w100.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/qd_thread/jobs4_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/qd_thread/jobs2_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/qd_thread/jobs1_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/qd_thread/jobs1_write.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/qd_thread/jobs16_write.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/qd_thread/jobs32_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/qd_thread/jobs32_write.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/qd_thread/jobs2_write.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/qd_thread/jobs8_write.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/qd_thread/jobs16_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/qd_thread/jobs4_write.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/qd_thread/jobs8_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_512_write.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_64m_write.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_16k_write.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_512_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_64k_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_1m_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_1k_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_16m_write.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_256k_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_64k_write.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_1m_write.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_64m_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_256k_write.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_4k_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_1k_write.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_4k_write.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_16k_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_4m_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_16m_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_4m_write.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_512_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_64k_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_1m_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_1k_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_256k_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_64m_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_4k_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_16k_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_4m_read.json: Expecting value: line 1 column 1 (char 0)
-  ✗ Failed to parse results/raw/blocksize/bs_16m_read.json: Expecting value: line 1 column 1 (char 0)
+----------------------------------------
+Testing block size: 64
+----------------------------------------
+Running byte-addressable test for block size: 64
+64        : IOPS=10917    BW=682      KB/s Lat=4.63     us (95%=15.68    us, 99%=19.84    us)
 
-WARNINGS (Should Review)
-------------------------------
-  ⚠ No results found for raw/qd_thread/qd*.json
-  ⚠ No results found for filesystem/fs_*.json
-  ⚠ No results found for rocksdb/*.log
+----------------------------------------
+Testing block size: 128
+----------------------------------------
+Running byte-addressable test for block size: 128
+128       : IOPS=9529     BW=1191     KB/s Lat=4.54     us (95%=16.06    us, 99%=19.84    us)
 
-INFORMATION
-------------------------------
-  ℹ Found 20 results for raw/blocksize/bs_*.json
-  ℹ Found 4 results for raw/access_pattern/pattern_*.json
-  ℹ Found 5 results for raw/rwmix/rwmix_*.json
-  ℹ Found 8 results for raw/distribution/dist_*.json
-  ℹ Found 1 results for raw/endurance/endurance_*.json
-  ℹ No log directory found
+----------------------------------------
+Testing block size: 256
+----------------------------------------
+Running byte-addressable test for block size: 256
+256       : IOPS=7839     BW=1959     KB/s Lat=5.68     us (95%=17.02    us, 99%=24.45    us)
 
-OVERALL STATUS
-------------------------------
-❌ VALIDATION FAILED - Errors detected
-============================================================
+----------------------------------------
+Testing block size: 512
+----------------------------------------
+Running byte-addressable test for block size: 512
+512       : IOPS=4788     BW=2394     KB/s Lat=9.13     us (95%=24.45    us, 99%=27.52    us)
+
+----------------------------------------
+Testing block size: 1k
+----------------------------------------
+Running byte-addressable test for block size: 1k
+1k        : IOPS=3004     BW=3004     KB/s Lat=14.04    us (95%=26.50    us, 99%=32.13    us)
+
+----------------------------------------
+Testing block size: 2k
+----------------------------------------
+Running byte-addressable test for block size: 2k
+2k        : IOPS=1996     BW=3992     KB/s Lat=21.74    us (95%=30.85    us, 99%=36.61    us)
+
+----------------------------------------
+Testing block size: 4k
+----------------------------------------
+Running byte-addressable test for block size: 4k
+4k        : IOPS=1500     BW=6001     KB/s Lat=27.37    us (95%=38.14    us, 99%=47.87    us)
+
+=== Test Complete ===
+Results saved to: ./results/filesystem/byte_addressable
+Summary CSV: ./results/filesystem/byte_addressable/byte_addressable_summary.csv
+Report generated: ./results/filesystem/byte_addressable/byte_addressable_report.txt
+[2025-09-16 23:22:08] Executing: test_qd_thread.sh
+[2025-09-16 23:22:08] ===== Starting Thread Variation =====
+[2025-09-16 23:22:08] Starting Thread Variation tests for read
+[2025-09-16 23:22:08]   Testing Jobs=1, Type=read
+[2025-09-16 23:22:08] TRIM support detected for /dev/sfd0n1 (max_bytes: 2147483648)
+[2025-09-16 23:22:08] Clearing device /dev/sfd0n1 using blkdiscard...
+[2025-09-16 23:22:13] Device cleared successfully with blkdiscard
+[2025-09-16 23:22:13] Waiting 3 seconds for device to stabilize...
+[2025-09-16 23:22:16] Running test: jobs1_read
+[2025-09-16 23:23:17] Test completed: jobs1_read
+[2025-09-16 23:23:17]   Testing Jobs=2, Type=read
+[2025-09-16 23:23:17] TRIM support detected for /dev/sfd0n1 (max_bytes: 2147483648)
+[2025-09-16 23:23:17] Clearing device /dev/sfd0n1 using blkdiscard...
+[2025-09-16 23:23:21] Device cleared successfully with blkdiscard
+[2025-09-16 23:23:21] Waiting 3 seconds for device to stabilize...
+[2025-09-16 23:23:24] Running test: jobs2_read
+[2025-09-16 23:24:25] Test completed: jobs2_read
+[2025-09-16 23:24:25]   Testing Jobs=4, Type=read
+[2025-09-16 23:24:25] TRIM support detected for /dev/sfd0n1 (max_bytes: 2147483648)
+[2025-09-16 23:24:25] Clearing device /dev/sfd0n1 using blkdiscard...
+[2025-09-16 23:24:30] Device cleared successfully with blkdiscard
+[2025-09-16 23:24:30] Waiting 3 seconds for device to stabilize...
+[2025-09-16 23:24:33] Running test: jobs4_read
+[2025-09-16 23:25:34] Test completed: jobs4_read
+[2025-09-16 23:25:34]   Testing Jobs=8, Type=read
+[2025-09-16 23:25:34] TRIM support detected for /dev/sfd0n1 (max_bytes: 2147483648)
+[2025-09-16 23:25:34] Clearing device /dev/sfd0n1 using blkdiscard...
+[2025-09-16 23:25:39] Device cleared successfully with blkdiscard
+[2025-09-16 23:25:39] Waiting 3 seconds for device to stabilize...
+[2025-09-16 23:25:42] Running test: jobs8_read
+[2025-09-16 23:26:42] Test completed: jobs8_read
+[2025-09-16 23:26:42]   Testing Jobs=16, Type=read
+[2025-09-16 23:26:42] TRIM support detected for /dev/sfd0n1 (max_bytes: 2147483648)
+[2025-09-16 23:26:42] Clearing device /dev/sfd0n1 using blkdiscard...
+[2025-09-16 23:26:47] Device cleared successfully with blkdiscard
+[2025-09-16 23:26:47] Waiting 3 seconds for device to stabilize...
+[2025-09-16 23:26:50] Running test: jobs16_read
+[2025-09-16 23:27:51] Test completed: jobs16_read
+[2025-09-16 23:27:51]   Testing Jobs=32, Type=read
+[2025-09-16 23:27:51] TRIM support detected for /dev/sfd0n1 (max_bytes: 2147483648)
+[2025-09-16 23:27:51] Clearing device /dev/sfd0n1 using blkdiscard...
+[2025-09-16 23:27:57] Device cleared successfully with blkdiscard
+[2025-09-16 23:27:57] Waiting 3 seconds for device to stabilize...
+[2025-09-16 23:28:00] Running test: jobs32_read
+[2025-09-16 23:29:00] Test completed: jobs32_read
+[2025-09-16 23:29:00] Starting Thread Variation tests for write
+[2025-09-16 23:29:00]   Testing Jobs=1, Type=write
+[2025-09-16 23:29:00] TRIM support detected for /dev/sfd0n1 (max_bytes: 2147483648)
+[2025-09-16 23:29:00] Clearing device /dev/sfd0n1 using blkdiscard...
+[2025-09-16 23:29:07] Device cleared successfully with blkdiscard
+[2025-09-16 23:29:07] Waiting 3 seconds for device to stabilize...
+[2025-09-16 23:29:10] Running test: jobs1_write
+[2025-09-16 23:30:10] Test completed: jobs1_write
+[2025-09-16 23:30:10]   Testing Jobs=2, Type=write
+[2025-09-16 23:30:10] TRIM support detected for /dev/sfd0n1 (max_bytes: 2147483648)
+[2025-09-16 23:30:10] Clearing device /dev/sfd0n1 using blkdiscard...
+[2025-09-16 23:30:15] Device cleared successfully with blkdiscard
+[2025-09-16 23:30:15] Waiting 3 seconds for device to stabilize...
+[2025-09-16 23:30:18] Running test: jobs2_write
+[2025-09-16 23:31:19] Test completed: jobs2_write
+[2025-09-16 23:31:19]   Testing Jobs=4, Type=write
+[2025-09-16 23:31:19] TRIM support detected for /dev/sfd0n1 (max_bytes: 2147483648)
+[2025-09-16 23:31:19] Clearing device /dev/sfd0n1 using blkdiscard...
+[2025-09-16 23:31:24] Device cleared successfully with blkdiscard
+[2025-09-16 23:31:24] Waiting 3 seconds for device to stabilize...
+[2025-09-16 23:31:27] Running test: jobs4_write

@@ -313,7 +313,6 @@ main() {
     RUN_RAW=true
     RUN_FS=false
     RUN_ROCKSDB=false
-    RUN_BYTE_ONLY=false
     SKIP_CLEANUP=true
 
     for arg in "$@"; do
@@ -325,16 +324,28 @@ main() {
             --fs-only)
                 RUN_RAW=false
                 RUN_ROCKSDB=false
+                RUN_FS=true
                 ;;
             --rocksdb-only)
                 RUN_RAW=false
                 RUN_FS=false
+                RUN_ROCKSDB=true
                 ;;
             --byte-addressable-only)
-                RUN_RAW=false
-                RUN_FS=false
-                RUN_ROCKSDB=false
-                RUN_BYTE_ONLY=true
+                # Run only byte-addressable test and exit
+                check_prerequisites
+                print_header "Running Byte-Addressable I/O Test (Standalone)"
+                if [[ -f "${SCRIPT_DIR}/fio_scripts/test_byte_addressable.sh" ]]; then
+                    bash "${SCRIPT_DIR}/fio_scripts/test_byte_addressable.sh"
+                    if [[ $? -eq 0 ]]; then
+                        print_success "Byte-addressable IO test completed successfully"
+                    else
+                        print_error "Byte-addressable IO test failed"
+                    fi
+                else
+                    print_error "Byte-addressable test script not found"
+                fi
+                exit 0
                 ;;
             --skip-cleanup)
                 SKIP_CLEANUP=true
@@ -343,7 +354,7 @@ main() {
                 echo "Usage: $0 [OPTIONS]"
                 echo "Options:"
                 echo "  --raw-only              Run only raw device tests"
-                echo "  --fs-only               Run only filesystem tests"
+                echo "  --fs-only               Run only filesystem tests (includes byte-addressable)"
                 echo "  --rocksdb-only          Run only RocksDB tests"
                 echo "  --byte-addressable-only Run only byte-addressable IO tests"
                 echo "  --skip-cleanup          Skip cleanup after tests"
@@ -360,32 +371,17 @@ main() {
     mkdir -p "${RESULTS_BASE_DIR}"/{raw,filesystem,rocksdb,summary,plots}
 
     # Run tests based on selection
-    if [[ "$RUN_BYTE_ONLY" == "true" ]]; then
-        # Run only byte-addressable test
-        print_header "Running Byte-Addressable IO Test"
-        if [[ -f "${SCRIPT_DIR}/fio_scripts/test_byte_addressable.sh" ]]; then
-            bash "${SCRIPT_DIR}/fio_scripts/test_byte_addressable.sh"
-            if [[ $? -eq 0 ]]; then
-                print_success "Byte-addressable IO test completed successfully"
-            else
-                print_error "Byte-addressable IO test failed"
-            fi
-        else
-            print_error "Byte-addressable test script not found"
-        fi
-    else
-        # Run normal test selection
-        if [[ "$RUN_RAW" == "true" ]]; then
-            run_raw_device_tests || print_warning "Raw device tests had issues"
-        fi
+    if [[ "$RUN_RAW" == "true" ]]; then
+        run_raw_device_tests || print_warning "Raw device tests had issues"
+    fi
 
-        if [[ "$RUN_FS" == "true" ]]; then
-            run_filesystem_tests || print_warning "Filesystem tests had issues"
-        fi
+    if [[ "$RUN_FS" == "true" ]]; then
+        run_filesystem_tests || print_warning "Filesystem tests had issues"
+        # Note: byte-addressable test is included in filesystem tests
+    fi
 
-        if [[ "$RUN_ROCKSDB" == "true" ]]; then
-            run_rocksdb_tests || print_warning "RocksDB tests had issues"
-        fi
+    if [[ "$RUN_ROCKSDB" == "true" ]]; then
+        run_rocksdb_tests || print_warning "RocksDB tests had issues"
     fi
     
     # Process results

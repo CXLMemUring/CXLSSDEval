@@ -1,0 +1,95 @@
+nohup: ignoring input
+[0;34m============================================[0m
+[0;34mCXL SSD Test Suite[0m
+[0;34m============================================[0m
+Configuration: /home/huyp/CXLSSDEval/scripts/config.yaml
+Device: /dev/nvme1n1
+Results Directory: ./results
+Start Time: 2025-09-16 06:51:23
+
+[0;34m============================================[0m
+[0;34mChecking Prerequisites[0m
+[0;34m============================================[0m
+[0;32m✓ Configuration file found: /home/huyp/CXLSSDEval/scripts/config.yaml[0m
+[0;32m✓ Device found: /dev/nvme1n1[0m
+[0;32m✓ FIO is installed (fio-3.16)[0m
+[0;32m✓ Python3 is installed (Python 3.8.10)[0m
+[1;33m⚠ RocksDB db_bench not found - RocksDB tests will be skipped[0m
+
+[0;34m============================================[0m
+[0;34mRunning Byte-Addressable I/O Test (Standalone)[0m
+[0;34m============================================[0m
+=== Byte-Addressable I/O Test (FIO) ===
+Testing sub-512B writes with filesystem buffer I/O + fdatasync
+Device: /dev/nvme1n1
+Filesystem: ext4
+Mount point: /samsung
+File size: 1G
+Runtime per test: 60s
+
+
+----------------------------------------
+Testing block size: 8
+----------------------------------------
+Running byte-addressable test for block size: 8
+8         : IOPS=0        BW=0        KB/s Lat=0.00     us (95%=0.00     us, 99%=0.00     us)
+
+----------------------------------------
+Testing block size: 16
+----------------------------------------
+Running byte-addressable test for block size: 16
+16        : IOPS=0        BW=0        KB/s Lat=0.00     us (95%=0.00     us, 99%=0.00     us)
+
+----------------------------------------
+Testing block size: 32
+----------------------------------------
+Running byte-addressable test for block size: 32
+32        : IOPS=0        BW=0        KB/s Lat=0.00     us (95%=0.00     us, 99%=0.00     us)
+
+----------------------------------------
+Testing block size: 64
+----------------------------------------
+Running byte-addressable test for block size: 64
+64        : IOPS=0        BW=0        KB/s Lat=0.00     us (95%=0.00     us, 99%=0.00     us)
+
+----------------------------------------
+Testing block size: 128
+----------------------------------------
+Running byte-addressable test for block size: 128
+128       : IOPS=0        BW=0        KB/s Lat=0.00     us (95%=0.00     us, 99%=0.00     us)
+
+----------------------------------------
+Testing block size: 256
+----------------------------------------
+Running byte-addressable test for block size: 256
+256       : IOPS=0        BW=0        KB/s Lat=0.00     us (95%=0.00     us, 99%=0.00     us)
+
+----------------------------------------
+Testing block size: 512
+----------------------------------------
+Running byte-addressable test for block size: 512
+512       : IOPS=0        BW=0        KB/s Lat=0.00     us (95%=0.00     us, 99%=0.00     us)
+
+----------------------------------------
+Testing block size: 1k
+----------------------------------------
+Running byte-addressable test for block size: 1k
+1k        : IOPS=0        BW=0        KB/s Lat=0.00     us (95%=0.00     us, 99%=0.00     us)
+
+----------------------------------------
+Testing block size: 2k
+----------------------------------------
+Running byte-addressable test for block size: 2k
+2k        : IOPS=0        BW=0        KB/s Lat=0.00     us (95%=0.00     us, 99%=0.00     us)
+
+----------------------------------------
+Testing block size: 4k
+----------------------------------------
+Running byte-addressable test for block size: 4k
+4k        : IOPS=0        BW=0        KB/s Lat=0.00     us (95%=0.00     us, 99%=0.00     us)
+
+=== Test Complete ===
+Results saved to: ./results/filesystem/byte_addressable
+Summary CSV: ./results/filesystem/byte_addressable/byte_addressable_summary.csv
+Report generated: ./results/filesystem/byte_addressable/byte_addressable_report.txt
+[0;32m✓ Byte-addressable IO test completed successfully[0m
