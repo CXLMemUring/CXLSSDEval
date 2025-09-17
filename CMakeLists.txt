@@ -26,6 +26,30 @@ endif()
 # Find required packages
 find_package(Threads REQUIRED)
 
+# Find or fetch spdlog
+find_package(spdlog QUIET)
+if(NOT spdlog_FOUND)
+    include(FetchContent)
+    FetchContent_Declare(
+        spdlog
+        GIT_REPOSITORY https://github.com/gabime/spdlog.git
+        GIT_TAG v1.12.0
+    )
+    FetchContent_MakeAvailable(spdlog)
+endif()
+
+# Find or fetch Catch2
+find_package(Catch2 3 QUIET)
+if(NOT Catch2_FOUND)
+    include(FetchContent)
+    FetchContent_Declare(
+        Catch2
+        GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+        GIT_TAG v3.4.0
+    )
+    FetchContent_MakeAvailable(Catch2)
+endif()
+
 # Include directories
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -38,15 +62,17 @@ set(LIB_SOURCES
 # Create static library
 add_library(cxlssd_static STATIC ${LIB_SOURCES})
 target_link_libraries(cxlssd_static 
-    PRIVATE 
+    PUBLIC 
         Threads::Threads
+        spdlog::spdlog
 )
 
 # Create shared library
 add_library(cxlssd SHARED ${LIB_SOURCES})
 target_link_libraries(cxlssd 
-    PRIVATE 
+    PUBLIC 
         Threads::Threads
+        spdlog::spdlog
 )
 set_target_properties(cxlssd PROPERTIES
     VERSION ${PROJECT_VERSION}
@@ -62,13 +88,6 @@ target_link_libraries(test_mwait
 )
 
 # Example executables
-add_executable(example_basic tests/example_basic.cpp)
-target_link_libraries(example_basic 
-    PRIVATE 
-        cxlssd_static
-        Threads::Threads
-)
-
 add_executable(example_pmr_cache tests/example_pmr_cache.cpp)
 target_link_libraries(example_pmr_cache 
     PRIVATE 
@@ -76,12 +95,26 @@ target_link_libraries(example_pmr_cache
         Threads::Threads
 )
 
-add_executable(benchmark tests/benchmark.cpp)
-target_link_libraries(benchmark 
-    PRIVATE 
+# Test for CXL open methods (devdax and NVMe)
+add_executable(test_cxl_open_methods tests/test_cxl_open_methods.cpp)
+target_link_libraries(test_cxl_open_methods
+    PRIVATE
         cxlssd_static
         Threads::Threads
 )
+
+# Add DAX device support and FIO interception
+add_library(fio_intercept SHARED src/fio_intercept.cpp)
+target_link_libraries(fio_intercept PRIVATE ${CMAKE_DL_LIBS} Threads::Threads)
+target_compile_options(fio_intercept PRIVATE -fPIC)
+set_target_properties(fio_intercept PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+)
+
+# Add DAX device test executable
+add_executable(test_mwait_dax tests/test_mwait_dax.cpp)
+target_link_libraries(test_mwait_dax PRIVATE Threads::Threads)
 
 # Installation
 install(TARGETS cxlssd cxlssd_static

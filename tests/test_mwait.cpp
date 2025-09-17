@@ -39,7 +39,7 @@ TestConfig parse_args(int argc, char* argv[]) {
         } else if (arg == "--verbose") {
             config.verbose = true;
         } else if (arg == "--help") {
-            CXL_LOG_INFO("Usage: {} [options]\n"
+            CXL_LOG_INFO_FMT("Usage: {} [options]\n"
                      "Options:\n"
                      "  --test <name>       Test to run (basic, pmr_latency, cstate, batch, benchmark)\n"
                      "  --device <path>     CXL device path\n"
