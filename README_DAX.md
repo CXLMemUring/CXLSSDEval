@@ -4,8 +4,8 @@ This implementation provides memory-mapped DAX device access with MWAIT support 
 
 ## Components
 
-### 1. DAX Device Implementation (`src/cxl_mwait_dax.cpp`)
-- Direct memory-mapped access to DAX devices (e.g., `/dev/dax0.0`, `/dev/pmem0`)
+### 1. Memory Device Implementation (`src/cxl_mwait_dax.cpp`)
+- Direct memory-mapped access to memory devices (e.g., `/dev/mem` with offset)
 - Support for byte-addressable operations (sub-512B)
 - MWAIT/MONITOR support for efficient polling
 - Atomic load/store operations
@@ -38,13 +38,13 @@ make fio_intercept test_mwait_dax
 ### Direct DAX Device Testing
 
 ```bash
-# Test DAX device directly
-./test_mwait_dax /dev/dax0.0 all
+# Test memory device directly
+./test_mwait_dax /dev/mem 0x100000000 16G all
 
 # Specific tests
-./test_mwait_dax /dev/pmem0 byte      # Byte-addressable ops
-./test_mwait_dax /dev/dax0.0 mwait    # MWAIT performance
-./test_mwait_dax /dev/dax0.0 latency  # Latency measurements
+./test_mwait_dax /dev/mem 0x100000000 16G byte      # Byte-addressable ops
+./test_mwait_dax /dev/mem 0x100000000 16G mwait    # MWAIT performance
+./test_mwait_dax /dev/mem 0x100000000 16G latency  # Latency measurements
 ```
 
 ### FIO with LD_PRELOAD Interception
@@ -52,8 +52,9 @@ make fio_intercept test_mwait_dax
 ```bash
 # Set environment variables
 export FIO_INTERCEPT_ENABLE=1
-export FIO_DAX_DEVICE=/dev/dax0.0
-export FIO_DAX_SIZE=16G
+export FIO_MEM_DEVICE=/dev/mem
+export FIO_MEM_OFFSET=0x100000000
+export FIO_MEM_SIZE=16G
 export FIO_FILE_SIZE=1G
 export LD_PRELOAD=./libfio_intercept.so
 
@@ -72,7 +73,9 @@ The implementation supports I/O sizes smaller than 512B, which traditional SSDs 
 # Test with various sub-512B sizes
 for bs in 64 128 256 384; do
     FIO_INTERCEPT_ENABLE=1 \
-    FIO_DAX_DEVICE=/dev/dax0.0 \
+    FIO_MEM_DEVICE=/dev/mem \
+    FIO_MEM_OFFSET=0x100000000 \
+    FIO_MEM_SIZE=16G \
     LD_PRELOAD=./libfio_intercept.so \
     fio --name=byte_test --rw=randwrite --bs=${bs} --size=100M --direct=1
 done
@@ -81,8 +84,9 @@ done
 ## Environment Variables
 
 - `FIO_INTERCEPT_ENABLE`: Enable interception (0/1)
-- `FIO_DAX_DEVICE`: DAX device path (e.g., /dev/dax0.0)
-- `FIO_DAX_SIZE`: Total DAX device size
+- `FIO_MEM_DEVICE`: Memory device path (e.g., /dev/mem)
+- `FIO_MEM_OFFSET`: Memory offset (e.g., 0x100000000)
+- `FIO_MEM_SIZE`: Total memory region size
 - `FIO_FILE_SIZE`: Size per FIO test file
 - `FIO_INTERCEPT_PATTERN`: Additional file patterns to intercept
 - `FIO_DEBUG`: Enable debug output (0/1)
@@ -130,7 +134,8 @@ grep -i dax /boot/config-$(uname -r)
 ### Permission Denied
 ```bash
 # Run with sudo or adjust permissions
-sudo chmod 666 /dev/dax0.0
+sudo chmod 666 /dev/mem
+# Note: /dev/mem access requires root privileges
 ```
 
 ### MWAIT Not Supported

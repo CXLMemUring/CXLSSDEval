@@ -32,10 +32,10 @@ public:
 
         device_path = dax_path;
 
-        // Open DAX device (e.g., /dev/dax0.0 or /dev/pmem0)
+        // Open memory device (e.g., /dev/mem with offset)
         fd = ::open(dax_path.c_str(), O_RDWR | O_SYNC);
         if (fd < 0) {
-            std::cerr << "Failed to open DAX device: " << dax_path
+            std::cerr << "Failed to open memory device: " << dax_path
                      << " - " << strerror(errno) << std::endl;
             return false;
         }
@@ -44,7 +44,7 @@ public:
         if (size == 0) {
             off_t device_size = lseek(fd, 0, SEEK_END);
             if (device_size < 0) {
-                std::cerr << "Failed to get DAX device size" << std::endl;
+                std::cerr << "Failed to get memory device size" << std::endl;
                 ::close(fd);
                 fd = -1;
                 return false;
@@ -55,14 +55,14 @@ public:
 
         mapped_size = size;
 
-        // Map the DAX device into memory
-        // Use MAP_SYNC for DAX devices to ensure persistent memory semantics
+        // Map the memory device into memory
+        // Use MAP_SYNC for memory devices to ensure persistent memory semantics
         mapped_base = mmap(nullptr, mapped_size,
                           PROT_READ | PROT_WRITE,
                           MAP_SHARED | MAP_SYNC, fd, 0);
 
         if (mapped_base == MAP_FAILED) {
-            std::cerr << "Failed to mmap DAX device: " << strerror(errno) << std::endl;
+            std::cerr << "Failed to mmap memory device: " << strerror(errno) << std::endl;
             ::close(fd);
             fd = -1;
             mapped_base = nullptr;
@@ -94,7 +94,7 @@ public:
     template<typename T>
     T load(size_t offset) const {
         if (offset + sizeof(T) > mapped_size) {
-            throw std::out_of_range("DAX load out of bounds");
+            throw std::out_of_range("Memory load out of bounds");
         }
         T* ptr = reinterpret_cast<T*>(static_cast<char*>(mapped_base) + offset);
         return __atomic_load_n(ptr, __ATOMIC_ACQUIRE);

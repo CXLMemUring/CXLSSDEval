@@ -27,7 +27,8 @@ parse_yaml() {
 }
 
 # Load configuration
-CONFIG_FILE="${CONFIG_FILE:-/home/huyp/CXLSSDEval/scripts/config.yaml}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CONFIG_FILE="${CONFIG_FILE:-$(dirname "$SCRIPT_DIR")/config.yaml}"
 if [[ ! -f "$CONFIG_FILE" ]]; then
     echo "Error: Configuration file not found: $CONFIG_FILE"
     exit 1
@@ -37,14 +38,13 @@ fi
 eval $(parse_yaml $CONFIG_FILE "CONFIG_")
 
 # Export common variables
-export DEVICE="${CONFIG_device_raw_device}"
-export FILESYSTEM_MOUNT="${CONFIG_device_filesystem_mount}"
-export FILESYSTEM_TYPE="${CONFIG_device_filesystem_type}"
-export STANDARD_DURATION="${CONFIG_test_duration_standard}"
-export ENDURANCE_DURATION="${CONFIG_test_duration_endurance}"
-export WARMUP_TIME="${CONFIG_test_duration_warmup}"
-export RESULTS_BASE_DIR="${CONFIG_output_results_dir}"
-export LOG_LEVEL="${CONFIG_output_log_level}"
+export DEVICE="${CONFIG_device:-/dev/nvme0n1}"
+export FILESYSTEM="${CONFIG_filesystem:-ext4}"
+export STANDARD_DURATION="${CONFIG_test_durations_standard:-30}"
+export ENDURANCE_DURATION="${CONFIG_test_durations_endurance:-1200}"
+export WARMUP_TIME="${CONFIG_test_durations_warmup:-60}"
+export RESULTS_BASE_DIR="${CONFIG_output_base_dir:-results}"
+export LOG_LEVEL="${CONFIG_logging_level:-INFO}"
 
 # Export test parameters
 export DEFAULT_IODEPTH="${CONFIG_test_params_default_iodepth:-32}"

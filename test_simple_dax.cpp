@@ -11,8 +11,8 @@ int main() {
 
     DAXDevice device;
 
-    // Try to use /tmp as a test (won't be real DAX but tests the code)
-    // In production, use /dev/dax0.0 or /dev/pmem0
+    // Try to use /tmp as a test (won't be real memory-mapped device but tests the code)
+    // In production, use /dev/mem with proper offset
     std::string test_file = "/tmp/test_dax_file";
 
     // Create a test file
@@ -32,8 +32,8 @@ int main() {
 
     // Now try to map it
     if (!device.init(test_file, 1024 * 1024)) {
-        std::cerr << "Failed to initialize DAX device with test file\n";
-        std::cerr << "In production, use a real DAX device like /dev/dax0.0\n";
+        std::cerr << "Failed to initialize memory device with test file\n";
+        std::cerr << "In production, use /dev/mem with proper offset\n";
         return 1;
     }
 
@@ -91,9 +91,9 @@ int main() {
     }
 
     std::cout << "\nTest completed successfully!\n";
-    std::cout << "Note: For real CXL/DAX testing, use actual DAX devices:\n";
-    std::cout << "  - /dev/dax0.0 (DAX device)\n";
-    std::cout << "  - /dev/pmem0 (Persistent memory)\n";
+    std::cout << "Note: For real CXL memory testing, use actual memory device:\n";
+    std::cout << "  - /dev/mem (Memory device with offset 0x100000000)\n";
+    std::cout << "  - Requires root privileges for /dev/mem access\n";
 
     // Cleanup
     unlink(test_file.c_str());

@@ -222,8 +222,8 @@ public:
 
 int main(int argc, char* argv[]) {
     if (argc < 2) {
-        std::cerr << "Usage: " << argv[0] << " <dax_device_path> [test_type]" << std::endl;
-        std::cerr << "  dax_device_path: e.g., /dev/dax0.0 or /dev/pmem0" << std::endl;
+        std::cerr << "Usage: " << argv[0] << " <mem_device_path> [test_type]" << std::endl;
+        std::cerr << "  mem_device_path: e.g., /dev/mem with offset 0x100000000" << std::endl;
         std::cerr << "  test_type: basic, byte, mwait, throughput, latency, all (default: all)" << std::endl;
         return 1;
     }

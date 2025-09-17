@@ -5,8 +5,9 @@
 set -e
 
 # Configuration
-DAX_DEVICE=${DAX_DEVICE:-"/dev/dax0.0"}  # Or /dev/pmem0
-DAX_SIZE=${DAX_SIZE:-"16G"}
+MEM_DEVICE=${MEM_DEVICE:-"/dev/mem"}  # Memory device
+MEM_OFFSET=${MEM_OFFSET:-"0x100000000"}  # Memory offset (4GB)
+MEM_SIZE=${MEM_SIZE:-"16G"}
 FIO_FILE_SIZE=${FIO_FILE_SIZE:-"1G"}
 INTERCEPT_LIB="./libfio_intercept.so"
 
@@ -16,12 +17,12 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-echo -e "${GREEN}DAX Device FIO Test with LD_PRELOAD${NC}"
+echo -e "${GREEN}Memory Device FIO Test with LD_PRELOAD${NC}"
 echo "========================================"
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
-    echo -e "${YELLOW}Warning: May need root for DAX device access${NC}"
+    echo -e "${YELLOW}Warning: May need root for /dev/mem access${NC}"
 fi
 
 # Build the intercept library
@@ -31,11 +32,11 @@ g++ -shared -fPIC -O3 -march=native \
     -o libfio_intercept.so \
     -ldl -lpthread
 
-# Build DAX test program
-echo -e "\n${YELLOW}Building DAX test program...${NC}"
+# Build memory test program
+echo -e "\n${YELLOW}Building memory test program...${NC}"
 g++ -O3 -march=native \
     ../src/cxl_mwait_dax.cpp \
-    -o test_dax \
+    -o test_mem \
     -lpthread
 
 # Function to run FIO test with interception
@@ -47,8 +48,9 @@ run_fio_test() {
 
     # Set environment for interception
     export FIO_INTERCEPT_ENABLE=1
-    export FIO_DAX_DEVICE=$DAX_DEVICE
-    export FIO_DAX_SIZE=$DAX_SIZE
+    export FIO_MEM_DEVICE=$MEM_DEVICE
+    export FIO_MEM_OFFSET=$MEM_OFFSET
+    export FIO_MEM_SIZE=$MEM_SIZE
     export FIO_FILE_SIZE=$FIO_FILE_SIZE
     export FIO_DEBUG=${FIO_DEBUG:-0}
     export LD_PRELOAD=$INTERCEPT_LIB
@@ -103,13 +105,13 @@ for bs in 64 128 256 384; do
         "--rw=randwrite --bs=${bs} --size=100M --filename=test.dat"
 done
 
-# Test 7: Direct DAX device test (without interception)
-echo -e "\n${GREEN}Direct DAX device test${NC}"
-if [ -e "$DAX_DEVICE" ]; then
-    echo "Testing direct DAX device access..."
-    ./test_dax $DAX_DEVICE
+# Test 7: Direct memory device test (without interception)
+echo -e "\n${GREEN}Direct memory device test${NC}"
+if [ -e "$MEM_DEVICE" ]; then
+    echo "Testing direct memory device access..."
+    ./test_mem $MEM_DEVICE $MEM_OFFSET $MEM_SIZE
 else
-    echo -e "${YELLOW}DAX device not found at $DAX_DEVICE${NC}"
+    echo -e "${YELLOW}Memory device not found at $MEM_DEVICE${NC}"
 fi
 
 # Compare with regular file I/O
@@ -131,4 +133,4 @@ fio --name=regular_file \
 echo -e "\n${GREEN}Test completed!${NC}"
 
 # Cleanup
-rm -f libfio_intercept.so test_dax results_*.json /tmp/test_regular.dat
+rm -f libfio_intercept.so test_mem results_*.json /tmp/test_regular.dat

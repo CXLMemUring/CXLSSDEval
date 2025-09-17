@@ -1,38 +1,65 @@
-# CXL SSD Benchmark Configuration
+# CXL SSD Test Configuration
 
-# Device Configuration
-device:
-  raw_device: "/dev/sfd0n1"      # Raw device path for CXL SSD
-  filesystem_mount: "/csd1000"         # Mount point for filesystem tests
-  filesystem_type: "ext4"          # Filesystem type
+# Device configuration
+device: "/dev/nvme0n1"  # Change this to your actual device
+filesystem: ext4
 
-# Test Duration Configuration
-test_duration:
-  standard: 60                    # Standard test duration in seconds (1 min)
-  endurance: 1200                  # Endurance test duration in seconds (20 min)
-  warmup: 0                       # Warmup time in seconds
+# Test duration settings
+test_durations:
+  standard: 30      # Standard test duration in seconds
+  endurance: 1200   # 20 minutes for endurance tests
+  warmup: 60        # Warmup duration
 
-# Test Parameters
+# Test parameters
 test_params:
+  # Queue depths to test
   queue_depths: [1, 2, 4, 8, 16, 32, 64, 128]
-  num_jobs: [1, 2, 4, 8, 16, 32]
-  default_iodepth: 1               # Default IO depth for non-QD tests
-  default_numjobs: 1                # Default number of jobs for non-thread tests
-  block_sizes: ["512", "1k", "4k", "16k", "64k", "256k", "1m", "4m", "16m", "64m"]
-  byte_addressable_sizes: [8, 16, 32, 64, 128, 256]  # Sub-512B sizes for byte-addressable testing
-  rw_patterns: ["read", "write", "randread", "randwrite"]
-  rw_mix_ratios: [100, 75, 50, 25, 0]  # Read percentages
-  distributions: ["random", "zipf:1.2", "normal:50", "pareto:0.9"]
 
-# Output Configuration
+  # Number of jobs/threads
+  job_counts: [1, 2, 4, 8, 16, 32]
+
+  # Block sizes to test
+  block_sizes: ["512", "1k", "2k", "4k", "8k", "16k", "32k", "64k", "128k", "256k", "512k", "1m", "2m", "4m", "8m", "16m", "32m", "64m"]
+
+  # Byte-addressable sizes (sub-512B)
+  byte_sizes: [8, 16, 32, 64, 128, 256, 384]
+
+  # Read/Write mix percentages
+  rw_mixes: [0, 25, 50, 75, 100]
+
+  # Access patterns
+  access_patterns: ["sequential", "random", "strided"]
+
+  # Distribution types
+  distributions: ["uniform", "zipf", "normal", "pareto"]
+
+# Default values for tests that don't vary these parameters
+defaults:
+  iodepth: 1       # Default IO depth for non-QD tests
+  numjobs: 1       # Default number of jobs for non-thread tests
+  block_size: "4k" # Default block size
+
+# Output configuration
 output:
-  results_dir: "./results"
-  log_level: "normal"              # normal, verbose, debug
-  formats: ["json", "normal"]      # Output formats for fio
+  base_dir: "results"
+  format: "json"
+  verbose: true
 
-# RocksDB Configuration
+# DAX device configuration (for CXL testing)
+dax:
+  device: "/dev/mem"     # Memory device path
+  offset: "0x100000000"  # Memory offset (4GB)
+  size: "16G"            # Memory region size
+
+# RocksDB configuration
 rocksdb:
-  db_path: "/nv1/rocksdb_test"
-  num_keys: 10000000
+  db_path: "/mnt/rocksdb_test"
+  benchmarks: ["fillseq", "fillrandom", "readseq", "readrandom", "overwrite"]
+  num_keys: 1000000
   value_size: 1024
-  benchmarks: ["fillseq", "fillrandom", "readrandom", "readseq", "readmissing"]
+  threads: [1, 4, 8, 16]
+
+# Logging
+logging:
+  level: "INFO"
+  file: "test_execution.log"
