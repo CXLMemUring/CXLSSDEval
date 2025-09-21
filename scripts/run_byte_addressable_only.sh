@@ -98,13 +98,5 @@ if [[ -d "$RESULTS_DIR" ]]; then
     # Show report if exists
     if [[ -f "$RESULTS_DIR/byte_addressable_report.txt" ]]; then
         echo ""
-        echo "Detailed report available at:"
-        echo "  $RESULTS_DIR/byte_addressable_report.txt"
-    fi
-fi
-
-echo ""
-echo "To analyze results for Samsung/Scala/CSD SSDs, run:"
-echo "  python3 $SCRIPT_DIR/analyze_byte_addressable.py"
-
+        echo "Detailed report available at:"ses
 exit 0

@@ -29,7 +29,7 @@ public:
             close();
         }
         
-        // Open devdax device (e.g., /dev/dax0.0)
+        // Open memory device (e.g., /dev/mem)
         fd_ = ::open(device_path.c_str(), O_RDWR);
         if (fd_ < 0) {
             CXL_LOG_ERROR("Failed to open devdax device: " + device_path);
