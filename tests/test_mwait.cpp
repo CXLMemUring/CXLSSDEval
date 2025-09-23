@@ -7,7 +7,8 @@
 #include <atomic>
 #include <vector>
 
-using namespace cxl_ssd;
+namespace cxl = cxl_ssd;
+using namespace cxl;
 
 // Test configuration from command line
 struct TestConfig {

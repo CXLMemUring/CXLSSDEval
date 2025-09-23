@@ -4,7 +4,8 @@
 #include <iomanip>
 #include "../include/cxl_device_impl.hpp"
 
-using namespace cxl_ssd;
+namespace cxl = cxl_ssd;
+using namespace cxl;
 
 // Test function for DevDax device
 void test_devdax_device(const std::string& device_path) {

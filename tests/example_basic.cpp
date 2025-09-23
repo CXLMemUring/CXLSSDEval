@@ -4,7 +4,8 @@
 #include <thread>
 #include <chrono>
 
-using namespace cxl_ssd;
+namespace cxl = cxl_ssd;
+using namespace cxl;
 
 int main() {
     std::cout << "CXL SSD MWAIT Basic Example\n";

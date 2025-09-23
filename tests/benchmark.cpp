@@ -10,7 +10,8 @@
 #include <numeric>
 #include <cmath>
 
-using namespace cxl_ssd;
+namespace cxl = cxl_ssd;
+using namespace cxl;
 
 // Benchmark configuration
 struct BenchmarkConfig {

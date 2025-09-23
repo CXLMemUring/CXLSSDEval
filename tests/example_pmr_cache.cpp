@@ -7,7 +7,8 @@
 #include <random>
 #include <cstring>
 
-using namespace cxl_ssd;
+namespace cxl = cxl_ssd;
+using namespace cxl;
 
 // Simple PMR cache implementation using MWAIT
 class PMRCache {

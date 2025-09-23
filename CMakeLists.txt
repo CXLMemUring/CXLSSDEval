@@ -116,6 +116,20 @@ set_target_properties(fio_intercept PROPERTIES
 add_executable(test_mwait_dax tests/test_mwait_dax.cpp)
 target_link_libraries(test_mwait_dax PRIVATE Threads::Threads)
 
+# Add io_uring interception library (LD_PRELOAD)
+add_library(iouring_intercept SHARED src/iouring_intercept.cpp)
+target_link_libraries(iouring_intercept PRIVATE Threads::Threads)
+target_compile_options(iouring_intercept PRIVATE -fPIC)
+set_target_properties(iouring_intercept PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+)
+
+# WASM scheduler (stub runtime by default)
+add_library(wasm_scheduler STATIC src/wasm_scheduler.cpp)
+target_include_directories(wasm_scheduler PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_link_libraries(wasm_scheduler PUBLIC Threads::Threads)
+
 # Installation
 install(TARGETS cxlssd cxlssd_static
     LIBRARY DESTINATION lib
@@ -168,3 +182,14 @@ message(STATUS "  Install Prefix:    ${CMAKE_INSTALL_PREFIX}")
 message(STATUS "  WAITPKG Support:   ${COMPILER_SUPPORTS_WAITPKG}")
 message(STATUS "  Build Docs:        ${BUILD_DOCS}")
 message(STATUS "")
+
+# Optional MVVM integration for cross-ISA WASM live migration
+option(CXL_ENABLE_MVVM "Enable MVVM (WAMR) live migration adapter" OFF)
+if(CXL_ENABLE_MVVM)
+  add_definitions(-DCXL_ENABLE_MVVM)
+  set(MVVM_BUILD_BENCH OFF CACHE BOOL "Disable MVVM benches" FORCE)
+  add_subdirectory(lib/MVVM)
+  add_library(cxl_mvvm_adapter STATIC src/cxl_mvvm_adapter.cpp)
+  target_include_directories(cxl_mvvm_adapter PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+  target_link_libraries(cxl_mvvm_adapter PUBLIC MVVM_export vmlib Threads::Threads)
+endif()
