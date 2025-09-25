@@ -13,6 +13,11 @@
 
 namespace cxl {
 
+// Forward declarations
+struct SystemMetrics;
+class SystemMonitor;
+class MigrationCoordinator;
+
 enum class TargetArch { X86_64, ARM64 };
 
 // Abstract interface for a WASM runtime binding. Concrete implementations can
@@ -68,7 +73,7 @@ private:
 // recreating them with a runtime appropriate for the destination.
 class WasmScheduler {
 public:
-    WasmScheduler() = default;
+    WasmScheduler();
     ~WasmScheduler();
 
     // Launch a task on a target architecture
@@ -78,11 +83,23 @@ public:
     // Stop all tasks
     void shutdown();
 
+    // Receive migration from remote host (ARM side)
+    bool receive_migration(const WasmTaskDesc& desc);
+
+    // Trigger migration based on system metrics
+    void trigger_migration(const SystemMetrics& metrics);
+
 private:
     struct Entry { int id; std::unique_ptr<WasmTask> task; };
     std::mutex mu_;
     std::vector<Entry> tasks_;
     int next_id_ = 1;
+
+    // System monitoring and migration coordination
+    std::unique_ptr<SystemMonitor> monitor_;
+    std::unique_ptr<MigrationCoordinator> coordinator_;
+    std::thread monitor_thread_;
+    std::atomic<bool> monitoring_{true};
 };
 
 // Factory for a suitable runtime on this host

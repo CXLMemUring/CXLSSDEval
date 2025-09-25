@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.14)
 project(CXLSSDEval VERSION 1.0.0 LANGUAGES CXX)
 
 # Set C++ standard
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 26)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -21,6 +21,30 @@ include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag("-mwaitpkg" COMPILER_SUPPORTS_WAITPKG)
 if(COMPILER_SUPPORTS_WAITPKG)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mwaitpkg")
+endif()
+
+# Cross-compilation support for ARM
+option(BUILD_ARM_TARGET "Build ARM target for live migration" OFF)
+if(BUILD_ARM_TARGET)
+    message(STATUS "Configuring for ARM cross-compilation")
+    set(CMAKE_SYSTEM_NAME Linux)
+    set(CMAKE_SYSTEM_PROCESSOR aarch64)
+
+    # Use environment variable or default ARM cross-compiler
+    if(DEFINED ENV{ARM_CROSS_COMPILER})
+        set(CMAKE_C_COMPILER $ENV{ARM_CROSS_COMPILER}gcc)
+        set(CMAKE_CXX_COMPILER $ENV{ARM_CROSS_COMPILER}g++)
+    else()
+        set(CMAKE_C_COMPILER aarch64-linux-gnu-gcc)
+        set(CMAKE_CXX_COMPILER aarch64-linux-gnu-g++)
+    endif()
+
+    # ARM-specific flags
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=armv8-a")
+    add_definitions(-D__aarch64__)
+else()
+    # x86_64 specific flags
+    add_definitions(-D__x86_64__)
 endif()
 
 # Find required packages
@@ -199,6 +223,7 @@ target_include_directories(cxl_mvvm_adapter PUBLIC
 ${CMAKE_CURRENT_SOURCE_DIR}/include
 ${MVVM_WAMR_DIR}/core/iwasm/include
 ${MVVM_WAMR_DIR}/core/iwasm/interpreter
+${MVVM_WAMR_DIR}/core/iwasm/common
 ${MVVM_WAMR_DIR}/core/iwasm/aot
 ${MVVM_WAMR_DIR}/core/shared/utils
 ${MVVM_WAMR_DIR}/core/shared/utils/uncommon
@@ -208,11 +233,18 @@ ${CMAKE_CURRENT_SOURCE_DIR}/lib/MVVM/include
 ${CMAKE_CURRENT_SOURCE_DIR}/lib/MVVM/lib/yalantinglibs/include
 ${CMAKE_CURRENT_SOURCE_DIR}/lib/MVVM/lib/s2n-tls/api)
 target_link_libraries(cxl_mvvm_adapter PUBLIC MVVM_export vmlib Threads::Threads)
+# Add WASM definitions for cxl_mvvm_adapter
+target_compile_definitions(cxl_mvvm_adapter PRIVATE
+    WASM_ENABLE_CHECKPOINT_RESTORE=1
+    WASM_ENABLE_INTERP=1
+    WASM_ENABLE_AOT=1
+    BUILD_TARGET_X86_64)
 # Allow wasm_scheduler to use MVVM live migration backend
 target_include_directories(wasm_scheduler PUBLIC
 ${CMAKE_CURRENT_SOURCE_DIR}/lib/MVVM/include
 ${MVVM_WAMR_DIR}/core/iwasm/include
 ${MVVM_WAMR_DIR}/core/iwasm/interpreter
+${MVVM_WAMR_DIR}/core/iwasm/common
 ${MVVM_WAMR_DIR}/core/iwasm/aot
 ${MVVM_WAMR_DIR}/core/shared/utils
 ${MVVM_WAMR_DIR}/core/shared/utils/uncommon
