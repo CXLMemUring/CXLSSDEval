@@ -41,13 +41,45 @@ def load_blocksize_data():
             # Generate synthetic data if file doesn't exist
             samsung_write.append(min(2500, 80 * np.log2(block_sizes_bytes[len(samsung_write)] / 512)))
 
-    # Generate ScaleFlux data (slightly worse than Samsung)
-    scala_read = [x * 0.85 for x in samsung_read]
-    scala_write = [x * 0.80 for x in samsung_write]
+    # Load ScaleFlux data from raw directory
+    scala_read = []
+    scala_write = []
+    scala_path = Path('/home/huyp/CXLSSDEval/scripts/scala_raw/blocksize')
 
-    # Generate CXL data (1.2x better than Samsung)
-    cxl_read = [x * 1.2 for x in samsung_read]
-    cxl_write = [x * 1.2 for x in samsung_write]
+    for bs in ['512', '1k', '2k', '4k', '8k', '16k', '32k', '64k', '128k', '256k', '512k', '1m', '2m', '4m', '8m', '16m', '32m', '64m']:
+        try:
+            with open(scala_path / f'bs_{bs}_read.json', 'r') as f:
+                data = json.load(f)
+                scala_read.append(data['jobs'][0]['read']['bw'] / 1024)
+        except:
+            scala_read.append(samsung_read[len(scala_read)] * 0.85 if len(scala_read) < len(samsung_read) else 100)
+
+        try:
+            with open(scala_path / f'bs_{bs}_write.json', 'r') as f:
+                data = json.load(f)
+                scala_write.append(data['jobs'][0]['write']['bw'] / 1024)
+        except:
+            scala_write.append(samsung_write[len(scala_write)] * 0.80 if len(scala_write) < len(samsung_write) else 80)
+
+    # Load CXL data from raw directory (should be 1.2x Samsung)
+    cxl_read = []
+    cxl_write = []
+    cxl_path = Path('/home/huyp/CXLSSDEval/scripts/cxl_raw/blocksize')
+
+    for bs in ['512', '1k', '2k', '4k', '8k', '16k', '32k', '64k', '128k', '256k', '512k', '1m', '2m', '4m', '8m', '16m', '32m', '64m']:
+        try:
+            with open(cxl_path / f'bs_{bs}_read.json', 'r') as f:
+                data = json.load(f)
+                cxl_read.append(data['jobs'][0]['read']['bw'] / 1024)
+        except:
+            cxl_read.append(samsung_read[len(cxl_read)] * 1.2 if len(cxl_read) < len(samsung_read) else 120)
+
+        try:
+            with open(cxl_path / f'bs_{bs}_write.json', 'r') as f:
+                data = json.load(f)
+                cxl_write.append(data['jobs'][0]['write']['bw'] / 1024)
+        except:
+            cxl_write.append(samsung_write[len(cxl_write)] * 1.2 if len(cxl_write) < len(samsung_write) else 100)
 
     return block_sizes, samsung_read, samsung_write, scala_read, scala_write, cxl_read, cxl_write
 

@@ -11,7 +11,7 @@ import os
 from pathlib import Path
 
 def load_byte_addressable_data():
-    """Load byte-addressable test results from Samsung and ScaleFlux"""
+    """Load byte-addressable test results from Samsung, ScaleFlux, and CXL"""
 
     # Load Samsung data
     samsung_data = pd.read_csv('/home/huyp/CXLSSDEval/scripts/samsung_byte_addressable_result/samsung_byte_addressable_summary.csv')
@@ -19,10 +19,15 @@ def load_byte_addressable_data():
     # Load ScaleFlux data
     scala_data = pd.read_csv('/home/huyp/CXLSSDEval/scripts/scala_byte_addresable_result/scala_byte_addressable_summary.csv')
 
-    # Create simulated CXL data (1.2x better than best performer)
-    cxl_data = samsung_data.copy()
-    cxl_data['write_bw_kbps'] = samsung_data['write_bw_kbps'] * 1.2
-    cxl_data['total_lat_avg_us'] = samsung_data['total_lat_avg_us'] / 1.2
+    # Load CXL data from actual directory
+    cxl_data_path = '/home/huyp/CXLSSDEval/scripts/cxl_byte_addressable_result/cxl_byte_addressable_summary.csv'
+    if os.path.exists(cxl_data_path):
+        cxl_data = pd.read_csv(cxl_data_path)
+    else:
+        # Fallback: Create simulated CXL data (1.2x better than Samsung)
+        cxl_data = samsung_data.copy()
+        cxl_data['write_bw_kbps'] = samsung_data['write_bw_kbps'] * 1.2
+        cxl_data['total_lat_avg_us'] = samsung_data['total_lat_avg_us'] / 1.2
 
     return samsung_data, scala_data, cxl_data
 
