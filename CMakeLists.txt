@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.14)
 project(CXLSSDEval VERSION 1.0.0 LANGUAGES CXX)
 
 # Set C++ standard
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -129,6 +129,12 @@ set_target_properties(iouring_intercept PROPERTIES
 add_library(wasm_scheduler STATIC src/wasm_scheduler.cpp)
 target_include_directories(wasm_scheduler PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(wasm_scheduler PUBLIC Threads::Threads)
+# Add WASM definitions for wasm_scheduler when MVVM is enabled
+target_compile_definitions(wasm_scheduler PRIVATE
+    WASM_ENABLE_CHECKPOINT_RESTORE=1
+    WASM_ENABLE_INTERP=1
+    WASM_ENABLE_AOT=1
+    BUILD_TARGET_X86_64)
 
 # Installation
 install(TARGETS cxlssd cxlssd_static
@@ -184,12 +190,34 @@ message(STATUS "  Build Docs:        ${BUILD_DOCS}")
 message(STATUS "")
 
 # Optional MVVM integration for cross-ISA WASM live migration
-option(CXL_ENABLE_MVVM "Enable MVVM (WAMR) live migration adapter" OFF)
-if(CXL_ENABLE_MVVM)
-  add_definitions(-DCXL_ENABLE_MVVM)
-  set(MVVM_BUILD_BENCH OFF CACHE BOOL "Disable MVVM benches" FORCE)
-  add_subdirectory(lib/MVVM)
-  add_library(cxl_mvvm_adapter STATIC src/cxl_mvvm_adapter.cpp)
-  target_include_directories(cxl_mvvm_adapter PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-  target_link_libraries(cxl_mvvm_adapter PUBLIC MVVM_export vmlib Threads::Threads)
-endif()
+add_definitions(-DCXL_ENABLE_MVVM)
+set(MVVM_WAMR_DIR ${CMAKE_SOURCE_DIR}/lib/MVVM/lib/wasm-micro-runtime)
+# Add subdirectory first to ensure MVVM targets are available
+add_subdirectory(lib/MVVM)
+add_library(cxl_mvvm_adapter STATIC src/cxl_mvvm_adapter.cpp)
+target_include_directories(cxl_mvvm_adapter PUBLIC
+${CMAKE_CURRENT_SOURCE_DIR}/include
+${MVVM_WAMR_DIR}/core/iwasm/include
+${MVVM_WAMR_DIR}/core/iwasm/interpreter
+${MVVM_WAMR_DIR}/core/iwasm/aot
+${MVVM_WAMR_DIR}/core/shared/utils
+${MVVM_WAMR_DIR}/core/shared/utils/uncommon
+${MVVM_WAMR_DIR}/core/shared/platform/include
+${MVVM_WAMR_DIR}/core/shared/platform/linux-tdx
+${CMAKE_CURRENT_SOURCE_DIR}/lib/MVVM/include
+${CMAKE_CURRENT_SOURCE_DIR}/lib/MVVM/lib/yalantinglibs/include
+${CMAKE_CURRENT_SOURCE_DIR}/lib/MVVM/lib/s2n-tls/api)
+target_link_libraries(cxl_mvvm_adapter PUBLIC MVVM_export vmlib Threads::Threads)
+# Allow wasm_scheduler to use MVVM live migration backend
+target_include_directories(wasm_scheduler PUBLIC
+${CMAKE_CURRENT_SOURCE_DIR}/lib/MVVM/include
+${MVVM_WAMR_DIR}/core/iwasm/include
+${MVVM_WAMR_DIR}/core/iwasm/interpreter
+${MVVM_WAMR_DIR}/core/iwasm/aot
+${MVVM_WAMR_DIR}/core/shared/utils
+${MVVM_WAMR_DIR}/core/shared/utils/uncommon
+${MVVM_WAMR_DIR}/core/shared/platform/include
+${MVVM_WAMR_DIR}/core/shared/platform/linux-tdx
+${CMAKE_CURRENT_SOURCE_DIR}/lib/MVVM/lib/yalantinglibs/include
+${CMAKE_CURRENT_SOURCE_DIR}/lib/MVVM/lib/s2n-tls/api)
+target_link_libraries(wasm_scheduler PUBLIC MVVM_export vmlib)
