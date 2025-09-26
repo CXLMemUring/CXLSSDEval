@@ -18,8 +18,8 @@ set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
 # ARM-specific compiler flags
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -march=armv8-a")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=armv8-a")
+set(CMAKE_C_FLAGS "-march=armv8-a")
+set(CMAKE_CXX_FLAGS "-march=armv8-a")
 
 # Define ARM64 architecture
 add_definitions(-D__aarch64__)
