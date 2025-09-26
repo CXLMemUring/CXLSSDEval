@@ -161,10 +161,10 @@ class TestResultVisualizer:
         
         plt.suptitle('Queue Depth Performance Analysis', fontsize=16, fontweight='bold')
         plt.tight_layout()
-        plt.savefig(self.output_dir / 'qd_performance.png', dpi=300, bbox_inches='tight')
+        plt.savefig(self.output_dir / 'qd_performance.pdf', dpi=300, bbox_inches='tight')
         plt.close()
         
-        print(f"Saved queue depth performance plot to {self.output_dir / 'qd_performance.png'}")
+        print(f"Saved queue depth performance plot to {self.output_dir / 'qd_performance.pdf'}")
     
     def plot_blocksize_performance(self):
         """Plot Block Size vs Performance"""
@@ -229,10 +229,10 @@ class TestResultVisualizer:
         
         plt.suptitle('Block Size Performance Analysis', fontsize=16, fontweight='bold')
         plt.tight_layout()
-        plt.savefig(self.output_dir / 'blocksize_performance.png', dpi=300, bbox_inches='tight')
+        plt.savefig(self.output_dir / 'blocksize_performance.pdf', dpi=300, bbox_inches='tight')
         plt.close()
         
-        print(f"Saved block size performance plot to {self.output_dir / 'blocksize_performance.png'}")
+        print(f"Saved block size performance plot to {self.output_dir / 'blocksize_performance.pdf'}")
     
     def plot_latency_percentiles(self):
         """Plot latency percentiles comparison"""
@@ -299,10 +299,10 @@ class TestResultVisualizer:
         ax.grid(True, alpha=0.3)
         
         plt.tight_layout()
-        plt.savefig(self.output_dir / 'latency_percentiles.png', dpi=300, bbox_inches='tight')
+        plt.savefig(self.output_dir / 'latency_percentiles.pdf', dpi=300, bbox_inches='tight')
         plt.close()
         
-        print(f"Saved latency percentiles plot to {self.output_dir / 'latency_percentiles.png'}")
+        print(f"Saved latency percentiles plot to {self.output_dir / 'latency_percentiles.pdf'}")
     
     def plot_rwmix_performance(self):
         """Plot Read/Write Mix Performance"""
@@ -384,10 +384,10 @@ class TestResultVisualizer:
         
         plt.suptitle('Read/Write Mix Performance Analysis', fontsize=16, fontweight='bold')
         plt.tight_layout()
-        plt.savefig(self.output_dir / 'rwmix_performance.png', dpi=300, bbox_inches='tight')
+        plt.savefig(self.output_dir / 'rwmix_performance.pdf', dpi=300, bbox_inches='tight')
         plt.close()
         
-        print(f"Saved read/write mix performance plot to {self.output_dir / 'rwmix_performance.png'}")
+        print(f"Saved read/write mix performance plot to {self.output_dir / 'rwmix_performance.pdf'}")
     
     def plot_comparison_summary(self):
         """Create a summary comparison chart"""
@@ -474,10 +474,10 @@ class TestResultVisualizer:
         ax.grid(True, alpha=0.3)
         
         plt.tight_layout()
-        plt.savefig(self.output_dir / 'comparison_summary.png', dpi=300, bbox_inches='tight')
+        plt.savefig(self.output_dir / 'comparison_summary.pdf', dpi=300, bbox_inches='tight')
         plt.close()
         
-        print(f"Saved comparison summary plot to {self.output_dir / 'comparison_summary.png'}")
+        print(f"Saved comparison summary plot to {self.output_dir / 'comparison_summary.pdf'}")
     
     def generate_all_plots(self):
         """Generate all available plots"""

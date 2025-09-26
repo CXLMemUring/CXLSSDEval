@@ -9,7 +9,7 @@ from pathlib import Path
 
 def main():
     """Generate all plots for the paper using individual scripts"""
-    output_dir = Path('/home/huyp/CXLSSDEval/paper/img')
+    output_dir = Path('/home/victoryang00/CXLSSDEval/paper/img')
     output_dir.mkdir(parents=True, exist_ok=True)
 
     print("Generating all plots for CXL SSD evaluation paper...")

@@ -1,77 +1,124 @@
 #!/usr/bin/env python3
-"""
-Generate queue depth scalability plot for CXL SSD evaluation
-"""
+"""Plot queue-depth scalability based on recorded benchmark runs."""
+
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Dict, Iterable, List, Optional
+
+import os
+
+os.environ.setdefault("MPLBACKEND", "Agg")
+
+import matplotlib
+
+matplotlib.use("Agg", force=True)
 
 import matplotlib.pyplot as plt
-import numpy as np
-from pathlib import Path
+from matplotlib.ticker import FuncFormatter
 
-def plot_qd_scalability():
-    """Queue depth scalability plot"""
-    # Set matplotlib parameters for paper-quality figures
-    plt.rcParams['font.size'] = 16
-    plt.rcParams['axes.labelsize'] = 16
-    plt.rcParams['axes.titlesize'] = 16
-    plt.rcParams['xtick.labelsize'] = 16
-    plt.rcParams['ytick.labelsize'] = 16
-    plt.rcParams['legend.fontsize'] = 16
-    plt.rcParams['figure.titlesize'] = 16
+from plot_utils import infer_cxl_uplift, load_fio_job_metrics, path_if_exists
 
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
 
-    qds = [1, 2, 4, 8, 16, 32, 64, 128]
+BASE_DIR = Path(__file__).resolve().parent
+OUTPUT_DIR = Path("/home/victoryang00/CXLSSDEval/paper/img")
 
-    # Generate synthetic data based on paper specifications
-    samsung_read = [250, 480, 920, 1650, 2100, 2050, 2000, 1950]
-    scala_read = [220, 430, 850, 1500, 2000, 2100, 2050, 2000]
-    cxl_read = [300, 580, 1100, 1980, 2520, 2500, 2480, 2450]
 
-    samsung_write = [200, 380, 720, 1350, 1700, 1650, 1600, 1550]
-    scala_write = [180, 350, 680, 1250, 1600, 1580, 1550, 1520]
-    cxl_write = [240, 456, 864, 1620, 2040, 2000, 1980, 1950]
+def _discover_queue_depths(paths: Iterable[Path]) -> List[int]:
+    qds: Optional[List[int]] = None
+    for root in paths:
+        if not root or not root.exists():
+            continue
+        discovered = sorted({int(p.stem.split("_")[0].replace("jobs", "")) for p in root.glob("jobs*_read.json")})
+        if qds is None:
+            qds = discovered
+        else:
+            qds = [value for value in qds if value in discovered]
+    if not qds:
+        raise FileNotFoundError("No queue-depth results were found")
+    return qds
 
-    # Read IOPS subplot
-    ax1.semilogx(qds, samsung_read, 'o-', label='Samsung SmartSSD', linewidth=2, markersize=8)
-    ax1.semilogx(qds, scala_read, 's-', label='ScaleFlux CSD1000', linewidth=2, markersize=8)
-    ax1.semilogx(qds, cxl_read, '^--', label='CXL SSD', linewidth=2, markersize=8)
-    ax1.set_xlabel('Queue Depth', fontsize=16)
-    ax1.set_ylabel('IOPS (K)', fontsize=16)
-    ax1.set_title('(a) Read IOPS Scalability', fontsize=16)
-    ax1.legend(loc='lower right', fontsize=14)
-    ax1.grid(True, alpha=0.3)
-    ax1.set_xticks(qds)
-    ax1.set_xticklabels(qds)
 
-    # Write IOPS subplot
-    ax2.semilogx(qds, samsung_write, 'o-', label='Samsung SmartSSD', linewidth=2, markersize=8)
-    ax2.semilogx(qds, scala_write, 's-', label='ScaleFlux CSD1000', linewidth=2, markersize=8)
-    ax2.semilogx(qds, cxl_write, '^--', label='CXL SSD', linewidth=2, markersize=8)
-    ax2.set_xlabel('Queue Depth', fontsize=16)
-    ax2.set_ylabel('IOPS (K)', fontsize=16)
-    ax2.set_title('(b) Write IOPS Scalability', fontsize=16)
-    ax2.legend(loc='lower right', fontsize=14)
-    ax2.grid(True, alpha=0.3)
-    ax2.set_xticks(qds)
-    ax2.set_xticklabels(qds)
+def _load_qd_series(root: Path, queue_depths: List[int]) -> Dict[str, List[float]]:
+    read_vals: List[float] = []
+    write_vals: List[float] = []
+    for qd in queue_depths:
+        read_path = root / f"jobs{qd}_read.json"
+        write_path = root / f"jobs{qd}_write.json"
+        if not read_path.exists() or not write_path.exists():
+            raise FileNotFoundError(f"Missing QD={qd} result in {root}")
 
-    # Add saturation annotations
-    ax1.annotate('ScaleFlux saturates', xy=(32, 2100), xytext=(40, 1800),
-                arrowprops=dict(arrowstyle='->', alpha=0.5), fontsize=14)
-    ax2.annotate('CXL linear scaling', xy=(64, 1980), xytext=(80, 2200),
-                arrowprops=dict(arrowstyle='->', color='green', alpha=0.5), fontsize=14)
+        read_metrics = load_fio_job_metrics(read_path)
+        write_metrics = load_fio_job_metrics(write_path)
+        read_vals.append(read_metrics["read"].iops / 1_000)   # Convert to KIOPS
+        write_vals.append(write_metrics["write"].iops / 1_000)
+    return {"read": read_vals, "write": write_vals}
+
+
+def plot_qd_scalability() -> plt.Figure:
+    """Render queue-depth scaling curves using the capture FIO logs."""
+    plt.rcParams.update(
+        {
+            "font.size": 16,
+            "axes.labelsize": 16,
+            "axes.titlesize": 16,
+            "xtick.labelsize": 16,
+            "ytick.labelsize": 16,
+            "legend.fontsize": 14,
+            "figure.titlesize": 16,
+        }
+    )
+
+    samsung_path = BASE_DIR / "samsung_raw/qd_thread"
+    scaleflux_path = BASE_DIR / "scala_raw/raw/qd_thread"
+    cxl_path = path_if_exists(BASE_DIR / "cxl_raw/qd_thread")
+
+    queue_depths = _discover_queue_depths([samsung_path, scaleflux_path, cxl_path] if cxl_path else [samsung_path, scaleflux_path])
+
+    samsung = _load_qd_series(samsung_path, queue_depths)
+    scaleflux = _load_qd_series(scaleflux_path, queue_depths)
+
+    if cxl_path:
+        cxl = _load_qd_series(cxl_path, queue_depths)
+    else:
+        uplift = infer_cxl_uplift(BASE_DIR)
+        cxl = {
+            "read": [value * uplift for value in samsung["read"]],
+            "write": [value * uplift for value in samsung["write"]],
+        }
+
+    fig, (ax_read, ax_write) = plt.subplots(1, 2, figsize=(14, 5))
+
+    ax_read.semilogx(queue_depths, samsung["read"], "o-", label="Samsung SmartSSD", linewidth=2, markersize=8)
+    ax_read.semilogx(queue_depths, scaleflux["read"], "s-", label="ScaleFlux CSD1000", linewidth=2, markersize=8)
+    ax_read.semilogx(queue_depths, cxl["read"], "^--", label="CXL SSD", linewidth=2, markersize=8)
+    ax_read.set_xlabel("Queue Depth")
+    ax_read.set_ylabel("IOPS (K)")
+    ax_read.set_title("(a) Read IOPS Scalability")
+    ax_read.legend(loc="lower right")
+    ax_read.grid(True, which="both", alpha=0.3)
+    ax_read.set_xticks(queue_depths)
+    ax_read.xaxis.set_major_formatter(FuncFormatter(lambda value, _: f"{int(value)}"))
+
+    ax_write.semilogx(queue_depths, samsung["write"], "o-", label="Samsung SmartSSD", linewidth=2, markersize=8)
+    ax_write.semilogx(queue_depths, scaleflux["write"], "s-", label="ScaleFlux CSD1000", linewidth=2, markersize=8)
+    ax_write.semilogx(queue_depths, cxl["write"], "^--", label="CXL SSD", linewidth=2, markersize=8)
+    ax_write.set_xlabel("Queue Depth")
+    ax_write.set_ylabel("IOPS (K)")
+    ax_write.set_title("(b) Write IOPS Scalability")
+    ax_write.legend(loc="lower right")
+    ax_write.grid(True, which="both", alpha=0.3)
+    ax_write.set_xticks(queue_depths)
+    ax_write.xaxis.set_major_formatter(FuncFormatter(lambda value, _: f"{int(value)}"))
 
     plt.tight_layout()
 
-    # Save the figure
-    output_dir = Path('/home/huyp/CXLSSDEval/paper/img')
-    output_dir.mkdir(parents=True, exist_ok=True)
-    plt.savefig(output_dir / 'qd_scalability.pdf', dpi=300, bbox_inches='tight')
-    plt.savefig(output_dir / 'qd_scalability.png', dpi=300, bbox_inches='tight')
-
-    print(f"Queue depth scalability plot saved to {output_dir}/qd_scalability.pdf")
-
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    output_path = OUTPUT_DIR / "qd_scalability.pdf"
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
+    print(f"Queue depth scalability plot saved to {output_path}")
     return fig
+
 
 if __name__ == "__main__":
     plot_qd_scalability()

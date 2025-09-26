@@ -1,0 +1,21 @@
+{
+    "files.associations": {
+        "*.fc": "fortran-modern",
+        "chrono": "cpp",
+        "memory": "cpp",
+        "thread": "cpp",
+        "atomic": "cpp",
+        "vector": "cpp",
+        "iomanip": "cpp",
+        "cmath": "cpp",
+        "cstdlib": "cpp",
+        "mutex": "cpp",
+        "string": "cpp",
+        "cstring": "cpp",
+        "fstream": "cpp",
+        "filesystem": "cpp",
+        "algorithm": "cpp",
+        "iostream": "cpp",
+        "numeric": "cpp"
+    }
+}

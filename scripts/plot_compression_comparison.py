@@ -78,10 +78,10 @@ def plot_compression_comparison():
     plt.tight_layout()
 
     # Save the figure
-    output_dir = Path('/home/huyp/CXLSSDEval/paper/img')
+    output_dir = Path('/home/victoryang00/CXLSSDEval/paper/img')
     output_dir.mkdir(parents=True, exist_ok=True)
     plt.savefig(output_dir / 'compression_comparison.pdf', dpi=300, bbox_inches='tight')
-    plt.savefig(output_dir / 'compression_comparison.png', dpi=300, bbox_inches='tight')
+    plt.savefig(output_dir / 'compression_comparison.pdf', dpi=300, bbox_inches='tight')
 
     print(f"Compression comparison plot saved to {output_dir}/compression_comparison.pdf")
 

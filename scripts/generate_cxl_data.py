@@ -62,8 +62,8 @@ def multiply_performance(samsung_json_path, multiplier=1.2):
 
 def create_cxl_byte_addressable_data():
     """Create CXL byte addressable test data from Samsung data"""
-    samsung_dir = Path('/home/huyp/CXLSSDEval/scripts/samsung_byte_addressable_result')
-    cxl_dir = Path('/home/huyp/CXLSSDEval/scripts/cxl_byte_addressable_result')
+    samsung_dir = Path('/home/victoryang00/CXLSSDEval/scripts/samsung_byte_addressable_result')
+    cxl_dir = Path('/home/victoryang00/CXLSSDEval/scripts/cxl_byte_addressable_result')
 
     # Create CXL directory if it doesn't exist
     cxl_dir.mkdir(exist_ok=True)
@@ -106,8 +106,8 @@ def create_cxl_byte_addressable_data():
 
 def create_cxl_raw_data():
     """Create CXL raw test data from Samsung data"""
-    samsung_dir = Path('/home/huyp/CXLSSDEval/scripts/samsung_raw')
-    cxl_dir = Path('/home/huyp/CXLSSDEval/scripts/cxl_raw')
+    samsung_dir = Path('/home/victoryang00/CXLSSDEval/scripts/samsung_raw')
+    cxl_dir = Path('/home/victoryang00/CXLSSDEval/scripts/cxl_raw')
 
     # Create CXL directory structure
     for subdir in samsung_dir.iterdir():
@@ -145,7 +145,7 @@ def create_cxl_thermal_data():
         'throughput_mbps': cxl_throughput
     })
 
-    cxl_dir = Path('/home/huyp/CXLSSDEval/scripts/cxl_thermal_throttling')
+    cxl_dir = Path('/home/victoryang00/CXLSSDEval/scripts/cxl_thermal_throttling')
     cxl_dir.mkdir(exist_ok=True)
     df.to_csv(cxl_dir / 'thermal_data.csv', index=False)
 

@@ -88,10 +88,10 @@ def plot_pmr_latency_cdf():
     plt.tight_layout()
 
     # Save the figure
-    output_dir = Path('/home/huyp/CXLSSDEval/paper/img')
+    output_dir = Path('/home/victoryang00/CXLSSDEval/paper/img')
     output_dir.mkdir(parents=True, exist_ok=True)
     plt.savefig(output_dir / 'pmr_latency_cdf.pdf', dpi=300, bbox_inches='tight')
-    plt.savefig(output_dir / 'pmr_latency_cdf.png', dpi=300, bbox_inches='tight')
+    plt.savefig(output_dir / 'pmr_latency_cdf.pdf', dpi=300, bbox_inches='tight')
 
     print(f"PMR latency CDF plot saved to {output_dir}/pmr_latency_cdf.pdf")
 

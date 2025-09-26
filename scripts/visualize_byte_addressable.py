@@ -97,7 +97,7 @@ def create_comparison_plots(df, output_dir):
     plt.tight_layout()
 
     # Save plot
-    output_path = os.path.join(output_dir, 'byte_addressable_comparison.png')
+    output_path = os.path.join(output_dir, 'byte_addressable_comparison.pdf')
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     print(f"Saved plot to {output_path}")
 
@@ -123,7 +123,7 @@ def create_comparison_plots(df, output_dir):
     ax.legend()
     ax.grid(True, alpha=0.3)
 
-    output_path = os.path.join(output_dir, 'byte_addressable_speedup.png')
+    output_path = os.path.join(output_dir, 'byte_addressable_speedup.pdf')
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     print(f"Saved speedup plot to {output_path}")
 

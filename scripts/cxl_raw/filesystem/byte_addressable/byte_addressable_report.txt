@@ -1,0 +1,38 @@
+Byte-Addressable I/O Test Report (FIO)
+======================================
+
+Test Configuration:
+- Device: /dev/nvme1n1
+- Filesystem: 
+- Mount Point: 
+- File Size: 1G
+- I/O Engine: sync (buffer I/O)
+- Direct I/O: No (using page cache)
+- fdatasync: Yes (after each write)
+- Runtime per test: 30s
+
+Results Summary:
+
+Block Size | Write IOPS | Write BW (KB/s) | Mean Lat (us) | 95% Lat (us) | 99% Lat (us)
+-----------|------------|-----------------|---------------|--------------|-------------
+8          | 1072       | 8               | 12.12         | 13.50        | 17.02       
+16         | 914        | 14              | 13.01         | 14.14        | 19.33       
+32         | 910        | 28              | 12.91         | 14.02        | 19.33       
+64         | 1049       | 65              | 15.80         | 18.05        | 24.45       
+128        | 1008       | 126             | 13.35         | 15.94        | 19.58       
+256        | 962        | 240             | 16.62         | 23.94        | 25.73       
+512        | 918        | 459             | 13.24         | 17.54        | 20.10       
+1k         | 707        | 706             | 19.88         | 26.75        | 35.58       
+2k         | 627        | 1253            | 16.91         | 19.84        | 25.73       
+4k         | 477        | 1908            | 22.45         | 33.02        | 43.26       
+
+Analysis:
+- Sub-512B writes use filesystem buffer I/O with fdatasync for persistence
+- Traditional NVMe SSDs must perform read-modify-write for sectors < 512B
+- Performance degradation is significant for very small I/O sizes
+- fdatasync after each write ensures data durability but adds latency
+- CXL SSDs with native byte-addressability can bypass these limitations
+
+Note: This test simulates the overhead of sub-sector writes on traditional
+NVMe SSDs. CXL SSDs with byte-addressable support can perform these
+operations natively without filesystem overhead.

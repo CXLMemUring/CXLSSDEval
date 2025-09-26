@@ -109,8 +109,8 @@ def plot_blocksize_comparison():
 
     for bs in block_sizes:
         # Samsung data
-        samsung_read_file = f'/home/huyp/CXLSSDEval/scripts/samsung_raw/blocksize/bs_{bs}_read.json'
-        samsung_write_file = f'/home/huyp/CXLSSDEval/scripts/samsung_raw/blocksize/bs_{bs}_write.json'
+        samsung_read_file = f'/home/victoryang00/CXLSSDEval/scripts/samsung_raw/blocksize/bs_{bs}_read.json'
+        samsung_write_file = f'/home/victoryang00/CXLSSDEval/scripts/samsung_raw/blocksize/bs_{bs}_write.json'
 
         samsung_r = parse_fio_json(samsung_read_file)
         samsung_w = parse_fio_json(samsung_write_file)
@@ -119,8 +119,8 @@ def plot_blocksize_comparison():
         samsung_write.append(samsung_w['bw_mbps'] if samsung_w else 0)
 
         # ScaleFlux data
-        scaleflux_read_file = f'/home/huyp/CXLSSDEval/scripts/results/raw/blocksize/bs_{bs}_read.json'
-        scaleflux_write_file = f'/home/huyp/CXLSSDEval/scripts/results/raw/blocksize/bs_{bs}_write.json'
+        scaleflux_read_file = f'/home/victoryang00/CXLSSDEval/scripts/results/raw/blocksize/bs_{bs}_read.json'
+        scaleflux_write_file = f'/home/victoryang00/CXLSSDEval/scripts/results/raw/blocksize/bs_{bs}_write.json'
 
         scaleflux_r = parse_fio_json(scaleflux_read_file)
         scaleflux_w = parse_fio_json(scaleflux_write_file)
@@ -170,9 +170,9 @@ def plot_blocksize_comparison():
     ax2.grid(True, alpha=0.3)
 
     plt.tight_layout()
-    plt.savefig('/home/huyp/CXLSSDEval/scripts/paper/img/blocksize_comparison.pdf', dpi=300, bbox_inches='tight')
-    plt.savefig('/home/huyp/CXLSSDEval/scripts/paper/img/blocksize_comparison.png', dpi=300, bbox_inches='tight')
-    print("Generated: blocksize_comparison.pdf/png")
+    plt.savefig('/home/victoryang00/CXLSSDEval/scripts/paper/img/blocksize_comparison.pdf', dpi=300, bbox_inches='tight')
+    plt.savefig('/home/victoryang00/CXLSSDEval/scripts/paper/img/blocksize_comparison.pdf', dpi=300, bbox_inches='tight')
+    print("Generated: blocksize_comparison.pdf/pdf")
 
 def plot_qd_scalability():
     """Generate queue depth scalability figure"""
@@ -188,15 +188,15 @@ def plot_qd_scalability():
 
     for qd in qd_values:
         # Samsung data
-        samsung_r = parse_fio_json(f'/home/huyp/CXLSSDEval/scripts/samsung_raw/qd_thread/jobs{qd}_read.json')
-        samsung_w = parse_fio_json(f'/home/huyp/CXLSSDEval/scripts/samsung_raw/qd_thread/jobs{qd}_write.json')
+        samsung_r = parse_fio_json(f'/home/victoryang00/CXLSSDEval/scripts/samsung_raw/qd_thread/jobs{qd}_read.json')
+        samsung_w = parse_fio_json(f'/home/victoryang00/CXLSSDEval/scripts/samsung_raw/qd_thread/jobs{qd}_write.json')
 
         samsung_read_iops.append(samsung_r['iops']/1000 if samsung_r else 0)  # Convert to K IOPS
         samsung_write_iops.append(samsung_w['iops']/1000 if samsung_w else 0)
 
         # ScaleFlux data
-        scaleflux_r = parse_fio_json(f'/home/huyp/CXLSSDEval/scripts/results/raw/qd_thread/jobs{qd}_read.json')
-        scaleflux_w = parse_fio_json(f'/home/huyp/CXLSSDEval/scripts/results/raw/qd_thread/jobs{qd}_write.json')
+        scaleflux_r = parse_fio_json(f'/home/victoryang00/CXLSSDEval/scripts/results/raw/qd_thread/jobs{qd}_read.json')
+        scaleflux_w = parse_fio_json(f'/home/victoryang00/CXLSSDEval/scripts/results/raw/qd_thread/jobs{qd}_write.json')
 
         scaleflux_read_iops.append(scaleflux_r['iops']/1000 if scaleflux_r else 0)
         scaleflux_write_iops.append(scaleflux_w['iops']/1000 if scaleflux_w else 0)
@@ -246,9 +246,9 @@ def plot_qd_scalability():
     ax2.grid(True, alpha=0.3)
 
     plt.tight_layout()
-    plt.savefig('/home/huyp/CXLSSDEval/scripts/paper/img/qd_scalability.pdf', dpi=300, bbox_inches='tight')
-    plt.savefig('/home/huyp/CXLSSDEval/scripts/paper/img/qd_scalability.png', dpi=300, bbox_inches='tight')
-    print("Generated: qd_scalability.pdf/png")
+    plt.savefig('/home/victoryang00/CXLSSDEval/scripts/paper/img/qd_scalability.pdf', dpi=300, bbox_inches='tight')
+    plt.savefig('/home/victoryang00/CXLSSDEval/scripts/paper/img/qd_scalability.pdf', dpi=300, bbox_inches='tight')
+    print("Generated: qd_scalability.pdf/pdf")
 
 def plot_rwmix_performance():
     """Generate read/write mix performance figure"""
@@ -268,14 +268,14 @@ def plot_rwmix_performance():
         labels.append(label)
 
         # Samsung
-        samsung_data = parse_fio_json(f'/home/huyp/CXLSSDEval/scripts/samsung_raw/rwmix/{config}.json')
+        samsung_data = parse_fio_json(f'/home/victoryang00/CXLSSDEval/scripts/samsung_raw/rwmix/{config}.json')
         if samsung_data:
             samsung_bw.append(samsung_data['bw_mbps'])
         else:
             samsung_bw.append(0)
 
         # ScaleFlux
-        scaleflux_data = parse_fio_json(f'/home/huyp/CXLSSDEval/scripts/results/raw/rwmix/{config}.json')
+        scaleflux_data = parse_fio_json(f'/home/victoryang00/CXLSSDEval/scripts/results/raw/rwmix/{config}.json')
         if scaleflux_data:
             scaleflux_bw.append(scaleflux_data['bw_mbps'])
         else:
@@ -305,9 +305,9 @@ def plot_rwmix_performance():
     ax.grid(True, alpha=0.3, axis='y')
 
     plt.tight_layout()
-    plt.savefig('/home/huyp/CXLSSDEval/scripts/paper/img/rwmix_performance.pdf', dpi=300, bbox_inches='tight')
-    plt.savefig('/home/huyp/CXLSSDEval/scripts/paper/img/rwmix_performance.png', dpi=300, bbox_inches='tight')
-    print("Generated: rwmix_performance.pdf/png")
+    plt.savefig('/home/victoryang00/CXLSSDEval/scripts/paper/img/rwmix_performance.pdf', dpi=300, bbox_inches='tight')
+    plt.savefig('/home/victoryang00/CXLSSDEval/scripts/paper/img/rwmix_performance.pdf', dpi=300, bbox_inches='tight')
+    print("Generated: rwmix_performance.pdf/pdf")
 
 def plot_thermal_throttling():
     """Generate thermal throttling analysis figure with dual y-axis"""
@@ -382,9 +382,9 @@ def plot_thermal_throttling():
                 fontsize=14, color=COLORS['Samsung SmartSSD'])
 
     plt.tight_layout()
-    plt.savefig('/home/huyp/CXLSSDEval/scripts/paper/img/thermal_throttling.pdf', dpi=300, bbox_inches='tight')
-    plt.savefig('/home/huyp/CXLSSDEval/scripts/paper/img/thermal_throttling.png', dpi=300, bbox_inches='tight')
-    print("Generated: thermal_throttling.pdf/png")
+    plt.savefig('/home/victoryang00/CXLSSDEval/scripts/paper/img/thermal_throttling.pdf', dpi=300, bbox_inches='tight')
+    plt.savefig('/home/victoryang00/CXLSSDEval/scripts/paper/img/thermal_throttling.pdf', dpi=300, bbox_inches='tight')
+    print("Generated: thermal_throttling.pdf/pdf")
 
 def plot_access_pattern():
     """Generate access pattern comparison figure"""
@@ -396,20 +396,20 @@ def plot_access_pattern():
     cxl_perf = []
 
     # Sequential read
-    samsung_seq_r = parse_fio_json('/home/huyp/CXLSSDEval/scripts/samsung_raw/access_pattern/pattern_read.json')
-    scaleflux_seq_r = parse_fio_json('/home/huyp/CXLSSDEval/scripts/results/raw/access_pattern/pattern_read.json')
+    samsung_seq_r = parse_fio_json('/home/victoryang00/CXLSSDEval/scripts/samsung_raw/access_pattern/pattern_read.json')
+    scaleflux_seq_r = parse_fio_json('/home/victoryang00/CXLSSDEval/scripts/results/raw/access_pattern/pattern_read.json')
 
     # Random read
-    samsung_rand_r = parse_fio_json('/home/huyp/CXLSSDEval/scripts/samsung_raw/access_pattern/pattern_randread.json')
-    scaleflux_rand_r = parse_fio_json('/home/huyp/CXLSSDEval/scripts/results/raw/access_pattern/pattern_randread.json')
+    samsung_rand_r = parse_fio_json('/home/victoryang00/CXLSSDEval/scripts/samsung_raw/access_pattern/pattern_randread.json')
+    scaleflux_rand_r = parse_fio_json('/home/victoryang00/CXLSSDEval/scripts/results/raw/access_pattern/pattern_randread.json')
 
     # Sequential write
-    samsung_seq_w = parse_fio_json('/home/huyp/CXLSSDEval/scripts/samsung_raw/access_pattern/pattern_write.json')
-    scaleflux_seq_w = parse_fio_json('/home/huyp/CXLSSDEval/scripts/results/raw/access_pattern/pattern_write.json')
+    samsung_seq_w = parse_fio_json('/home/victoryang00/CXLSSDEval/scripts/samsung_raw/access_pattern/pattern_write.json')
+    scaleflux_seq_w = parse_fio_json('/home/victoryang00/CXLSSDEval/scripts/results/raw/access_pattern/pattern_write.json')
 
     # Random write
-    samsung_rand_w = parse_fio_json('/home/huyp/CXLSSDEval/scripts/samsung_raw/access_pattern/pattern_randwrite.json')
-    scaleflux_rand_w = parse_fio_json('/home/huyp/CXLSSDEval/scripts/results/raw/access_pattern/pattern_randwrite.json')
+    samsung_rand_w = parse_fio_json('/home/victoryang00/CXLSSDEval/scripts/samsung_raw/access_pattern/pattern_randwrite.json')
+    scaleflux_rand_w = parse_fio_json('/home/victoryang00/CXLSSDEval/scripts/results/raw/access_pattern/pattern_randwrite.json')
 
     # Collect performance data (IOPS in thousands)
     samsung_perf = [
@@ -464,14 +464,14 @@ def plot_access_pattern():
                        fontsize=12, ha='center')
 
     plt.tight_layout()
-    plt.savefig('/home/huyp/CXLSSDEval/scripts/paper/img/access_pattern.pdf', dpi=300, bbox_inches='tight')
-    plt.savefig('/home/huyp/CXLSSDEval/scripts/paper/img/access_pattern.png', dpi=300, bbox_inches='tight')
-    print("Generated: access_pattern.pdf/png")
+    plt.savefig('/home/victoryang00/CXLSSDEval/scripts/paper/img/access_pattern.pdf', dpi=300, bbox_inches='tight')
+    plt.savefig('/home/victoryang00/CXLSSDEval/scripts/paper/img/access_pattern.pdf', dpi=300, bbox_inches='tight')
+    print("Generated: access_pattern.pdf/pdf")
 
 def main():
     """Generate all figures for the paper"""
     # Create output directory if it doesn't exist
-    os.makedirs('/home/huyp/CXLSSDEval/scripts/paper/img', exist_ok=True)
+    os.makedirs('/home/victoryang00/CXLSSDEval/scripts/paper/img', exist_ok=True)
 
     print("Generating paper figures...")
     print("=" * 50)
@@ -504,7 +504,7 @@ def main():
 
     print("=" * 50)
     print("Figure generation complete!")
-    print("Figures saved to: /home/huyp/CXLSSDEval/scripts/paper/img/")
+    print("Figures saved to: /home/victoryang00/CXLSSDEval/scripts/paper/img/")
 
 if __name__ == "__main__":
     main()

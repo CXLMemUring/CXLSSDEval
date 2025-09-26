@@ -1,7 +1,7 @@
 # CXL SSD Test Configuration
 
 # Device configuration
-device: "/dev/nvme0n1"  # Change this to your actual device
+device: "/dev/shm"  # Change this to your actual device
 filesystem: ext4
 
 # Test duration settings

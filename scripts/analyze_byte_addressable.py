@@ -188,15 +188,15 @@ def main():
     print("=" * 100)
 
     # Analyze Samsung SSD
-    samsung_dir = "/home/huyp/CXLSSDEval/scripts/samsung_byte_addressable_result"
+    samsung_dir = "/home/victoryang00/CXLSSDEval/scripts/samsung_byte_addressable_result"
     samsung_success = analyze_device("samsung", samsung_dir)
 
     # Analyze Scala SSD (CXL SSD with byte-addressable support)
-    scala_dir = "/home/huyp/CXLSSDEval/scripts/scala_byte_addresable_result"
+    scala_dir = "/home/victoryang00/CXLSSDEval/scripts/scala_byte_addresable_result"
     scala_success = analyze_device("scala", scala_dir)
 
     # Analyze CSD SSD (if available)
-    csd_dir = "/home/huyp/CXLSSDEval/scripts/csd_byte_addressable_result"
+    csd_dir = "/home/victoryang00/CXLSSDEval/scripts/csd_byte_addressable_result"
     csd_success = analyze_device("csd", csd_dir)
 
     # Final summary

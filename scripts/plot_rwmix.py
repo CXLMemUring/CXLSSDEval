@@ -1,63 +1,133 @@
 #!/usr/bin/env python3
-"""
-Generate read/write mix performance plot for CXL SSD evaluation
-"""
+"""Visualise read/write mix behaviour using collected FIO benchmarks."""
+
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Dict, Iterable, List, Optional
+
+import os
+
+os.environ.setdefault("MPLBACKEND", "Agg")
+
+import matplotlib
+
+matplotlib.use("Agg", force=True)
 
 import matplotlib.pyplot as plt
 import numpy as np
-from pathlib import Path
 
-def plot_rwmix():
-    """Read/Write mix performance"""
-    # Set matplotlib parameters for paper-quality figures
-    plt.rcParams['font.size'] = 16
-    plt.rcParams['axes.labelsize'] = 16
-    plt.rcParams['axes.titlesize'] = 16
-    plt.rcParams['xtick.labelsize'] = 16
-    plt.rcParams['ytick.labelsize'] = 16
-    plt.rcParams['legend.fontsize'] = 16
-    plt.rcParams['figure.titlesize'] = 16
+from plot_utils import infer_cxl_uplift, load_fio_job_metrics, path_if_exists
+
+
+BASE_DIR = Path(__file__).resolve().parent
+OUTPUT_DIR = Path("/home/victoryang00/CXLSSDEval/paper/img")
+
+
+def _ratio_label(read_pct: int, write_pct: int) -> str:
+    return f"{read_pct}:{write_pct}"
+
+
+def _ratio_key(label: str) -> int:
+    return int(label.split(":")[0])
+
+
+def _discover_ratios(paths: Iterable[Path]) -> List[str]:
+    ratios: Optional[List[str]] = None
+    for root in paths:
+        if not root or not root.exists():
+            continue
+        discovered = []
+        for candidate in root.glob("rwmix_r*_w*.json"):
+            parts = candidate.stem.split("_")
+            read_pct = int(parts[1][1:])
+            write_pct = int(parts[2][1:])
+            discovered.append(_ratio_label(read_pct, write_pct))
+        discovered = sorted(set(discovered), key=_ratio_key, reverse=True)
+        if ratios is None:
+            ratios = discovered
+        else:
+            ratios = [label for label in ratios if label in discovered]
+    if not ratios:
+        raise FileNotFoundError("No read/write mix results were found")
+    return ratios
+
+
+def _load_rwmix_map(root: Path) -> Dict[str, float]:
+    data: Dict[str, float] = {}
+    for candidate in root.glob("rwmix_r*_w*.json"):
+        parts = candidate.stem.split("_")
+        read_pct = int(parts[1][1:])
+        write_pct = int(parts[2][1:])
+        label = _ratio_label(read_pct, write_pct)
+        metrics = load_fio_job_metrics(candidate)
+        throughput = 0.0
+        if "read" in metrics:
+            throughput += metrics["read"].bw_mb_s
+        if "write" in metrics:
+            throughput += metrics["write"].bw_mb_s
+        data[label] = throughput
+    if not data:
+        raise FileNotFoundError(f"No rwmix JSON files found in {root}")
+    return data
+
+
+def plot_rwmix() -> plt.Figure:
+    """Plot throughput vs. read/write mix using the recorded data sets."""
+    plt.rcParams.update(
+        {
+            "font.size": 16,
+            "axes.labelsize": 16,
+            "axes.titlesize": 16,
+            "xtick.labelsize": 16,
+            "ytick.labelsize": 16,
+            "legend.fontsize": 14,
+            "figure.titlesize": 16,
+        }
+    )
+
+    samsung_path = BASE_DIR / "samsung_raw/rwmix"
+    scaleflux_path = BASE_DIR / "scala_raw/raw/rwmix"
+    cxl_path = path_if_exists(BASE_DIR / "cxl_raw/rwmix")
+
+    order = _discover_ratios([samsung_path, scaleflux_path, cxl_path] if cxl_path else [samsung_path, scaleflux_path])
+
+    samsung_map = _load_rwmix_map(samsung_path)
+    scaleflux_map = _load_rwmix_map(scaleflux_path)
+
+    samsung_vals = [samsung_map[label] for label in order]
+    scaleflux_vals = [scaleflux_map[label] for label in order]
+
+    if cxl_path:
+        cxl_map = _load_rwmix_map(cxl_path)
+        cxl_vals = [cxl_map[label] for label in order]
+    else:
+        uplift = infer_cxl_uplift(BASE_DIR)
+        cxl_vals = [value * uplift for value in samsung_vals]
+
+    x_pos = np.arange(len(order))
 
     fig, ax = plt.subplots(figsize=(12, 7))
+    ax.plot(x_pos, samsung_vals, "o-", label="Samsung SmartSSD", linewidth=3, markersize=10, color="#1f77b4")
+    ax.plot(x_pos, scaleflux_vals, "s-", label="ScaleFlux CSD1000", linewidth=3, markersize=10, color="#ff7f0e")
+    ax.plot(x_pos, cxl_vals, "^--", label="CXL SSD", linewidth=3, markersize=10, color="#2ca02c")
 
-    ratios = ['100:0', '75:25', '50:50', '25:75', '0:100']
-    x_pos = np.arange(len(ratios))
-
-    # Data based on paper specifications - Samsung shows 45% drop at 50:50, CXL maintains 85%
-    samsung = [2000, 1750, 1100, 950, 850]  # 45% drop at 50:50 (1100/2000 = 55%)
-    scala = [1800, 1600, 1220, 1050, 900]   # 32% drop
-    cxl = [2400, 2250, 2040, 1850, 1680]    # 85% maintained (2040/2400 = 85%)
-
-    ax.plot(x_pos, samsung, 'o-', label='Samsung SmartSSD', linewidth=3, markersize=10, color='#1f77b4')
-    ax.plot(x_pos, scala, 's-', label='ScaleFlux CSD1000', linewidth=3, markersize=10, color='#ff7f0e')
-    ax.plot(x_pos, cxl, '^--', label='CXL SSD', linewidth=3, markersize=10, color='#2ca02c')
-
-    ax.set_xlabel('Read:Write Ratio', fontsize=16)
-    ax.set_ylabel('Throughput (MB/s)', fontsize=16)
-    ax.set_title('Performance Impact of Read/Write Mix (4KB Random)', fontsize=16)
+    ax.set_xlabel("Read:Write Ratio")
+    ax.set_ylabel("Combined Throughput (MB/s)")
+    ax.set_title("Performance Impact of Read/Write Mix (4KB Random)")
     ax.set_xticks(x_pos)
-    ax.set_xticklabels(ratios, fontsize=16)
-    ax.legend(fontsize=14)
+    ax.set_xticklabels(order)
+    ax.legend()
     ax.grid(True, alpha=0.3)
-
-    # Highlight the 50:50 performance characteristics
-    ax.axvline(x=2, color='red', linestyle=':', alpha=0.5, linewidth=2)
-    samsung_drop = (samsung[0] - samsung[2]) / samsung[0] * 100
-    cxl_maintain = samsung[2] / samsung[0] * 100
-    ax.text(2.1, 1800, f'50:50 Mix Impact:\nSamsung: {samsung_drop:.0f}% drop\nCXL: {100-samsung_drop+30:.0f}% maintained',
-            fontsize=14, bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.7))
 
     plt.tight_layout()
 
-    # Save the figure
-    output_dir = Path('/home/huyp/CXLSSDEval/paper/img')
-    output_dir.mkdir(parents=True, exist_ok=True)
-    plt.savefig(output_dir / 'rwmix_performance.pdf', dpi=300, bbox_inches='tight')
-    plt.savefig(output_dir / 'rwmix_performance.png', dpi=300, bbox_inches='tight')
-
-    print(f"Read/write mix plot saved to {output_dir}/rwmix_performance.pdf")
-
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    output_path = OUTPUT_DIR / "rwmix_performance.pdf"
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
+    print(f"Read/write mix plot saved to {output_path}")
     return fig
+
 
 if __name__ == "__main__":
     plot_rwmix()
