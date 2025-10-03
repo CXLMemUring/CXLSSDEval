@@ -21,10 +21,12 @@
 #include <linux/mutex.h>
 #include <linux/delay.h>
 #include <linux/dma-mapping.h>
+#include <linux/highmem.h>
 #include <linux/interrupt.h>
+#include <linux/workqueue.h>
 
 #define DRIVER_NAME "bar_rw"
-#define DRIVER_VERSION "1.0"
+#define DRIVER_VERSION "1.1"
 
 /* Device identification */
 #define VENDOR_ID 0x1172 /* Altera Corporation */
@@ -90,9 +92,18 @@ struct bar_rw_dev
     /* Synchronization */
     struct mutex cmd_lock;
 
+    /* Request processing */
+    struct workqueue_struct *io_wq;
+
     /* Statistics */
     atomic64_t total_reads;
     atomic64_t total_writes;
+};
+
+struct bar_rw_rq_ctx {
+    struct work_struct work;
+    struct bar_rw_dev *dev;
+    struct request *rq;
 };
 
 /* PCI device table */
@@ -185,131 +196,153 @@ static int bar_send_command(struct bar_rw_dev *dev, struct bar_command *cmd)
     return 0;
 }
 
-/* Perform read operation */
-static int bar_do_read(struct bar_rw_dev *dev, sector_t lba,
-                       unsigned int sectors, void *buffer)
+static int bar_submit_dma_cmd(struct bar_rw_dev *dev, u8 opcode,
+                              sector_t lba, unsigned int bytes)
 {
     struct bar_command cmd = {0};
-    struct bio *bio;
-    struct page *page;
     int ret;
 
-    if (!dev || !buffer)
-        return -EINVAL;
-
-    /* If we have a backend device, read from it using bio */
-    if (dev->backend_bdev) {
-        page = virt_to_page(buffer);
-        
-        bio = bio_alloc(dev->backend_bdev, 1, REQ_OP_READ | REQ_SYNC, GFP_KERNEL);
-        if (!bio)
-            return -ENOMEM;
-            
-        bio->bi_iter.bi_sector = lba;
-        bio_add_page(bio, page, sectors * 512, offset_in_page(buffer));
-        
-        ret = submit_bio_wait(bio);
-        bio_put(bio);
-        
-        if (ret)
-            return ret;
-            
-        atomic64_inc(&dev->total_reads);
-        return 0;
-    }
-
-    /* Fallback to BAR/DMA method */
-    if (!dev->dma_buffer)
-        return -EINVAL;
-
-    cmd.opcode = BAR_CMD_READ;
+    cmd.opcode = opcode;
     cmd.lba = lba;
-    cmd.length = sectors * 512;
+    cmd.length = bytes;
     cmd.dma_addr = dev->dma_handle;
-
-    mutex_lock(&dev->cmd_lock);
 
     /* Send command to hardware via BAR write */
     ret = bar_send_command(dev, &cmd);
     if (ret)
-    {
-        mutex_unlock(&dev->cmd_lock);
         return ret;
-    }
 
     /* Small delay for hardware to complete */
     udelay(100);
-
-    /* Copy data from DMA buffer to destination */
-    memcpy(buffer, dev->dma_buffer, sectors * 512);
-
-    mutex_unlock(&dev->cmd_lock);
-
-    atomic64_inc(&dev->total_reads);
     return 0;
 }
 
-/* Perform write operation */
-static int bar_do_write(struct bar_rw_dev *dev, sector_t lba,
-                        unsigned int sectors, const void *buffer)
+static int bar_backend_io(struct bar_rw_dev *dev, struct request *req,
+                          const struct bio_vec *bvec, sector_t sector)
 {
-    struct bar_command cmd = {0};
     struct bio *bio;
-    struct page *page;
+    unsigned int opf = (rq_data_dir(req) == WRITE) ? REQ_OP_WRITE : REQ_OP_READ;
+    int added;
     int ret;
 
-    if (!dev || !buffer)
-        return -EINVAL;
+    bio = bio_alloc(dev->backend_bdev, 1, opf | REQ_SYNC, GFP_KERNEL);
+    if (!bio)
+        return -ENOMEM;
 
-    /* If we have a backend device, write to it using bio */
-    if (dev->backend_bdev) {
-        page = virt_to_page(buffer);
-        
-        bio = bio_alloc(dev->backend_bdev, 1, REQ_OP_WRITE | REQ_SYNC, GFP_KERNEL);
-        if (!bio)
-            return -ENOMEM;
-            
-        bio->bi_iter.bi_sector = lba;
-        bio_add_page(bio, page, sectors * 512, offset_in_page(buffer));
-        
-        ret = submit_bio_wait(bio);
+    bio->bi_iter.bi_sector = sector;
+    added = bio_add_page(bio, bvec->bv_page, bvec->bv_len, bvec->bv_offset);
+    if (added != bvec->bv_len)
+    {
         bio_put(bio);
-        
-        if (ret)
-            return ret;
-            
-        atomic64_inc(&dev->total_writes);
-        return 0;
+        return -EIO;
     }
 
-    /* Fallback to BAR/DMA method */
-    if (!dev->dma_buffer)
+    ret = submit_bio_wait(bio);
+    bio_put(bio);
+
+    return ret;
+}
+
+static int bar_dma_io(struct bar_rw_dev *dev, struct request *req,
+                      const struct bio_vec *bvec, sector_t sector)
+{
+    void *kaddr;
+    unsigned int len = bvec->bv_len;
+    int ret;
+
+    if (!dev->dma_buffer || len > dev->dma_size)
         return -EINVAL;
 
     mutex_lock(&dev->cmd_lock);
 
-    /* Copy data to DMA buffer */
-    memcpy(dev->dma_buffer, buffer, sectors * 512);
-
-    cmd.opcode = BAR_CMD_WRITE;
-    cmd.lba = lba;
-    cmd.length = sectors * 512;
-    cmd.dma_addr = dev->dma_handle;
-
-    /* Send command to hardware via BAR write */
-    ret = bar_send_command(dev, &cmd);
-    if (ret)
+    if (rq_data_dir(req) == WRITE)
     {
-        mutex_unlock(&dev->cmd_lock);
-        return ret;
+        kaddr = kmap_local_page(bvec->bv_page);
+        memcpy(dev->dma_buffer, kaddr + bvec->bv_offset, len);
+        kunmap_local(kaddr);
+
+        ret = bar_submit_dma_cmd(dev, BAR_CMD_WRITE, sector, len);
+    }
+    else
+    {
+        ret = bar_submit_dma_cmd(dev, BAR_CMD_READ, sector, len);
+        if (!ret)
+        {
+            kaddr = kmap_local_page(bvec->bv_page);
+            memcpy(kaddr + bvec->bv_offset, dev->dma_buffer, len);
+            kunmap_local(kaddr);
+        }
     }
 
-    /* Small delay for hardware to complete */
-    udelay(100);
-
     mutex_unlock(&dev->cmd_lock);
+    return ret;
+}
 
-    atomic64_inc(&dev->total_writes);
+static void bar_rw_process_request(struct work_struct *work)
+{
+    struct bar_rw_rq_ctx *ctx = container_of(work, struct bar_rw_rq_ctx, work);
+    struct request *req = ctx->rq;
+    struct bar_rw_dev *dev = ctx->dev;
+    struct bio_vec bvec;
+    struct req_iterator iter;
+    sector_t sector;
+    blk_status_t status = BLK_STS_OK;
+    unsigned int segments = 0;
+
+    if (!dev || !req)
+    {
+        if (req)
+            blk_mq_end_request(req, BLK_STS_IOERR);
+        return;
+    }
+
+    sector = blk_rq_pos(req);
+
+    if (req_op(req) != REQ_OP_READ && req_op(req) != REQ_OP_WRITE)
+    {
+        blk_mq_end_request(req, BLK_STS_NOTSUPP);
+        return;
+    }
+
+    rq_for_each_segment(bvec, req, iter)
+    {
+        int ret;
+
+        if (dev->backend_bdev)
+            ret = bar_backend_io(dev, req, &bvec, sector);
+        else
+            ret = bar_dma_io(dev, req, &bvec, sector);
+
+        if (ret)
+        {
+            status = BLK_STS_IOERR;
+            break;
+        }
+
+        sector += bvec.bv_len / 512;
+        segments++;
+    }
+
+    if (status == BLK_STS_OK && segments)
+    {
+        if (rq_data_dir(req) == WRITE)
+            atomic64_add(segments, &dev->total_writes);
+        else
+            atomic64_add(segments, &dev->total_reads);
+    }
+
+    blk_mq_end_request(req, status);
+}
+
+static int bar_rw_init_request(struct blk_mq_tag_set *set, struct request *req,
+                               unsigned int hctx_idx, unsigned int numa_node)
+{
+    struct bar_rw_rq_ctx *ctx = blk_mq_rq_to_pdu(req);
+
+    INIT_WORK(&ctx->work, bar_rw_process_request);
+    ctx->rq = req;
+    ctx->dev = NULL;
+
     return 0;
 }
 
@@ -319,54 +352,33 @@ static blk_status_t bar_rw_queue_rq(struct blk_mq_hw_ctx *hctx,
 {
     struct bar_rw_dev *dev = hctx->queue->queuedata;
     struct request *req = bd->rq;
-    struct bio_vec bvec;
-    struct req_iterator iter;
-    sector_t sector = blk_rq_pos(req);
-    void *buffer;
-    int ret;
+    struct bar_rw_rq_ctx *ctx;
 
-    /* Safety check */
-    if (!dev || !dev->dma_buffer || !dev->cmd_reg)
+    if (!dev || !dev->cmd_reg)
     {
+        blk_mq_start_request(req);
         blk_mq_end_request(req, BLK_STS_IOERR);
         return BLK_STS_IOERR;
     }
 
     blk_mq_start_request(req);
 
-    /* Process each bio segment */
-    rq_for_each_segment(bvec, req, iter)
+    ctx = blk_mq_rq_to_pdu(req);
+    ctx->dev = dev;
+    ctx->rq = req;
+
+    if (!queue_work(dev->io_wq, &ctx->work))
     {
-        buffer = kmap_atomic(bvec.bv_page);
-
-        if (rq_data_dir(req) == WRITE)
-        {
-            ret = bar_do_write(dev, sector, bvec.bv_len / 512,
-                               buffer + bvec.bv_offset);
-        }
-        else
-        {
-            ret = bar_do_read(dev, sector, bvec.bv_len / 512,
-                              buffer + bvec.bv_offset);
-        }
-
-        kunmap_atomic(buffer);
-
-        if (ret)
-        {
-            blk_mq_end_request(req, BLK_STS_IOERR);
-            return BLK_STS_IOERR;
-        }
-
-        sector += bvec.bv_len / 512;
+        blk_mq_end_request(req, BLK_STS_IOERR);
+        return BLK_STS_IOERR;
     }
 
-    blk_mq_end_request(req, BLK_STS_OK);
     return BLK_STS_OK;
 }
 
 static const struct blk_mq_ops bar_rw_mq_ops = {
     .queue_rq = bar_rw_queue_rq,
+    .init_request = bar_rw_init_request,
 };
 
 /* Block device operations */
@@ -386,7 +398,7 @@ static int bar_rw_setup_block(struct bar_rw_dev *dev)
     dev->tag_set.queue_depth = 128;
     dev->tag_set.numa_node = NUMA_NO_NODE;
     dev->tag_set.flags = BLK_MQ_F_SHOULD_MERGE;
-    dev->tag_set.cmd_size = 0;
+    dev->tag_set.cmd_size = sizeof(struct bar_rw_rq_ctx);
     dev->tag_set.driver_data = dev;
 
     ret = blk_mq_alloc_tag_set(&dev->tag_set);
@@ -488,6 +500,8 @@ static int bar_rw_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 {
     struct bar_rw_dev *dev;
     int ret;
+    bool device_enabled = false;
+    bool regions_requested = false;
 
     pr_info("%s: Probing device %s\n", DRIVER_NAME, pci_name(pdev));
 
@@ -501,13 +515,21 @@ static int bar_rw_probe(struct pci_dev *pdev, const struct pci_device_id *id)
     atomic64_set(&dev->total_reads, 0);
     atomic64_set(&dev->total_writes, 0);
 
+    dev->io_wq = alloc_workqueue("bar_rw_io", WQ_UNBOUND | WQ_MEM_RECLAIM, 0);
+    if (!dev->io_wq)
+    {
+        ret = -ENOMEM;
+        goto err_destroy_wq;
+    }
+
     /* Enable PCI device */
     ret = pci_enable_device(pdev);
     if (ret)
     {
         pr_err("%s: Failed to enable PCI device\n", DRIVER_NAME);
-        goto err_free_dev;
+        goto err_destroy_wq;
     }
+    device_enabled = true;
 
     /* Enable memory access and bus master */
     pci_set_master(pdev);
@@ -527,7 +549,7 @@ static int bar_rw_probe(struct pci_dev *pdev, const struct pci_device_id *id)
         if (ret)
         {
             pr_err("%s: Failed to set DMA mask\n", DRIVER_NAME);
-            goto err_disable_device;
+            goto err_destroy_wq;
         }
     }
 
@@ -536,8 +558,9 @@ static int bar_rw_probe(struct pci_dev *pdev, const struct pci_device_id *id)
     if (ret)
     {
         pr_err("%s: Failed to request PCI regions\n", DRIVER_NAME);
-        goto err_disable_device;
+        goto err_destroy_wq;
     }
+    regions_requested = true;
 
     /* Check if BARs are actually assigned by reading config space */
     {
@@ -597,16 +620,20 @@ static int bar_rw_probe(struct pci_dev *pdev, const struct pci_device_id *id)
     return 0;
 
 err_free_dma:
-    dma_free_coherent(&pdev->dev, dev->dma_size,
-                      dev->dma_buffer, dev->dma_handle);
+    if (dev->dma_buffer)
+        dma_free_coherent(&pdev->dev, dev->dma_size,
+                          dev->dma_buffer, dev->dma_handle);
 err_unmap_bar0:
     if (dev->bar0_mem)
         iounmap(dev->bar0_mem);
 err_release:
-    pci_release_regions(pdev);
-err_disable_device:
-    pci_disable_device(pdev);
-err_free_dev:
+    if (regions_requested)
+        pci_release_regions(pdev);
+err_destroy_wq:
+    if (dev->io_wq)
+        destroy_workqueue(dev->io_wq);
+    if (device_enabled)
+        pci_disable_device(pdev);
     kfree(dev);
     return ret;
 }
@@ -638,6 +665,12 @@ static void bar_rw_remove(struct pci_dev *pdev)
 
     /* Close backend device */
     close_backend_device(dev);
+
+    if (dev->io_wq)
+    {
+        flush_workqueue(dev->io_wq);
+        destroy_workqueue(dev->io_wq);
+    }
 
     /* Free DMA buffer */
     if (dev->dma_buffer)

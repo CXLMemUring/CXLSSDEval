@@ -4,7 +4,7 @@
 KERNEL_DIR ?= /lib/modules/$(shell uname -r)/build
 
 # Module name
-obj-m := bar_rw_driver.o
+obj-m := bar_rw_driver.o nvme_custom_driver.o
 
 # Build flags
 ccflags-y := -DDEBUG

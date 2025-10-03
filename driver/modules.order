@@ -1,1 +1,2 @@
-/root/pcie_ed/bar_rw_driver.o
+/root/CXLSSDEval/driver/bar_rw_driver.o
+/root/CXLSSDEval/driver/nvme_custom_driver.o

@@ -36,7 +36,7 @@
 
 /* BAR definitions */
 #define BAR0_BAR1_SIZE (16ULL * 1024 * 1024 * 1024 * 1024) /* 16TB */
-#define BAR2_BAR3_SIZE (8ULL * 1024 * 1024 * 1024)         /* 8GB */
+#define BAR2_BAR3_SIZE (16ULL * 1024 * 1024 * 1024)        /* 16GB */
 
 /* Register offsets in BAR2/3 */
 #define CFG_REG_BASE 0x00000000
@@ -68,35 +68,12 @@
 #define NVME_Q_DEPTH 1024
 #define NVME_MAX_QUEUES 16
 
-/* Command and completion structures */
-struct nvme_command
-{
-    __u8 opcode;
-    __u8 flags;
-    __u16 command_id;
-    __le32 nsid;
-    __u64 rsvd2;
-    __le64 metadata;
-    __le64 prp1;
-    __le64 prp2;
-    __u32 cdw10[6];
-};
-
-struct nvme_completion
-{
-    __le32 result;
-    __u32 rsvd;
-    __le16 sq_head;
-    __le16 sq_id;
-    __u16 command_id;
-    __le16 status;
-};
-
 /* Queue structure */
 struct nvme_queue
 {
     struct nvme_dev *dev;
-    spinlock_t q_lock;
+    spinlock_t sq_lock; /* Protects submission queue */
+    spinlock_t cq_lock; /* Protects completion queue */
     struct nvme_command *sq_cmds;
     struct nvme_completion *cqes;
     dma_addr_t sq_dma_addr;
@@ -127,13 +104,13 @@ struct nvme_dev
     void __iomem *dma_mem;       /* DMA memory region */
 
     /* NVMe subsystem integration */
-    struct nvme_ctrl ctrl;
+    /* struct nvme_ctrl ctrl; */ /* Commented out - not needed for basic driver */
     struct gendisk *disk;
     struct request_queue *queue;
     struct blk_mq_tag_set tag_set;
 
     /* Queues */
-    struct nvme_queue *queues;
+    struct nvme_queue **queues; /* Array of queue pointers */
     unsigned int queue_count;
     unsigned int max_qid;
 
@@ -219,7 +196,8 @@ static int nvme_alloc_queue(struct nvme_dev *dev, int qid, int depth)
     nvmeq->q_depth = depth;
     nvmeq->cq_phase = 1;
 
-    spin_lock_init(&nvmeq->q_lock);
+    spin_lock_init(&nvmeq->sq_lock);
+    spin_lock_init(&nvmeq->cq_lock);
 
     /* Allocate submission queue */
     nvmeq->sq_cmds = dma_alloc_coherent(&dev->pdev->dev,
@@ -300,9 +278,10 @@ static int nvme_enable_ctrl(struct nvme_dev *dev)
     nvme_writeq(dev, dev->queues[0]->cq_dma_addr, NVME_REG_ACQ);
 
     /* Enable controller */
-    cc = NVME_CC_ENABLE | NVME_CC_CSS_NVM | NVME_CC_MPS(page_shift - 12) |
-         NVME_CC_ARB_RR | NVME_CC_SHN_NONE |
+    cc = NVME_CC_ENABLE | NVME_CC_CSS_NVM |
+         NVME_CC_AMS_RR | NVME_CC_SHN_NONE |
          NVME_CC_IOSQES | NVME_CC_IOCQES;
+    cc |= (page_shift - 12) << NVME_CC_MPS_SHIFT;
     nvme_writel(dev, cc, NVME_REG_CC);
 
     /* Wait for controller ready */
@@ -357,23 +336,26 @@ static blk_status_t nvme_custom_queue_rq(struct blk_mq_hw_ctx *hctx,
     struct request *req = bd->rq;
     struct nvme_queue *nvmeq = hctx->driver_data;
     struct nvme_command cmd = {};
+    unsigned long flags;
 
     blk_mq_start_request(req);
 
-    /* Build NVMe command */
+    /* Build NVMe command using kernel structure */
     cmd.common.opcode = (rq_data_dir(req) ? nvme_cmd_write : nvme_cmd_read);
-    cmd.rw.nsid = cpu_to_le32(1);                          /* Namespace 1 */
-    cmd.rw.slba = cpu_to_le64(blk_rq_pos(req) >> (9 - 9)); /* Convert to LBA */
-    cmd.rw.length = cpu_to_le16((blk_rq_bytes(req) >> 9) - 1);
+    cmd.common.flags = 0;
+    cmd.common.command_id = req->tag;
+    cmd.common.nsid = cpu_to_le32(1);                          /* Namespace 1 */
+    cmd.rw.slba = cpu_to_le64(blk_rq_pos(req));                /* LBA */
+    cmd.rw.length = cpu_to_le16((blk_rq_bytes(req) >> 9) - 1); /* Number of blocks - 1 */
 
     /* Set data pointer - simplified for demonstration */
     if (blk_rq_bytes(req))
     {
-        cmd.rw.prp1 = cpu_to_le64(dev->dma_handle);
+        cmd.common.dptr.prp1 = cpu_to_le64(dev->dma_handle);
     }
 
-    /* Submit command to hardware queue */
-    spin_lock(&nvmeq->q_lock);
+    /* Submit command to hardware queue - use irqsave for safety */
+    spin_lock_irqsave(&nvmeq->sq_lock, flags);
 
     /* Copy command to submission queue */
     memcpy(&nvmeq->sq_cmds[nvmeq->sq_tail], &cmd, sizeof(cmd));
@@ -385,7 +367,7 @@ static blk_status_t nvme_custom_queue_rq(struct blk_mq_hw_ctx *hctx,
     /* Ring doorbell */
     writel(nvmeq->sq_tail, nvmeq->q_db);
 
-    spin_unlock(&nvmeq->q_lock);
+    spin_unlock_irqrestore(&nvmeq->sq_lock, flags);
 
     atomic_inc(&dev->ios_completed);
 
@@ -401,6 +383,7 @@ static irqreturn_t nvme_custom_irq(int irq, void *data)
 {
     struct nvme_dev *dev = data;
     struct nvme_queue *nvmeq;
+    unsigned long flags;
     int i;
     bool handled = false;
 
@@ -410,6 +393,8 @@ static irqreturn_t nvme_custom_irq(int irq, void *data)
         nvmeq = dev->queues[i];
         if (!nvmeq)
             continue;
+
+        spin_lock_irqsave(&nvmeq->cq_lock, flags);
 
         /* Check for completions - simplified */
         if (nvmeq->cqes[nvmeq->cq_head].status != 0)
@@ -423,6 +408,8 @@ static irqreturn_t nvme_custom_irq(int irq, void *data)
             }
             handled = true;
         }
+
+        spin_unlock_irqrestore(&nvmeq->cq_lock, flags);
     }
 
     return handled ? IRQ_HANDLED : IRQ_NONE;
@@ -474,8 +461,8 @@ static int nvme_setup_block_device(struct nvme_dev *dev)
     dev->queue->queuedata = dev;
     snprintf(dev->disk->disk_name, sizeof(dev->disk->disk_name), "nvme_custom0");
 
-    /* Set capacity - 1TB for example */
-    set_capacity(dev->disk, 1024 * 1024 * 1024 * 2); /* 1TB in 512-byte sectors */
+    /* Set capacity - 1TB (2^30 * 2 sectors of 512 bytes each) */
+    set_capacity(dev->disk, 2ULL * 1024 * 1024 * 1024); /* 1TB in 512-byte sectors */
 
     /* Add disk */
     ret = add_disk(dev->disk);
@@ -489,7 +476,7 @@ static int nvme_setup_block_device(struct nvme_dev *dev)
     return 0;
 
 cleanup_queue:
-    blk_cleanup_queue(dev->queue);
+    blk_mq_destroy_queue(dev->queue);
 free_disk:
     put_disk(dev->disk);
 free_tagset:
@@ -535,6 +522,36 @@ static int nvme_custom_probe(struct pci_dev *pdev, const struct pci_device_id *i
 
     pci_set_master(pdev);
 
+    /* Print BAR information for debugging */
+    pr_info("%s: BAR0 start=0x%llx end=0x%llx flags=0x%lx len=%llu\n", DRIVER_NAME,
+            (unsigned long long)pci_resource_start(pdev, 0),
+            (unsigned long long)pci_resource_end(pdev, 0),
+            pci_resource_flags(pdev, 0),
+            (unsigned long long)pci_resource_len(pdev, 0));
+    pr_info("%s: BAR2 start=0x%llx end=0x%llx flags=0x%lx len=%llu\n", DRIVER_NAME,
+            (unsigned long long)pci_resource_start(pdev, 2),
+            (unsigned long long)pci_resource_end(pdev, 2),
+            pci_resource_flags(pdev, 2),
+            (unsigned long long)pci_resource_len(pdev, 2));
+
+    /* Check if BARs are assigned - if not, this device may need special handling */
+    if (pci_resource_start(pdev, 0) == 0 && pci_resource_start(pdev, 2) == 0)
+    {
+        pr_warn("%s: BARs are not assigned by BIOS/firmware\n", DRIVER_NAME);
+        pr_warn("%s: This device may require manual configuration or FPGA programming\n", DRIVER_NAME);
+        pr_warn("%s: Attempting to continue without BAR mapping...\n", DRIVER_NAME);
+
+        /* Set pointers to NULL and continue - driver will work without BAR access */
+        dev->bar0_bar1_mem = NULL;
+        dev->bar2_bar3_mem = NULL;
+        dev->ctrl_regs = NULL;
+        dev->cfg_regs = NULL;
+        dev->m2b_regs = NULL;
+        dev->dma_mem = NULL;
+
+        goto skip_bar_mapping;
+    }
+
     /* Request memory regions */
     ret = pci_request_regions(pdev, DRIVER_NAME);
     if (ret)
@@ -543,22 +560,66 @@ static int nvme_custom_probe(struct pci_dev *pdev, const struct pci_device_id *i
         goto err_disable_device;
     }
 
-    /* Map BAR0/1 (16TB VMEM space) */
-    dev->bar0_bar1_mem = pci_ioremap_bar(pdev, 0);
-    if (!dev->bar0_bar1_mem)
+    /* Map BAR0/1 (16TB VMEM space) - only if valid */
+    if ((pci_resource_flags(pdev, 0) & IORESOURCE_MEM) &&
+        pci_resource_start(pdev, 0) != 0 &&
+        pci_resource_len(pdev, 0) > 0)
     {
-        pr_err("%s: Failed to map BAR0/1\n", DRIVER_NAME);
-        ret = -ENOMEM;
-        goto err_release_regions;
+        dev->bar0_bar1_mem = pci_iomap(pdev, 0, pci_resource_len(pdev, 0));
+        if (!dev->bar0_bar1_mem)
+        {
+            pr_warn("%s: Failed to map BAR0/1, continuing without it\n", DRIVER_NAME);
+        }
+        else
+        {
+            pr_info("%s: Mapped BAR0/1 at %p, size %llu\n", DRIVER_NAME,
+                    dev->bar0_bar1_mem, (unsigned long long)pci_resource_len(pdev, 0));
+        }
+    }
+    else
+    {
+        pr_warn("%s: BAR0 is not usable (flags=0x%lx, start=0x%llx, len=%llu)\n",
+                DRIVER_NAME, pci_resource_flags(pdev, 0),
+                (unsigned long long)pci_resource_start(pdev, 0),
+                (unsigned long long)pci_resource_len(pdev, 0));
+        dev->bar0_bar1_mem = NULL;
     }
 
-    /* Map BAR2/3 (8GB combined space) */
-    dev->bar2_bar3_mem = pci_ioremap_bar(pdev, 2);
+    /* Map BAR2/3 (8GB combined space) - only if valid */
+    if ((pci_resource_flags(pdev, 2) & IORESOURCE_MEM) &&
+        pci_resource_start(pdev, 2) != 0 &&
+        pci_resource_len(pdev, 2) > 0)
+    {
+        dev->bar2_bar3_mem = pci_iomap(pdev, 2, pci_resource_len(pdev, 2));
+        if (!dev->bar2_bar3_mem)
+        {
+            pr_err("%s: Failed to map BAR2/3\n", DRIVER_NAME);
+            ret = -ENOMEM;
+            goto err_unmap_bar0;
+        }
+        pr_info("%s: Mapped BAR2/3 at %p, size %llu\n", DRIVER_NAME,
+                dev->bar2_bar3_mem, (unsigned long long)pci_resource_len(pdev, 2));
+    }
+    else
+    {
+        pr_warn("%s: BAR2 is not usable (flags=0x%lx, start=0x%llx, len=%llu)\n",
+                DRIVER_NAME, pci_resource_flags(pdev, 2),
+                (unsigned long long)pci_resource_start(pdev, 2),
+                (unsigned long long)pci_resource_len(pdev, 2));
+        dev->bar2_bar3_mem = NULL;
+    }
+
+skip_bar_mapping:
+    /* Check if we have at least BAR2 for NVMe registers */
     if (!dev->bar2_bar3_mem)
     {
-        pr_err("%s: Failed to map BAR2/3\n", DRIVER_NAME);
-        ret = -ENOMEM;
-        goto err_unmap_bar0;
+        pr_err("%s: No usable BAR found - device requires BIOS/firmware configuration\n", DRIVER_NAME);
+        pr_err("%s: Please check:\n", DRIVER_NAME);
+        pr_err("%s:  1. BIOS settings for PCIe device resource allocation\n", DRIVER_NAME);
+        pr_err("%s:  2. FPGA/device firmware is properly loaded\n", DRIVER_NAME);
+        pr_err("%s:  3. Device is correctly inserted in PCIe slot\n", DRIVER_NAME);
+        ret = -ENODEV;
+        goto err_release_regions;
     }
 
     /* Set up register regions */
@@ -649,11 +710,14 @@ err_free_irq:
 err_free_dma:
     dma_free_coherent(&pdev->dev, dev->dma_size, dev->dma_vaddr, dev->dma_handle);
 err_unmap_bar2:
-    iounmap(dev->bar2_bar3_mem);
+    if (dev->bar2_bar3_mem)
+        pci_iounmap(pdev, dev->bar2_bar3_mem);
 err_unmap_bar0:
-    iounmap(dev->bar0_bar1_mem);
+    if (dev->bar0_bar1_mem)
+        pci_iounmap(pdev, dev->bar0_bar1_mem);
 err_release_regions:
-    pci_release_regions(pdev);
+    if (pci_resource_start(pdev, 0) != 0 || pci_resource_start(pdev, 2) != 0)
+        pci_release_regions(pdev);
 err_disable_device:
     pci_disable_device(pdev);
 err_free_dev:
@@ -677,7 +741,7 @@ static void nvme_custom_remove(struct pci_dev *pdev)
     }
 
     if (dev->queue)
-        blk_cleanup_queue(dev->queue);
+        blk_mq_destroy_queue(dev->queue);
 
     blk_mq_free_tag_set(&dev->tag_set);
 
@@ -702,11 +766,15 @@ static void nvme_custom_remove(struct pci_dev *pdev)
     dma_free_coherent(&pdev->dev, dev->dma_size, dev->dma_vaddr, dev->dma_handle);
 
     /* Unmap memory regions */
-    iounmap(dev->bar2_bar3_mem);
-    iounmap(dev->bar0_bar1_mem);
+    if (dev->bar2_bar3_mem)
+        pci_iounmap(pdev, dev->bar2_bar3_mem);
+    if (dev->bar0_bar1_mem)
+        pci_iounmap(pdev, dev->bar0_bar1_mem);
 
-    /* Release PCI resources */
-    pci_release_regions(pdev);
+    /* Release PCI resources - only if they were requested */
+    if (pci_resource_start(pdev, 0) != 0 || pci_resource_start(pdev, 2) != 0)
+        pci_release_regions(pdev);
+
     pci_disable_device(pdev);
 
     kfree(dev);

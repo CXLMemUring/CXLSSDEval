@@ -36,7 +36,7 @@
 
 /* BAR definitions */
 #define BAR0_BAR1_SIZE (16ULL * 1024 * 1024 * 1024 * 1024) /* 16TB */
-#define BAR2_BAR3_SIZE (8ULL * 1024 * 1024 * 1024)         /* 8GB */
+#define BAR2_BAR3_SIZE (16ULL * 1024 * 1024 * 1024)         /* 16GB */
 
 /* Register offsets in BAR2/3 */
 #define CFG_REG_BASE 0x00000000
