@@ -1,0 +1,45 @@
+/*
+ * Device Tree Overlay for PCIe SSD Device
+ * This can be used if the device is not automatically detected
+ */
+
+/dts-v1/;
+/plugin/;
+
+/ {
+    compatible = "brcm,bcm2835";
+    
+    fragment@0 {
+        target-path = "/";
+        __overlay__ {
+            pcie_ssd: pcie-ssd@0 {
+                compatible = "vendor,pcie-ssd";
+                status = "okay";
+                
+                /* PCIe configuration */
+                device_type = "pci";
+                #address-cells = <3>;
+                #size-cells = <2>;
+                
+                /* BAR configurations */
+                reg = <0x00150000 0x0 0x0>;  /* Bus 00, Device 15, Function 0 */
+                
+                /* Memory regions */
+                ranges = <
+                    /* BAR0/1: 16TB VMEM space */
+                    0x82000000 0x0 0x00000000 0x0 0x00000000 0x1000 0x00000000
+                    /* BAR2/3: 8GB space */  
+                    0x82000000 0x0 0x10000000 0x0 0x10000000 0x2 0x00000000
+                >;
+                
+                /* Interrupts */
+                interrupts = <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>;
+                interrupt-names = "pcie-ssd";
+                
+                /* DMA properties */
+                dma-coherent;
+                dma-ranges = <0x0 0x0 0x0 0x0 0x40000000>;
+            };
+        };
+    };
+};

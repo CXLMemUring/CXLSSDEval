@@ -1,0 +1,90 @@
+===============================================================================
+  BAR READ/WRITE DRIVER - Quick Start Guide
+===============================================================================
+
+SUMMARY:
+--------
+A simple Linux block driver for PCIe device 15:00.0 that uses 64-byte writes
+to BAR memory to trigger hardware read/write operations. NO NVMe subsystem
+required - the hardware automatically translates BAR writes to memory ops.
+
+DEVICE INFO:
+-----------
+- Location: 15:00.0
+- Vendor: 0x1172 (Altera)
+- Device: 0x0000
+- BAR0: 16TB VMEM
+- BAR2: 8GB (command interface at offset 0x10000)
+
+HOW IT WORKS:
+------------
+1. Write 64 bytes to BAR2+0x10000 with command structure
+2. Hardware automatically processes the command
+3. DMA transfers data to/from memory
+4. Simple, fast, no complex protocol
+
+QUICK START:
+-----------
+1. Build:
+   cd /root/pcie_ed
+   make
+
+2. Load:
+   sudo insmod bar_rw_driver.ko
+
+3. Check:
+   lsblk | grep bar_rw
+   dmesg | grep bar_rw
+
+4. Test:
+   sudo ./test_bar_rw.sh
+
+5. Unload:
+   sudo rmmod bar_rw_driver
+
+FILES:
+------
+✅ bar_rw_driver.c     - Main driver (COMPILED SUCCESSFULLY)
+✅ bar_rw_driver.ko    - Kernel module (READY TO LOAD)
+✅ Makefile            - Build system
+✅ test_bar_rw.sh      - Test script
+✅ README_BAR_RW.md    - Full documentation
+
+COMMAND STRUCTURE (64 bytes):
+----------------------------
+Offset | Size | Field
+-------|------|-------
+0x00   | 1    | opcode (0x01=READ, 0x02=WRITE)
+0x01   | 1    | flags
+0x02   | 2    | reserved
+0x04   | 4    | length (bytes)
+0x08   | 8    | LBA (logical block address)
+0x10   | 8    | DMA address
+0x18   | 40   | padding
+
+USAGE EXAMPLE:
+-------------
+# Write to device
+dd if=/dev/urandom of=/dev/bar_rw0 bs=1M count=100
+
+# Read from device
+dd if=/dev/bar_rw0 of=/tmp/output bs=1M count=100
+
+# Use as regular block device
+mkfs.ext4 /dev/bar_rw0
+mount /dev/bar_rw0 /mnt
+
+DEBUGGING:
+---------
+# View messages
+dmesg | tail -20 | grep bar_rw
+
+# Check statistics
+lsmod | grep bar_rw
+
+# Diagnostics
+sudo ./diagnose.sh
+
+===============================================================================
+Driver successfully compiled and ready to use!
+===============================================================================
