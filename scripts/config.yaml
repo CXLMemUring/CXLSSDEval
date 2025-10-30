@@ -1,9 +1,10 @@
 # CXL SSD Test Configuration
 
 # Device configuration
-device: "/dev/bar_rw0"  # Change this to your actual device
+device: "/dev/nvmex0n1p1"  # Change this to your actual device
 filesystem: ext4
-filesystem_mount: "/nv1"
+filesystem_mount: "/mnt"
+
 # Test duration settings
 test_durations:
   standard: 30      # Standard test duration in seconds
