@@ -50,6 +50,15 @@ export LOG_LEVEL="${CONFIG_logging_level:-INFO}"
 export DEFAULT_IODEPTH="${CONFIG_test_params_default_iodepth:-32}"
 export DEFAULT_NUMJOBS="${CONFIG_test_params_default_numjobs:-1}"
 
+# Export filesystem configuration
+export FILESYSTEM_TYPE="${CONFIG_filesystem:-ext4}"
+export FILESYSTEM_MOUNT="${CONFIG_filesystem_mount:-/mnt}"
+
+# Export byte-addressable test configuration
+# Default: raw mode (mmap device + direct memory write) - suitable for CXL SSD with 8B atomic access
+# If mode is "filesystem", use buffered I/O + fdatasync via FIO - required for traditional NVMe
+export BYTE_ADDRESSABLE_MODE="${CONFIG_byte_addressable_mode:-raw}"
+
 # Create results directories if they don't exist
 mkdir -p "${RESULTS_BASE_DIR}/raw"
 mkdir -p "${RESULTS_BASE_DIR}/filesystem"

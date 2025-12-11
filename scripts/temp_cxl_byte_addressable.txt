@@ -1,0 +1,53 @@
+Script Directory: /root/CXLSSDEval/scripts
+[0;34m============================================[0m
+[0;34mCXL SSD Test Suite[0m
+[0;34m============================================[0m
+Configuration: /root/CXLSSDEval/scripts/config.yaml
+Device: /dev/nvmex0n1
+Results Directory: results
+Start Time: 2025-12-11 17:14:36
+
+[0;34m============================================[0m
+[0;34mChecking Prerequisites[0m
+[0;34m============================================[0m
+[0;32m✓ Configuration file found: /root/CXLSSDEval/scripts/config.yaml[0m
+[0;32m✓ Device found: /dev/nvmex0n1[0m
+[0;32m✓ FIO is installed (fio-3.36)[0m
+[0;32m✓ Python3 is installed (Python 3.13.9)[0m
+[1;33m⚠ RocksDB db_bench not found - RocksDB tests will be skipped[0m
+
+[0;34m============================================[0m
+[0;34mRunning Byte-Addressable I/O Test (Standalone)[0m
+[0;34m============================================[0m
+=== Byte-Addressable I/O Test (FIO) ===
+Testing sub-512B writes with filesystem buffer I/O + fdatasync
+Device: /dev/nvmex0n1
+Filesystem: 
+Mount point: 
+File size: 1G
+Runtime per test: 30s
+
+Creating mount point: 
+mkdir: cannot create directory ‘’: No such file or directory
+Creating  filesystem on /dev/nvmex0n1...
+Mounting filesystem...
+mount: : can't find in /etc/fstab.
+chmod: cannot access '': No such file or directory
+
+----------------------------------------
+Testing block size: 8
+----------------------------------------
+Running byte-addressable test for block size: 8
+8         : IOPS=998      BW=7        KB/s Lat=5.43     us (95%=18.82    us, 99%=25.47    us)
+
+----------------------------------------
+Testing block size: 16
+----------------------------------------
+Running byte-addressable test for block size: 16
+16        : IOPS=1072     BW=16       KB/s Lat=4.30     us (95%=24.45    us, 99%=25.73    us)
+
+----------------------------------------
+Testing block size: 32
+----------------------------------------
+Running byte-addressable test for block size: 32
+32        : IOPS=0        BW=0        KB/s Lat=0.00     us (95%=0.00     us, 99%=0.00     us)

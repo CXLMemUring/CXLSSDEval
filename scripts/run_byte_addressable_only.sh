@@ -1,8 +1,11 @@
 #!/bin/bash
 #
 # Run ONLY byte-addressable tests
-# This script executes filesystem-based byte-addressable I/O tests with fdatasync
-# Does NOT continue with raw device tests
+# This script executes byte-addressable I/O tests
+#
+# Mode is controlled by config.yaml:
+#   - mode: "raw" (default) - FIO mmap directly on device for CXL SSD with 8B atomic writes
+#   - mode: "filesystem" - ext4 normal + buffer I/O + fdatasync for traditional NVMe
 #
 
 set -e  # Exit on error
@@ -27,7 +30,11 @@ if [[ ! -f "$SCRIPT_DIR/config.yaml" ]]; then
 fi
 
 # Parse device from config
-DEVICE=$(grep "device:" "$SCRIPT_DIR/config.yaml" | awk '{print $2}')
+DEVICE=$(grep "^device:" "$SCRIPT_DIR/config.yaml" | awk '{print $2}' | tr -d '"')
+
+# Parse byte_addressable mode from config (default: raw)
+BYTE_MODE=$(grep "^  mode:" "$SCRIPT_DIR/config.yaml" | head -1 | awk '{print $2}' | tr -d '"')
+BYTE_MODE="${BYTE_MODE:-raw}"
 
 if [[ -z "$DEVICE" ]]; then
     echo -e "${RED}Error: Device not specified in config.yaml${NC}"
@@ -41,7 +48,13 @@ if [[ ! -b "$DEVICE" ]]; then
 fi
 
 echo -e "${YELLOW}Device: $DEVICE${NC}"
-echo -e "${YELLOW}Test: Byte-addressable I/O with filesystem buffer + fdatasync${NC}"
+echo -e "${YELLOW}Test Mode: $BYTE_MODE${NC}"
+
+if [[ "$BYTE_MODE" == "filesystem" ]]; then
+    echo -e "${YELLOW}  -> ext4 normal + buffer I/O + fdatasync (for traditional NVMe)${NC}"
+else
+    echo -e "${YELLOW}  -> FIO mmap directly on device (for CXL SSD with 8B atomic writes)${NC}"
+fi
 echo ""
 
 # Check if FIO is installed
@@ -78,8 +91,13 @@ echo -e "${GREEN}===================================${NC}"
 echo -e "${GREEN}BYTE-ADDRESSABLE TEST COMPLETE${NC}"
 echo -e "${GREEN}===================================${NC}"
 
-# Check for results
-RESULTS_DIR="$SCRIPT_DIR/results/filesystem/byte_addressable"
+# Determine results directory based on mode
+if [[ "$BYTE_MODE" == "filesystem" ]]; then
+    RESULTS_DIR="$SCRIPT_DIR/results/filesystem/byte_addressable"
+else
+    RESULTS_DIR="$SCRIPT_DIR/results/raw/byte_addressable"
+fi
+
 if [[ -d "$RESULTS_DIR" ]]; then
     echo ""
     echo "Results saved to: $RESULTS_DIR"
@@ -98,5 +116,9 @@ if [[ -d "$RESULTS_DIR" ]]; then
     # Show report if exists
     if [[ -f "$RESULTS_DIR/byte_addressable_report.txt" ]]; then
         echo ""
-        echo "Detailed report available at:"ses
+        echo "Detailed report available at:"
+        echo "  $RESULTS_DIR/byte_addressable_report.txt"
+    fi
+fi
+
 exit 0

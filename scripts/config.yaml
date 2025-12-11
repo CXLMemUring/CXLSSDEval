@@ -3,7 +3,7 @@
 # Device configuration
 device: "/dev/nvmex0n1"  # Change this to your actual device
 filesystem: ext4
-filesystem_mount: "/mnt"
+filesystem_mount: "/mnt/dax"
 
 # Test duration settings
 test_durations:
@@ -24,6 +24,15 @@ test_params:
 
   # Byte-addressable sizes (sub-512B)
   byte_sizes: [8, 16, 32, 64, 128, 256, 384]
+
+# Byte-addressable test mode configuration
+# For CXL SSD (supports 8B atomic access): use "raw" mode
+# For traditional NVMe: must use "filesystem" mode (buffer I/O + fdatasync)
+byte_addressable:
+  # Mode options:
+  #   "raw"        - mmap device and direct memory write, no fsync (for CXL SSD, default)
+  #   "filesystem" - Mount ext4 normal, buffer I/O + fdatasync (for traditional NVMe)
+  mode: "raw"
 
   # Read/Write mix percentages
   rw_mixes: [0, 25, 50, 75, 100]

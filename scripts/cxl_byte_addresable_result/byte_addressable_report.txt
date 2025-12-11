@@ -1,0 +1,37 @@
+Byte-Addressable I/O Test Report
+================================
+
+Test Configuration:
+- Device: /dev/nvmex0n1
+- Test Mode: raw (FIO mmap engine on raw device)
+- I/O Engine: mmap (memory mapped I/O)
+- Target: Raw block device (/dev/nvmex0n1)
+- Sync: None (no fsync/fdatasync)
+- Note: For CXL SSDs with true byte-addressable (8B atomic) access
+- Writes via mmap go directly to device without filesystem overhead
+- Test Size: 1G
+- Runtime per test: 30s
+- Block Sizes Tested: 8 16 32 64 128 256 512 1024 2048 4096 bytes
+
+Results Summary:
+
+Block Size | Mode       | Write IOPS   | Write BW (KB/s) | Mean Lat (us) | 95% Lat (us) | 99% Lat (us)
+-----------|------------|--------------|-----------------|---------------|--------------|-------------
+8B         | raw        | 1870736      | 14615           | 0.130         | 0.010        | 0.090       
+16B        | raw        | 2104285      | 32879           | 0.140         | 0.010        | 0.020       
+32B        | raw        | 2135887      | 66746           | 0.130         | 0.010        | 0.040       
+64B        | raw        | 1530954      | 95684           | 0.120         | 0.010        | 0.940       
+128B       | raw        | 0            | 0               | 270.290       | 268.280      | 268.280     
+256B       | raw        | 1392809      | 348202          | 0.190         | 0.800        | 1.020       
+512B       | raw        | 638798       | 319399          | 0.510         | 1.240        | 19.840      
+1024B      | raw        | 0            | 0               | 468.510       | 468.990      | 468.990     
+2048B      | raw        | 123204       | 246408          | 2.590         | 18.300       | 21.630      
+4096B      | raw        | 130247       | 520988          | 2.580         | 19.070       | 26.240      
+
+Analysis (RAW Mode - CXL SSD):
+- FIO mmap engine maps the device directly into memory
+- Writes are performed via memcpy to the mapped region
+- CXL SSDs support 8B atomic writes natively
+- No filesystem overhead or sync operations
+- Ideal for AI/LLM workloads with small random writes
+- Latency is measured in nanoseconds due to direct memory access

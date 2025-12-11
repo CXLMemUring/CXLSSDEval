@@ -335,7 +335,19 @@ main() {
             --byte-addressable-only)
                 # Run only byte-addressable test and exit
                 check_prerequisites
+
+                # Source common.sh to get BYTE_ADDRESSABLE_MODE
+                source "${FIO_SCRIPTS_DIR}/common.sh"
+
                 print_header "Running Byte-Addressable I/O Test (Standalone)"
+                echo "Mode: ${BYTE_ADDRESSABLE_MODE:-raw}"
+                if [[ "${BYTE_ADDRESSABLE_MODE:-raw}" == "filesystem" ]]; then
+                    echo "  -> ext4 normal + buffer I/O + fdatasync (for traditional NVMe)"
+                else
+                    echo "  -> FIO mmap directly on device (for CXL SSD with 8B atomic access)"
+                fi
+                echo ""
+
                 if [[ -f "${FIO_SCRIPTS_DIR}/test_byte_addressable.sh" ]]; then
                     bash "${FIO_SCRIPTS_DIR}/test_byte_addressable.sh"
                     if [[ $? -eq 0 ]]; then
