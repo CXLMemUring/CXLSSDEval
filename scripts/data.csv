@@ -1,0 +1,23 @@
+name,mvvm,native
+a=b linpack-stack.aot,22.375226,26.06
+OMP_NUM_THREADS=1 llama-stack.aot stories110M.bin -z tokenizer.bin -t 0.0,13.907481,12.062
+a=b rgbd_tum-stack.aot ./ORBvoc.txt ./TUM3.yaml ./ ./associations/fr1_xyz.txt,195.641854,91.005
+OMP_NUM_THREADS=1 bt-stack.aot,44.273104,150.008
+OMP_NUM_THREADS=1 cg-stack.aot,20.147779,65.097
+OMP_NUM_THREADS=1 ep-stack.aot,0.000259,0.029
+OMP_NUM_THREADS=1 ft-stack.aot,27.976403,138.086
+OMP_NUM_THREADS=1 lu-stack.aot,0.015354,0.013
+OMP_NUM_THREADS=1 mg-stack.aot,15.557569,57.002
+OMP_NUM_THREADS=1 sp-stack.aot,4.120332,0.054
+a=b redis-stack.aot,12.275519,128.018
+a=b linpack-stack.aot,39.574689,27.097
+OMP_NUM_THREADS=1 llama-stack.aot stories110M.bin -z tokenizer.bin -t 0.0,13.067252,13.001
+a=b rgbd_tum-stack.aot ./ORBvoc.txt ./TUM3.yaml ./ ./associations/fr1_xyz.txt,181.33331,102.06
+OMP_NUM_THREADS=1 bt-stack.aot,41.422482,165.071
+OMP_NUM_THREADS=1 cg-stack.aot,20.387558,68.007
+OMP_NUM_THREADS=1 ep-stack.aot,0.000308,0.029
+OMP_NUM_THREADS=1 ft-stack.aot,28.016912,131.074
+OMP_NUM_THREADS=1 lu-stack.aot,0.015908,0.01
+OMP_NUM_THREADS=1 mg-stack.aot,15.597774,58.0
+OMP_NUM_THREADS=1 sp-stack.aot,4.21897,0.057
+a=b redis-stack.aot,12.718634,130.03
