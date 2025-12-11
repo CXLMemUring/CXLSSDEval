@@ -52,21 +52,21 @@ def generate_thermal_data():
 def plot_thermal_throttling():
     """Create dual-axis thermal throttling plot"""
 
-    # Set matplotlib parameters for paper-quality figures with 23pt fonts
-    plt.rcParams['font.size'] = 23
-    plt.rcParams['axes.labelsize'] = 23
-    plt.rcParams['axes.titlesize'] = 23
-    plt.rcParams['xtick.labelsize'] = 23
-    plt.rcParams['ytick.labelsize'] = 23
-    plt.rcParams['legend.fontsize'] = 23
-    plt.rcParams['figure.titlesize'] = 23
+    # Set matplotlib parameters for paper-quality figures with 22pt fonts
+    plt.rcParams['font.size'] = 22
+    plt.rcParams['axes.labelsize'] = 22
+    plt.rcParams['axes.titlesize'] = 22
+    plt.rcParams['xtick.labelsize'] = 22
+    plt.rcParams['ytick.labelsize'] = 22
+    plt.rcParams['legend.fontsize'] = 18
+    plt.rcParams['figure.titlesize'] = 22
     plt.rcParams['font.family'] = "Helvetica"
 
     # Generate data
     time, samsung_temp, samsung_tp, scala_temp, scala_tp, cxl_temp, cxl_tp = generate_thermal_data()
 
-    # Create figure with dual y-axes
-    fig, ax1 = plt.subplots(figsize=(14, 8))
+    # Create figure with dual y-axes - larger figure for better spacing
+    fig, ax1 = plt.subplots(figsize=(16, 9))
 
     # Plot throughput on primary y-axis
     color_samsung = '#1f77b4'
@@ -80,8 +80,8 @@ def plot_thermal_throttling():
     ax1.plot(time, cxl_tp, '-', color=color_cxl, linewidth=3,
              label='CXL SSD (Throughput)')
 
-    ax1.set_xlabel('Time (minutes)', fontsize=23)
-    ax1.set_ylabel('Throughput (MB/s)', fontsize=23)
+    ax1.set_xlabel('Time (minutes)', fontsize=22)
+    ax1.set_ylabel('Throughput (MB/s)', fontsize=22)
     ax1.tick_params(axis='y', labelcolor='black')
     ax1.grid(True, alpha=0.3)
 
@@ -95,37 +95,37 @@ def plot_thermal_throttling():
     ax2.plot(time, cxl_temp, '--', color=color_cxl, linewidth=3, alpha=0.7,
              label='CXL SSD (Temperature)')
 
-    ax2.set_ylabel('Temperature (°C)', fontsize=23)
+    ax2.set_ylabel('Temperature (°C)', fontsize=22)
     ax2.tick_params(axis='y', labelcolor='black')
 
     # Add throttling threshold lines
     ax2.axhline(y=70, color='red', linestyle=':', alpha=0.5, label='Throttling Threshold')
     ax2.axhline(y=65, color='orange', linestyle=':', alpha=0.5)
 
-    # Add annotations
+    # Add annotations with adjusted positions
     ax1.annotate('Samsung throttles\n50% reduction',
-                xy=(20, 1000), xytext=(22, 1300),
+                xy=(20, 1000), xytext=(22, 1400),
                 arrowprops=dict(arrowstyle='->', color='red', alpha=0.7),
-                fontsize=23, ha='left')
+                fontsize=18, ha='left')
 
     ax1.annotate('ScaleFlux throttles\n60% reduction',
-                xy=(18, 720), xytext=(20, 500),
+                xy=(18, 720), xytext=(20, 400),
                 arrowprops=dict(arrowstyle='->', color='red', alpha=0.7),
-                fontsize=23, ha='left')
+                fontsize=18, ha='left')
 
-    ax1.annotate('CXL compute migration\nmaintains performance',
-                xy=(19, 2200), xytext=(23, 2100),
+    ax1.annotate('CXL migration\nmaintains perf',
+                xy=(19, 2200), xytext=(24, 2100),
                 arrowprops=dict(arrowstyle='->', color='green', alpha=0.7),
-                fontsize=23, ha='left')
+                fontsize=18, ha='left')
 
     # Title
-    plt.title('Thermal Throttling Impact on Sustained Write Performance', fontsize=25, fontweight='bold')
+    plt.title('Thermal Throttling Impact on Sustained Write Performance', fontsize=24, fontweight='bold')
 
-    # Combine legends
+    # Combine legends - use 2 rows for better spacing
     lines1, labels1 = ax1.get_legend_handles_labels()
     lines2, labels2 = ax2.get_legend_handles_labels()
     ax1.legend(lines1 + lines2[:3], labels1 + labels2[:3],
-              loc='upper center', bbox_to_anchor=(0.5, -0.2), ncol=3, fontsize=23)
+              loc='upper center', bbox_to_anchor=(0.5, -0.12), ncol=3, fontsize=16)
 
     # Set axis limits
     ax1.set_xlim(0, 30)
