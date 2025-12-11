@@ -12,7 +12,7 @@ run_all_raw_tests() {
     
     # Array of test scripts to run
     TEST_SCRIPTS=(
-        "test_byte_addressable.sh"
+        "test_raw_byte_addressable.sh"
         "test_qd_thread.sh"
         "test_blocksize.sh"
         "test_access_pattern.sh"

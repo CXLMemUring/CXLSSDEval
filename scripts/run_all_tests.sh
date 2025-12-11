@@ -7,9 +7,10 @@ set -e  # Exit on error
 
 # Script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+FIO_SCRIPTS_DIR="${SCRIPT_DIR}/fio_scripts"
 echo "Script Directory: $SCRIPT_DIR"
 # Source common functions
-source "${SCRIPT_DIR}/fio_scripts/common.sh"
+source "${FIO_SCRIPTS_DIR}/common.sh"
 
 # Colors for output
 RED='\033[0;31m'
@@ -93,8 +94,8 @@ check_prerequisites() {
 run_raw_device_tests() {
     print_header "Running Raw Device Tests"
     
-    if [[ -f "${SCRIPT_DIR}/raw_device_test.sh" ]]; then
-        bash "${SCRIPT_DIR}/raw_device_test.sh"
+    if [[ -f "${FIO_SCRIPTS_DIR}/raw_device_test.sh" ]]; then
+        bash "${FIO_SCRIPTS_DIR}/raw_device_test.sh"
         
         if [[ $? -eq 0 ]]; then
             print_success "Raw device tests completed successfully"
@@ -113,8 +114,8 @@ run_raw_device_tests() {
 run_filesystem_tests() {
     print_header "Running Filesystem Tests"
     
-    if [[ -f "${SCRIPT_DIR}/filesystem_test.sh" ]]; then
-        bash "${SCRIPT_DIR}/filesystem_test.sh"
+    if [[ -f "${FIO_SCRIPTS_DIR}/filesystem_test.sh" ]]; then
+        bash "${FIO_SCRIPTS_DIR}/filesystem_test.sh"
         
         if [[ $? -eq 0 ]]; then
             print_success "Filesystem tests completed successfully"
@@ -133,10 +134,10 @@ run_filesystem_tests() {
 run_rocksdb_tests() {
     print_header "Running RocksDB Tests"
     
-    if [[ -f "${SCRIPT_DIR}/rocksdb_test.sh" ]]; then
+    if [[ -f "${FIO_SCRIPTS_DIR}/rocksdb_test.sh" ]]; then
         # Check if db_bench exists
         if [[ -f "${ROCKSDB_DIR:-/opt/rocksdb}/db_bench" ]]; then
-            bash "${SCRIPT_DIR}/rocksdb_test.sh"
+            bash "${FIO_SCRIPTS_DIR}/rocksdb_test.sh"
             
             if [[ $? -eq 0 ]]; then
                 print_success "RocksDB tests completed successfully"
@@ -335,8 +336,8 @@ main() {
                 # Run only byte-addressable test and exit
                 check_prerequisites
                 print_header "Running Byte-Addressable I/O Test (Standalone)"
-                if [[ -f "${SCRIPT_DIR}/test_byte_addressable.sh" ]]; then
-                    bash "${SCRIPT_DIR}/test_byte_addressable.sh"
+                if [[ -f "${FIO_SCRIPTS_DIR}/test_byte_addressable.sh" ]]; then
+                    bash "${FIO_SCRIPTS_DIR}/test_byte_addressable.sh"
                     if [[ $? -eq 0 ]]; then
                         print_success "Byte-addressable IO test completed successfully"
                     else
