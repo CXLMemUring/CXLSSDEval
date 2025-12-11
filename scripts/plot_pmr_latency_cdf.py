@@ -72,8 +72,8 @@ def plot_pmr_latency_cdf():
     ax.grid(True, alpha=0.3)
 
     # Configure Top Axis (µs)
-    # 设置为红色以呼应 Traditional 曲线的颜色
-    ax2.set_xlabel('Traditional PCIe BAR Latency (μs)', fontsize=20, color='#d62728')
+    # 设置为红色以呼应 Traditional 曲线的颜色，Traditional曲线使用上方x轴坐标(以µs为单位)
+    ax2.set_xlabel('Traditional PCIe BAR Latency (μs) [Top Axis]', fontsize=20, color='#d62728')
     ax2.tick_params(axis='x', labelsize=20, labelcolor='#d62728')
 
     # 手动同步两个坐标轴的范围

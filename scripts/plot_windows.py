@@ -57,7 +57,7 @@ grouped = grouped[grouped['benchmark'] != 'ep']
 
 # Plot settings - use larger fonts for OSDI double-column template
 # Figure will be scaled to ~3.3 inches width, so we need larger fonts
-FONTSIZE = 24
+FONTSIZE = 26
 plt.rcParams['font.size'] = FONTSIZE
 plt.rcParams['axes.labelsize'] = FONTSIZE
 plt.rcParams['axes.titlesize'] = FONTSIZE
