@@ -1,7 +1,7 @@
 # CXL SSD Test Configuration
 
 # Device configuration
-device: "/dev/nvmex0n1p1"  # Change this to your actual device
+device: "/dev/nvmex0n1"  # Change this to your actual device
 filesystem: ext4
 filesystem_mount: "/mnt"
 

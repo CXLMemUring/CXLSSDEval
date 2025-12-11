@@ -5,14 +5,14 @@
 # Source common functions
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/common.sh"
-
+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
 # Function to run all raw device tests
 run_all_raw_tests() {
     log_message "Starting all raw device tests on ${DEVICE}"
     
     # Array of test scripts to run
     TEST_SCRIPTS=(
-        "test_raw_byte_addressable.sh"
+        # "test_raw_byte_addressable.sh"
         "test_qd_thread.sh"
         "test_blocksize.sh"
         "test_access_pattern.sh"
