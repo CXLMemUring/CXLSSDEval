@@ -17,11 +17,11 @@ matplotlib.use("Agg", force=True)
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 
-from plot_utils import infer_cxl_uplift, load_fio_job_metrics, path_if_exists
+from plot_utils import infer_cxl_uplift, load_fio_job_metrics, resolve_cxl_path
 
 
 BASE_DIR = Path(__file__).resolve().parent
-OUTPUT_DIR = Path("/home/victoryang00/CXLSSDEval/paper/img")
+OUTPUT_DIR = Path(__file__).resolve().parents[2] / "img"
 
 
 def _discover_queue_depths(paths: Iterable[Path]) -> List[int]:
@@ -64,14 +64,15 @@ def plot_qd_scalability() -> plt.Figure:
             "axes.titlesize": 16,
             "xtick.labelsize": 16,
             "ytick.labelsize": 16,
-            "legend.fontsize": 14,
+            "legend.fontsize": 16,
             "figure.titlesize": 16,
+            "font.family": "Helvetica",
         }
     )
 
     samsung_path = BASE_DIR / "samsung_raw/qd_thread"
     scaleflux_path = BASE_DIR / "scala_raw/raw/qd_thread"
-    cxl_path = path_if_exists(BASE_DIR / "cxl_raw/qd_thread")
+    cxl_path = resolve_cxl_path(BASE_DIR, "qd_thread")
 
     queue_depths = _discover_queue_depths([samsung_path, scaleflux_path, cxl_path] if cxl_path else [samsung_path, scaleflux_path])
 
@@ -95,7 +96,7 @@ def plot_qd_scalability() -> plt.Figure:
     ax_read.set_xlabel("Queue Depth")
     ax_read.set_ylabel("IOPS (K)")
     ax_read.set_title("(a) Read IOPS Scalability")
-    ax_read.legend(loc="lower right")
+    ax_read.legend(loc="upper left")
     ax_read.grid(True, which="both", alpha=0.3)
     ax_read.set_xticks(queue_depths)
     ax_read.xaxis.set_major_formatter(FuncFormatter(lambda value, _: f"{int(value)}"))
@@ -106,7 +107,7 @@ def plot_qd_scalability() -> plt.Figure:
     ax_write.set_xlabel("Queue Depth")
     ax_write.set_ylabel("IOPS (K)")
     ax_write.set_title("(b) Write IOPS Scalability")
-    ax_write.legend(loc="lower right")
+    ax_write.legend(loc="upper left")
     ax_write.grid(True, which="both", alpha=0.3)
     ax_write.set_xticks(queue_depths)
     ax_write.xaxis.set_major_formatter(FuncFormatter(lambda value, _: f"{int(value)}"))

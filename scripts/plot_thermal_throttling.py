@@ -58,8 +58,9 @@ def plot_thermal_throttling():
     plt.rcParams['axes.titlesize'] = 16
     plt.rcParams['xtick.labelsize'] = 16
     plt.rcParams['ytick.labelsize'] = 16
-    plt.rcParams['legend.fontsize'] = 14  # Slightly smaller for legend
+    plt.rcParams['legend.fontsize'] = 16
     plt.rcParams['figure.titlesize'] = 16
+    plt.rcParams['font.family'] = "Helvetica"
 
     # Generate data
     time, samsung_temp, samsung_tp, scala_temp, scala_tp, cxl_temp, cxl_tp = generate_thermal_data()
@@ -72,11 +73,11 @@ def plot_thermal_throttling():
     color_scala = '#ff7f0e'
     color_cxl = '#2ca02c'
 
-    ax1.plot(time, samsung_tp, '-', color=color_samsung, linewidth=2,
+    ax1.plot(time, samsung_tp, '-', color=color_samsung, linewidth=3,
              label='Samsung SmartSSD (Throughput)')
-    ax1.plot(time, scala_tp, '-', color=color_scala, linewidth=2,
+    ax1.plot(time, scala_tp, '-', color=color_scala, linewidth=3,
              label='ScaleFlux CSD1000 (Throughput)')
-    ax1.plot(time, cxl_tp, '-', color=color_cxl, linewidth=2,
+    ax1.plot(time, cxl_tp, '-', color=color_cxl, linewidth=3,
              label='CXL SSD (Throughput)')
 
     ax1.set_xlabel('Time (minutes)', fontsize=16)
@@ -87,11 +88,11 @@ def plot_thermal_throttling():
     # Create second y-axis for temperature
     ax2 = ax1.twinx()
 
-    ax2.plot(time, samsung_temp, '--', color=color_samsung, linewidth=2, alpha=0.7,
+    ax2.plot(time, samsung_temp, '--', color=color_samsung, linewidth=3, alpha=0.7,
              label='Samsung (Temperature)')
-    ax2.plot(time, scala_temp, '--', color=color_scala, linewidth=2, alpha=0.7,
+    ax2.plot(time, scala_temp, '--', color=color_scala, linewidth=3, alpha=0.7,
              label='ScaleFlux (Temperature)')
-    ax2.plot(time, cxl_temp, '--', color=color_cxl, linewidth=2, alpha=0.7,
+    ax2.plot(time, cxl_temp, '--', color=color_cxl, linewidth=3, alpha=0.7,
              label='CXL SSD (Temperature)')
 
     ax2.set_ylabel('Temperature (°C)', fontsize=16)
@@ -105,26 +106,26 @@ def plot_thermal_throttling():
     ax1.annotate('Samsung throttles\n50% reduction',
                 xy=(20, 1000), xytext=(22, 1300),
                 arrowprops=dict(arrowstyle='->', color='red', alpha=0.7),
-                fontsize=10, ha='left')
+                fontsize=16, ha='left')
 
     ax1.annotate('ScaleFlux throttles\n60% reduction',
                 xy=(18, 720), xytext=(20, 500),
                 arrowprops=dict(arrowstyle='->', color='red', alpha=0.7),
-                fontsize=10, ha='left')
+                fontsize=16, ha='left')
 
     ax1.annotate('CXL compute migration\nmaintains performance',
                 xy=(19, 2200), xytext=(23, 2100),
                 arrowprops=dict(arrowstyle='->', color='green', alpha=0.7),
-                fontsize=10, ha='left')
+                fontsize=16, ha='left')
 
     # Title
-    plt.title('Thermal Throttling Impact on Sustained Write Performance', fontsize=14, fontweight='bold')
+    plt.title('Thermal Throttling Impact on Sustained Write Performance', fontsize=18, fontweight='bold')
 
     # Combine legends
     lines1, labels1 = ax1.get_legend_handles_labels()
     lines2, labels2 = ax2.get_legend_handles_labels()
     ax1.legend(lines1 + lines2[:3], labels1 + labels2[:3],
-              loc='upper right', ncol=2, fontsize=10)
+              loc='upper center', bbox_to_anchor=(0.5, -0.2), ncol=3, fontsize=16)
 
     # Set axis limits
     ax1.set_xlim(0, 30)
@@ -135,9 +136,8 @@ def plot_thermal_throttling():
     plt.tight_layout()
 
     # Save the figure
-    output_dir = Path('/home/victoryang00/CXLSSDEval/paper/img')
+    output_dir = Path(__file__).resolve().parents[2] / "img"
     output_dir.mkdir(parents=True, exist_ok=True)
-    plt.savefig(output_dir / 'thermal_throttling.pdf', dpi=300, bbox_inches='tight')
     plt.savefig(output_dir / 'thermal_throttling.pdf', dpi=300, bbox_inches='tight')
 
     print(f"Thermal throttling plot saved to {output_dir}/thermal_throttling.pdf")

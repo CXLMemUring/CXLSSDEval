@@ -17,11 +17,11 @@ matplotlib.use("Agg", force=True)
 import matplotlib.pyplot as plt
 import numpy as np
 
-from plot_utils import infer_cxl_uplift, load_fio_job_metrics, path_if_exists
+from plot_utils import infer_cxl_uplift, load_fio_job_metrics, resolve_cxl_path
 
 
 BASE_DIR = Path(__file__).resolve().parent
-OUTPUT_DIR = Path("/home/victoryang00/CXLSSDEval/paper/img")
+OUTPUT_DIR = Path(__file__).resolve().parents[2] / "img"
 
 
 PATTERN_FILES = {
@@ -58,13 +58,14 @@ def _derive_cxl_series(samsung: Dict[str, float], uplift: float) -> Dict[str, fl
 def plot_access_pattern() -> plt.Figure:
     """Build the access-pattern plot using the recorded benchmark outputs."""
     plt.rcParams.update({
-        "font.size": 16,
-        "axes.labelsize": 16,
-        "axes.titlesize": 16,
-        "xtick.labelsize": 16,
-        "ytick.labelsize": 16,
-        "legend.fontsize": 14,
-        "figure.titlesize": 16,
+        "font.size": 19,
+        "axes.labelsize": 19,
+        "axes.titlesize": 19,
+        "xtick.labelsize": 19,
+        "ytick.labelsize": 19,
+        "legend.fontsize": 19,
+        "figure.titlesize": 19,
+        "font.family": "Helvetica",
     })
 
     patterns = list(PATTERN_FILES.keys())
@@ -73,7 +74,7 @@ def plot_access_pattern() -> plt.Figure:
     samsung_series = _load_vendor_series(BASE_DIR / "samsung_raw/access_pattern")
     scaleflux_series = _load_vendor_series(BASE_DIR / "scala_raw/raw/access_pattern")
 
-    cxl_root = path_if_exists(BASE_DIR / "cxl_raw/access_pattern")
+    cxl_root = resolve_cxl_path(BASE_DIR, "access_pattern")
     if cxl_root:
         cxl_series = _load_vendor_series(cxl_root)
     else:
@@ -96,17 +97,8 @@ def plot_access_pattern() -> plt.Figure:
     ax.set_title("Performance Across Access Patterns – 4KB operations")
     ax.set_xticks(x_pos)
     ax.set_xticklabels(patterns)
-    ax.legend()
+    ax.legend(loc="best")
     ax.grid(True, axis="y", alpha=0.3)
-
-    seq_rand_gap = samsung_vals[0] / samsung_vals[2]
-    cxl_gap = cxl_vals[0] / cxl_vals[2]
-    ax.text(
-        0.6,
-        max(cxl_vals) * 0.9,
-        f"Sequential/Random gap\nSamsung: {seq_rand_gap:.1f}×\nCXL: {cxl_gap:.1f}×",
-        bbox=dict(boxstyle="round", facecolor="wheat", alpha=0.55),
-    )
 
     plt.tight_layout()
 

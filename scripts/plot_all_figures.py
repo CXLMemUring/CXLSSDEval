@@ -16,12 +16,14 @@ PLOTTERS: List[Tuple[str, str, str]] = [
     ("plot_access_pattern", "plot_access_pattern", "access pattern comparison"),
     ("plot_qd_scalability", "plot_qd_scalability", "queue-depth scalability"),
     ("plot_rwmix", "plot_rwmix", "read/write mix"),
+    ("plot_access_distribution", "plot_access_distribution", "access distribution sensitivity"),
+    ("plot_endurance", "plot_endurance", "endurance under mixed load"),
     ("plot_compression_comparison", "plot_compression_comparison", "compression efficiency"),
     ("plot_pmr_latency_cdf", "plot_pmr_latency_cdf", "PMR latency CDF"),
     ("plot_cmb_bandwidth", "plot_cmb_bandwidth", "CMB bandwidth utilisation"),
 ]
 
-OUTPUT_DIR = Path("/home/victoryang00/CXLSSDEval/paper/img")
+OUTPUT_DIR = Path(__file__).resolve().parents[2] / "img"
 
 
 def main() -> None:

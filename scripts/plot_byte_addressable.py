@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 BASE_DIR = Path(__file__).resolve().parent
-OUTPUT_DIR = Path("/home/victoryang00/CXLSSDEval/paper/img")
+OUTPUT_DIR = Path(__file__).resolve().parents[2] / "img"
 
 
 def _block_key(label: str) -> int:
@@ -45,9 +45,26 @@ def _load_summary(csv_path: Path) -> Dict[str, Dict[str, float]]:
     summary: Dict[str, Dict[str, float]] = {}
     for row in rows:
         block = row["block_size"].strip()
+        # Prefer 99p latency; fall back to averaged latency if necessary
+        lat_us: Optional[float] = None
+        for key in (
+            "total_lat_99_us",
+            "write_lat_99_us",
+            "write_lat_us",
+            "write_lat_avg_us",
+            "total_lat_avg_us",
+        ):
+            if key in row and row[key] not in ("", None, "nan"):
+                try:
+                    lat_us = float(row[key])
+                    break
+                except ValueError:
+                    continue
+        if lat_us is None:
+            raise ValueError(f"No usable latency column found in {csv_path}")
         summary[block.lower()] = {
             "bw_mb": float(row["write_bw_kbps"]) / 1024.0,
-            "lat_us": float(row["total_lat_avg_us"]),
+            "lat_us": lat_us,
         }
     return summary
 
@@ -66,19 +83,26 @@ def plot_byte_addressable() -> plt.Figure:
     """Create the byte-addressable performance comparison using recorded summaries."""
     plt.rcParams.update(
         {
-            "font.size": 16,
-            "axes.labelsize": 16,
-            "axes.titlesize": 16,
-            "xtick.labelsize": 14,
-            "ytick.labelsize": 14,
-            "legend.fontsize": 14,
-            "figure.titlesize": 16,
+            "font.size": 19,
+            "axes.labelsize": 19,
+            "axes.titlesize": 19,
+            "xtick.labelsize": 19,
+            "ytick.labelsize": 19,
+            "legend.fontsize": 19,
+            "figure.titlesize": 19,
+            "font.family": "Helvetica",
         }
     )
 
     samsung_csv = BASE_DIR / "samsung_byte_addressable_result/samsung_byte_addressable_summary.csv"
     scaleflux_csv = BASE_DIR / "scala_byte_addresable_result/scala_byte_addressable_summary.csv"
-    cxl_csv = BASE_DIR / "cxl_byte_addressable_result/cxl_byte_addressable_summary.csv"
+    cxl_csv_candidates = [
+        BASE_DIR / "cxl_byte_addresable_result/byte_addressable_summary.csv",
+        BASE_DIR / "cxl_byte_addressable_result/cxl_byte_addressable_summary.csv",
+    ]
+    cxl_csv = next((path for path in cxl_csv_candidates if path.exists()), None)
+    if cxl_csv is None:
+        raise FileNotFoundError("No CXL byte-addressable summary CSV found")
 
     samsung = _load_summary(samsung_csv)
     scaleflux = _load_summary(scaleflux_csv)
@@ -119,7 +143,7 @@ def plot_byte_addressable() -> plt.Figure:
     ax_lat.set_title("(b) Latency")
     ax_lat.set_xticks(x_pos)
     ax_lat.set_xticklabels(labels, rotation=45, ha="right")
-    ax_lat.legend(loc="upper right")
+    ax_lat.legend(loc="upper left")
     ax_lat.grid(True, axis="y", alpha=0.3)
 
     plt.tight_layout()

@@ -72,6 +72,20 @@ def path_if_exists(path: Path) -> Optional[Path]:
     return path if path.exists() else None
 
 
+def resolve_cxl_path(base_dir: Path, subdir: str) -> Optional[Path]:
+    """Prefer the authoritative CXL result root while keeping backward compatibility."""
+
+    candidates = [
+        base_dir / "true_cxl_raw/raw" / subdir,
+        base_dir / "cxl_raw/raw" / subdir,
+        base_dir / "cxl_raw" / subdir,
+    ]
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    return None
+
+
 def infer_cxl_uplift(base_dir: Path, default: float = 1.15) -> float:
     """Infer a throughput uplift multiplier from byte-addressable summaries."""
 

@@ -17,6 +17,7 @@ def plot_cmb_bandwidth():
     plt.rcParams['ytick.labelsize'] = 16
     plt.rcParams['legend.fontsize'] = 16
     plt.rcParams['figure.titlesize'] = 16
+    plt.rcParams['font.family'] = "Helvetica"
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
 
@@ -43,14 +44,9 @@ def plot_cmb_bandwidth():
     ax1.set_ylabel('Bandwidth (GB/s)', fontsize=16)
     ax1.set_title('(a) CMB Bandwidth Utilization', fontsize=16)
     ax1.set_xticks(x_pos)
-    ax1.set_xticklabels(strategies, fontsize=14)
-    ax1.legend(fontsize=14)
+    ax1.set_xticklabels(strategies, fontsize=16)
+    ax1.legend(fontsize=16, loc="upper right", ncol=2, bbox_to_anchor=(1.0, 0.98))
     ax1.grid(True, alpha=0.3, axis='y')
-
-    # Add bandwidth values on bars
-    for i, (seq, rand) in enumerate(zip(sequential_bw, random_bw)):
-        ax1.text(i - width/2, seq + 0.3, f'{seq:.1f}', ha='center', fontsize=12)
-        ax1.text(i + width/2, rand + 0.3, f'{rand:.1f}', ha='center', fontsize=12)
 
     # CPU utilization comparison subplot
     bars3 = ax2.bar(x_pos - width/2, cpu_util_qd1, width, label='QD=1', color='#2ca02c')
@@ -60,29 +56,15 @@ def plot_cmb_bandwidth():
     ax2.set_ylabel('CPU Utilization (%)', fontsize=16)
     ax2.set_title('(b) CPU Utilization Impact', fontsize=16)
     ax2.set_xticks(x_pos)
-    ax2.set_xticklabels(strategies, fontsize=14)
-    ax2.legend(fontsize=14)
+    ax2.set_xticklabels(strategies, fontsize=16)
+    ax2.legend(fontsize=16, loc="upper right", ncol=2, bbox_to_anchor=(1.0, 0.98))
     ax2.grid(True, alpha=0.3, axis='y')
-
-    # Add efficiency improvement annotation
-    traditional_cpu = cpu_util_qd1[0]
-    mwait_cpu = cpu_util_qd1[1]
-    reduction = (traditional_cpu - mwait_cpu) / traditional_cpu * 100
-    ax2.text(1.5, 80, f'MWAIT reduces\nCPU usage by\n{reduction:.0f}% at QD=1',
-             bbox=dict(boxstyle='round', facecolor='lightgreen', alpha=0.7),
-             fontsize=14, ha='center')
-
-    # Add best performance annotation
-    ax1.text(4, 20, 'Hybrid approach\nachieves optimal\nbandwidth utilization',
-             bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.7),
-             fontsize=14, ha='center')
 
     plt.tight_layout()
 
     # Save the figure
-    output_dir = Path('/home/victoryang00/CXLSSDEval/paper/img')
+    output_dir = Path(__file__).resolve().parents[2] / "img"
     output_dir.mkdir(parents=True, exist_ok=True)
-    plt.savefig(output_dir / 'cmb_bandwidth.pdf', dpi=300, bbox_inches='tight')
     plt.savefig(output_dir / 'cmb_bandwidth.pdf', dpi=300, bbox_inches='tight')
 
     print(f"CMB bandwidth plot saved to {output_dir}/cmb_bandwidth.pdf")

@@ -9,7 +9,7 @@ from pathlib import Path
 
 def main():
     """Generate all plots for the paper using individual scripts"""
-    output_dir = Path('/home/victoryang00/CXLSSDEval/paper/img')
+    output_dir = Path(__file__).resolve().parents[2] / "img"
     output_dir.mkdir(parents=True, exist_ok=True)
 
     print("Generating all plots for CXL SSD evaluation paper...")
@@ -23,6 +23,8 @@ def main():
         ('plot_qd_scalability', 'queue depth scalability'),
         ('plot_access_pattern', 'access pattern comparison'),
         ('plot_rwmix', 'read/write mix performance'),
+        ('plot_access_distribution', 'access distribution sensitivity'),
+        ('plot_endurance', 'endurance under mixed load'),
         ('plot_compression_comparison', 'compression efficiency'),
         ('plot_pmr_latency_cdf', 'PMR latency distribution'),
         ('plot_cmb_bandwidth', 'CMB bandwidth utilization')

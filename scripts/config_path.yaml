@@ -1,0 +1,10 @@
+# Optional overrides for plotting scripts. If unspecified, defaults under
+# CXLSSDEval/scripts/{samsung_raw,scala_raw/cxl_raw} are used.
+access_distribution:
+  samsung: ""
+  scaleflux: ""
+  cxl: ""
+endurance:
+  samsung: ""
+  scaleflux: ""
+  cxl: ""

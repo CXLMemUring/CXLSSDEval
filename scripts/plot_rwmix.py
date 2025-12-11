@@ -17,11 +17,11 @@ matplotlib.use("Agg", force=True)
 import matplotlib.pyplot as plt
 import numpy as np
 
-from plot_utils import infer_cxl_uplift, load_fio_job_metrics, path_if_exists
+from plot_utils import infer_cxl_uplift, load_fio_job_metrics, resolve_cxl_path
 
 
 BASE_DIR = Path(__file__).resolve().parent
-OUTPUT_DIR = Path("/home/victoryang00/CXLSSDEval/paper/img")
+OUTPUT_DIR = Path(__file__).resolve().parents[2] / "img"
 
 
 def _ratio_label(read_pct: int, write_pct: int) -> str:
@@ -76,19 +76,20 @@ def plot_rwmix() -> plt.Figure:
     """Plot throughput vs. read/write mix using the recorded data sets."""
     plt.rcParams.update(
         {
-            "font.size": 16,
-            "axes.labelsize": 16,
-            "axes.titlesize": 16,
-            "xtick.labelsize": 16,
-            "ytick.labelsize": 16,
-            "legend.fontsize": 14,
-            "figure.titlesize": 16,
+            "font.size": 19,
+            "axes.labelsize": 19,
+            "axes.titlesize": 19,
+            "xtick.labelsize": 19,
+            "ytick.labelsize": 19,
+            "legend.fontsize": 19,
+            "figure.titlesize": 19,
+            "font.family": "Helvetica",
         }
     )
 
     samsung_path = BASE_DIR / "samsung_raw/rwmix"
     scaleflux_path = BASE_DIR / "scala_raw/raw/rwmix"
-    cxl_path = path_if_exists(BASE_DIR / "cxl_raw/rwmix")
+    cxl_path = resolve_cxl_path(BASE_DIR, "rwmix")
 
     order = _discover_ratios([samsung_path, scaleflux_path, cxl_path] if cxl_path else [samsung_path, scaleflux_path])
 
@@ -117,7 +118,7 @@ def plot_rwmix() -> plt.Figure:
     ax.set_title("Performance Impact of Read/Write Mix (4KB Random)")
     ax.set_xticks(x_pos)
     ax.set_xticklabels(order)
-    ax.legend()
+    ax.legend(loc="upper center")
     ax.grid(True, alpha=0.3)
 
     plt.tight_layout()

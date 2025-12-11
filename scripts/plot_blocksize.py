@@ -17,10 +17,10 @@ matplotlib.use("Agg", force=True)
 import matplotlib.pyplot as plt
 import numpy as np
 
-from plot_utils import infer_cxl_uplift, load_fio_job_metrics, path_if_exists
+from plot_utils import infer_cxl_uplift, load_fio_job_metrics, resolve_cxl_path
 
 BASE_DIR = Path(__file__).resolve().parent
-OUTPUT_DIR = Path("/home/victoryang00/CXLSSDEval/paper/img")
+OUTPUT_DIR = Path(__file__).resolve().parents[2] / "img"
 
 
 def _block_size_key(label: str) -> int:
@@ -74,19 +74,31 @@ def plot_blocksize() -> plt.Figure:
     """Create block-size comparison plots using the recorded results."""
     plt.rcParams.update(
         {
-            "font.size": 16,
-            "axes.labelsize": 16,
-            "axes.titlesize": 16,
-            "xtick.labelsize": 14,
-            "ytick.labelsize": 14,
-            "legend.fontsize": 13,
-            "figure.titlesize": 16,
+            "font.size": 18,
+            "axes.labelsize": 18,
+            "axes.titlesize": 18,
+            "xtick.labelsize": 18,
+            "ytick.labelsize": 18,
+            "legend.fontsize": 18,
+            "figure.titlesize": 18,
+            "font.family": "Helvetica",
         }
     )
 
     samsung_path = BASE_DIR / "samsung_raw/blocksize"
     scaleflux_path = BASE_DIR / "scala_raw/raw/blocksize"
-    cxl_path = path_if_exists(BASE_DIR / "cxl_raw/blocksize")
+
+    # Prefer the legacy cxl_raw results for this plot; fall back to any other available path.
+    for candidate in (
+        BASE_DIR / "cxl_raw/raw/blocksize",
+        BASE_DIR / "cxl_raw/blocksize",
+        resolve_cxl_path(BASE_DIR, "blocksize"),
+    ):
+        if candidate and candidate.exists():
+            cxl_path = candidate
+            break
+    else:
+        cxl_path = None
 
     block_sizes = _discover_block_sizes(
         [samsung_path, scaleflux_path, cxl_path] if cxl_path else [samsung_path, scaleflux_path]
@@ -110,14 +122,14 @@ def plot_blocksize() -> plt.Figure:
     fig, (ax_read, ax_write) = plt.subplots(1, 2, figsize=(16, 7))
 
     ax_read.plot(x_pos, samsung["read"], "o-", label="Samsung SmartSSD", linewidth=2, markersize=6, color="#1f77b4")
-    ax_read.plot(x_pos, cxl["read"], "s-", label="ScaleFlux CSD1000", linewidth=2, markersize=6, color="#ff7f0e")
-    ax_read.plot(x_pos, scaleflux["read"], "^--", label="CXL SSD", linewidth=2, markersize=6, color="#2ca02c")
+    ax_read.plot(x_pos, scaleflux["read"], "s-", label="ScaleFlux CSD1000", linewidth=2, markersize=6, color="#ff7f0e")
+    ax_read.plot(x_pos, cxl["read"], "^--", label="CXL SSD", linewidth=2, markersize=6, color="#2ca02c")
     ax_read.set_xlabel("Block Size")
     ax_read.set_ylabel("Throughput (MB/s)")
     ax_read.set_title("(a) Sequential Read")
     ax_read.set_xticks(x_pos)
     ax_read.set_xticklabels(labels, rotation=45, ha="right")
-    ax_read.legend(loc="lower right")
+    ax_read.legend(loc="upper center", bbox_to_anchor=(0.5, -0.2), ncol=3)
     ax_read.grid(True, alpha=0.3)
 
     ax_write.plot(x_pos, samsung["write"], "o-", label="Samsung SmartSSD", linewidth=2, markersize=6, color="#1f77b4")
@@ -128,7 +140,7 @@ def plot_blocksize() -> plt.Figure:
     ax_write.set_title("(b) Sequential Write")
     ax_write.set_xticks(x_pos)
     ax_write.set_xticklabels(labels, rotation=45, ha="right")
-    ax_write.legend(loc="lower right")
+    ax_write.legend(loc="upper center", bbox_to_anchor=(0.5, -0.2), ncol=3)
     ax_write.grid(True, alpha=0.3)
 
     plt.tight_layout()
