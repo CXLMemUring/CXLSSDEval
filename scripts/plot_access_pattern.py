@@ -58,13 +58,13 @@ def _derive_cxl_series(samsung: Dict[str, float], uplift: float) -> Dict[str, fl
 def plot_access_pattern() -> plt.Figure:
     """Build the access-pattern plot using the recorded benchmark outputs."""
     plt.rcParams.update({
-        "font.size": 19,
-        "axes.labelsize": 19,
-        "axes.titlesize": 19,
-        "xtick.labelsize": 19,
-        "ytick.labelsize": 19,
-        "legend.fontsize": 19,
-        "figure.titlesize": 19,
+        "font.size": 20,
+        "axes.labelsize": 20,
+        "axes.titlesize": 20,
+        "xtick.labelsize": 20,
+        "ytick.labelsize": 20,
+        "legend.fontsize": 20,
+        "figure.titlesize": 20,
         "font.family": "Helvetica",
     })
 

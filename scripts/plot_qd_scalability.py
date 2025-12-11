@@ -59,13 +59,13 @@ def plot_qd_scalability() -> plt.Figure:
     """Render queue-depth scaling curves using the capture FIO logs."""
     plt.rcParams.update(
         {
-            "font.size": 16,
-            "axes.labelsize": 16,
-            "axes.titlesize": 16,
-            "xtick.labelsize": 16,
-            "ytick.labelsize": 16,
-            "legend.fontsize": 16,
-            "figure.titlesize": 16,
+            "font.size": 20,
+            "axes.labelsize": 20,
+            "axes.titlesize": 20,
+            "xtick.labelsize": 20,
+            "ytick.labelsize": 20,
+            "legend.fontsize": 20,
+            "figure.titlesize": 20,
             "font.family": "Helvetica",
         }
     )

@@ -10,13 +10,13 @@ from pathlib import Path
 def plot_pmr_latency_cdf():
     """PMR access latency cumulative distribution function"""
     # Set matplotlib parameters for paper-quality figures
-    plt.rcParams['font.size'] = 16
-    plt.rcParams['axes.labelsize'] = 16
-    plt.rcParams['axes.titlesize'] = 16
-    plt.rcParams['xtick.labelsize'] = 16
-    plt.rcParams['ytick.labelsize'] = 16
-    plt.rcParams['legend.fontsize'] = 16
-    plt.rcParams['figure.titlesize'] = 16
+    plt.rcParams['font.size'] = 20
+    plt.rcParams['axes.labelsize'] = 20
+    plt.rcParams['axes.titlesize'] = 20
+    plt.rcParams['xtick.labelsize'] = 20
+    plt.rcParams['ytick.labelsize'] = 20
+    plt.rcParams['legend.fontsize'] = 20
+    plt.rcParams['figure.titlesize'] = 20
 
     fig, ax = plt.subplots(figsize=(10, 7))
     # 创建顶部第二坐标轴，用于 Traditional 的 µs 显示
@@ -63,18 +63,18 @@ def plot_pmr_latency_cdf():
         lines.append(l)
 
     # Configure Bottom Axis (ns)
-    ax.set_xlabel('Access Latency (ns)', fontsize=16)
-    
+    ax.set_xlabel('Access Latency (ns)', fontsize=20)
+
     # 【修改点】：使用更直观的纵坐标描述
-    ax.set_ylabel('Cumulative Fraction of Accesses', fontsize=16)
-    
-    ax.set_title('PMR Access Latency Distribution(CDF)', fontsize=16)
+    ax.set_ylabel('Cumulative Fraction of Accesses', fontsize=20)
+
+    ax.set_title('PMR Access Latency Distribution(CDF)', fontsize=20)
     ax.grid(True, alpha=0.3)
-    
+
     # Configure Top Axis (µs)
     # 设置为红色以呼应 Traditional 曲线的颜色
-    ax2.set_xlabel('Traditional PCIe BAR Latency (μs)', fontsize=14, color='#d62728')
-    ax2.tick_params(axis='x', labelsize=14, labelcolor='#d62728')
+    ax2.set_xlabel('Traditional PCIe BAR Latency (μs)', fontsize=20, color='#d62728')
+    ax2.tick_params(axis='x', labelsize=20, labelcolor='#d62728')
 
     # 手动同步两个坐标轴的范围
     # 下轴: 400ns - 1600ns
@@ -84,11 +84,11 @@ def plot_pmr_latency_cdf():
     ax.set_ylim(0, 1)
 
     # Combine legends from both axes
-    ax.legend(lines, labels, fontsize=14, loc='lower right')
+    ax.legend(lines, labels, fontsize=20, loc='lower right')
 
     ax.text(1380, 0.3, 'CXL provides\n10.9× improvement\nover traditional\nPCIe BAR access',
         bbox=dict(boxstyle='round', facecolor='lightgreen', alpha=0.7),
-        fontsize=14, ha='center')
+        fontsize=20, ha='center')
 
     plt.tight_layout()
 

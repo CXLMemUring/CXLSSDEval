@@ -74,13 +74,13 @@ def plot_blocksize() -> plt.Figure:
     """Create block-size comparison plots using the recorded results."""
     plt.rcParams.update(
         {
-            "font.size": 18,
-            "axes.labelsize": 18,
-            "axes.titlesize": 18,
-            "xtick.labelsize": 18,
-            "ytick.labelsize": 18,
-            "legend.fontsize": 18,
-            "figure.titlesize": 18,
+            "font.size": 20,
+            "axes.labelsize": 20,
+            "axes.titlesize": 20,
+            "xtick.labelsize": 20,
+            "ytick.labelsize": 20,
+            "legend.fontsize": 20,
+            "figure.titlesize": 20,
             "font.family": "Helvetica",
         }
     )

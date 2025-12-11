@@ -10,13 +10,13 @@ from pathlib import Path
 def plot_cmb_bandwidth():
     """CMB bandwidth utilization and efficiency comparison"""
     # Set matplotlib parameters for paper-quality figures
-    plt.rcParams['font.size'] = 16
-    plt.rcParams['axes.labelsize'] = 16
-    plt.rcParams['axes.titlesize'] = 16
-    plt.rcParams['xtick.labelsize'] = 16
-    plt.rcParams['ytick.labelsize'] = 16
-    plt.rcParams['legend.fontsize'] = 16
-    plt.rcParams['figure.titlesize'] = 16
+    plt.rcParams['font.size'] = 20
+    plt.rcParams['axes.labelsize'] = 20
+    plt.rcParams['axes.titlesize'] = 20
+    plt.rcParams['xtick.labelsize'] = 20
+    plt.rcParams['ytick.labelsize'] = 20
+    plt.rcParams['legend.fontsize'] = 20
+    plt.rcParams['figure.titlesize'] = 20
     plt.rcParams['font.family'] = "Helvetica"
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
@@ -40,24 +40,24 @@ def plot_cmb_bandwidth():
     bars1 = ax1.bar(x_pos - width/2, sequential_bw, width, label='Sequential Access', color='#1f77b4')
     bars2 = ax1.bar(x_pos + width/2, random_bw, width, label='Random 4KB Access', color='#ff7f0e')
 
-    ax1.set_xlabel('Queue Management Strategy', fontsize=16)
-    ax1.set_ylabel('Bandwidth (GB/s)', fontsize=16)
-    ax1.set_title('(a) CMB Bandwidth Utilization', fontsize=16)
+    ax1.set_xlabel('Queue Management Strategy', fontsize=20)
+    ax1.set_ylabel('Bandwidth (GB/s)', fontsize=20)
+    ax1.set_title('(a) CMB Bandwidth Utilization', fontsize=20)
     ax1.set_xticks(x_pos)
-    ax1.set_xticklabels(strategies, fontsize=16)
-    ax1.legend(fontsize=16, loc="upper right", ncol=2, bbox_to_anchor=(1.0, 0.98))
+    ax1.set_xticklabels(strategies, fontsize=20)
+    ax1.legend(fontsize=20, loc="upper right", ncol=2, bbox_to_anchor=(1.0, 0.98))
     ax1.grid(True, alpha=0.3, axis='y')
 
     # CPU utilization comparison subplot
     bars3 = ax2.bar(x_pos - width/2, cpu_util_qd1, width, label='QD=1', color='#2ca02c')
     bars4 = ax2.bar(x_pos + width/2, cpu_util_qd32, width, label='QD=32', color='#d62728')
 
-    ax2.set_xlabel('Queue Management Strategy', fontsize=16)
-    ax2.set_ylabel('CPU Utilization (%)', fontsize=16)
-    ax2.set_title('(b) CPU Utilization Impact', fontsize=16)
+    ax2.set_xlabel('Queue Management Strategy', fontsize=20)
+    ax2.set_ylabel('CPU Utilization (%)', fontsize=20)
+    ax2.set_title('(b) CPU Utilization Impact', fontsize=20)
     ax2.set_xticks(x_pos)
-    ax2.set_xticklabels(strategies, fontsize=16)
-    ax2.legend(fontsize=16, loc="upper right", ncol=2, bbox_to_anchor=(1.0, 0.98))
+    ax2.set_xticklabels(strategies, fontsize=20)
+    ax2.legend(fontsize=20, loc="upper right", ncol=2, bbox_to_anchor=(1.0, 0.98))
     ax2.grid(True, alpha=0.3, axis='y')
 
     plt.tight_layout()
