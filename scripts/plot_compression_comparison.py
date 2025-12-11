@@ -45,35 +45,26 @@ def plot_compression_comparison():
     ax1.set_title('(a) Compression Efficiency', fontsize=20)
     ax1.set_xticks(x_pos)
     ax1.set_xticklabels(data_types, rotation=45, fontsize=20)
-    ax1.legend(fontsize=20)
+    # Only show legend in the first subplot, centered
+    ax1.legend(fontsize=16, loc='upper center', ncol=3, bbox_to_anchor=(1.1, 1.15))
     ax1.grid(True, alpha=0.3, axis='y')
 
-    # Add ratio labels on bars
-    for i, (sf, ss, cxl) in enumerate(zip(scaleflux_ratios, samsung_ratios, cxl_ratios)):
-        if sf > 3.0:  # Only label high ratios
-            ax1.text(i - width, sf + 0.1, f'{sf:.1f}×', ha='center', fontsize=20)
-        if ss > 3.0:
-            ax1.text(i, ss + 0.1, f'{ss:.1f}×', ha='center', fontsize=20)
-        if cxl > 3.0:
-            ax1.text(i + width, cxl + 0.1, f'{cxl:.1f}×', ha='center', fontsize=20)
-
-    # Throughput impact subplot
-    bars4 = ax2.bar(x_pos - width, scaleflux_throughput, width, label='ScaleFlux CSD1000', color='#ff7f0e')
-    bars5 = ax2.bar(x_pos, samsung_throughput, width, label='Samsung SmartSSD', color='#1f77b4')
-    bars6 = ax2.bar(x_pos + width, cxl_throughput, width, label='CXL SSD', alpha=0.7, hatch='//', color='#2ca02c')
+    # Throughput impact subplot (no legend here)
+    bars4 = ax2.bar(x_pos - width, scaleflux_throughput, width, color='#ff7f0e')
+    bars5 = ax2.bar(x_pos, samsung_throughput, width, color='#1f77b4')
+    bars6 = ax2.bar(x_pos + width, cxl_throughput, width, alpha=0.7, hatch='//', color='#2ca02c')
 
     ax2.set_xlabel('Data Type', fontsize=20)
     ax2.set_ylabel('Throughput (% of baseline)', fontsize=20)
     ax2.set_title('(b) Compression Overhead', fontsize=20)
     ax2.set_xticks(x_pos)
     ax2.set_xticklabels(data_types, rotation=45, fontsize=20)
-    ax2.legend(fontsize=20)
     ax2.grid(True, alpha=0.3, axis='y')
     ax2.set_ylim(75, 105)
 
     # Add baseline reference line
     ax2.axhline(y=100, color='gray', linestyle='--', alpha=0.5, linewidth=1)
-    ax2.text(3, 101, 'No compression baseline', fontsize=20, alpha=0.7)
+    ax2.text(3, 101, 'No compression baseline', fontsize=16, alpha=0.7)
 
     plt.tight_layout()
 
