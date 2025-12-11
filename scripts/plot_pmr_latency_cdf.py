@@ -86,7 +86,7 @@ def plot_pmr_latency_cdf():
     # Combine legends from both axes
     ax.legend(lines, labels, fontsize=20, loc='lower right')
 
-    ax.text(1380, 0.3, 'CXL provides\n10.9× improvement\nover traditional\nPCIe BAR access',
+    ax.text(1380, 0.4, 'CXL provides\n10.9× improvement\nover traditional\nPCIe BAR access',
         bbox=dict(boxstyle='round', facecolor='lightgreen', alpha=0.7),
         fontsize=20, ha='center')
 
